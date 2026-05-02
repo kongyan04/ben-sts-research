@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KD Paper — Proof Strategy</title>
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)'],['$','$']], displayMath: [['\\[','\\]'],['$$','$$']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  font-family: "Georgia", serif;
+  font-size: 11.5pt;
+  line-height: 1.75;
+  color: #111;
+  background: #fff;
+  margin: 0; padding: 0;
+}
+.page { max-width: 720px; margin: 0 auto; padding: 48px 40px 80px; }
+
+nav.site-nav {
+  background: #1a1a2e;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 0 20px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  border-bottom: 1px solid #374151;
+  margin-bottom: 0;
+  border-radius: 8px 8px 0 0;
+}
+nav.site-nav a {
+  color: #9ca3af; text-decoration: none; font-size: 0.82rem;
+  font-weight: 600; padding: 11px 11px; border-bottom: 3px solid transparent;
+  font-family: sans-serif;
+}
+nav.site-nav a:hover { color: #fff; }
+nav.site-nav a.active { color: #fff; border-bottom-color: #7f9cf5; }
+@media print { nav.site-nav { display: none; } }
+
+nav.site-nav-kd {
+  background: #16213e;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 0 20px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  border-bottom: 1px solid #374151;
+  margin-bottom: 36px;
+  border-radius: 0 0 8px 8px;
+}
+nav.site-nav-kd a {
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 11px 11px;
+  border-bottom: 3px solid transparent;
+  font-family: sans-serif;
+}
+nav.site-nav-kd a:hover { color: #fff; }
+nav.site-nav-kd a.active { color: #fff; border-bottom-color: #f6ad55; }
+@media print { nav.site-nav-kd { display: none; } }
+
+.page-header { margin-bottom: 32px; border-bottom: 2px solid #1a1a2e; padding-bottom: 16px; }
+.page-header h1 { font-size: 18pt; font-weight: bold; margin: 0 0 4px; }
+.page-header .subtitle { font-size: 10.5pt; color: #555; font-style: italic; }
+.page-header .meta { font-size: 9.5pt; color: #888; font-family: sans-serif; margin-top: 6px; }
+
+h2 { font-size: 13pt; font-weight: bold; margin: 38px 0 10px; color: #1a1a2e; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; }
+h3 { font-size: 11.5pt; font-weight: bold; margin: 22px 0 6px; }
+p { margin: 0 0 12px; }
+ul, ol { margin: 0 0 14px; padding-left: 24px; }
+li { margin-bottom: 6px; }
+
+/* option cards */
+.options { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0 28px; }
+.opt-card { border-radius: 10px; padding: 18px 20px; }
+.opt-card .opt-label { font-family: sans-serif; font-size: 8pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+.opt-card.a { background: #ebf8ff; border: 1px solid #90cdf4; }
+.opt-card.b { background: #f0fff4; border: 1px solid #68d391; }
+.opt-card.a .opt-label { color: #2c5282; }
+.opt-card.b .opt-label { color: #276749; }
+.opt-card ul { margin: 8px 0 0; padding-left: 18px; font-size: 10pt; }
+
+/* proof version cards */
+.versions { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0 28px; }
+.ver-card { border-radius: 10px; padding: 18px 20px; }
+.ver-card .ver-label { font-family: sans-serif; font-size: 8pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+.ver-card.va { background: #fffff0; border: 2px solid #f6e05e; }
+.ver-card.vb { background: #faf5ff; border: 2px solid #d6bcfa; }
+.ver-card.va .ver-label { color: #744210; }
+.ver-card.vb .ver-label { color: #553c9a; }
+.ver-card p { font-size: 10pt; margin: 0 0 8px; }
+.ver-card .venues-tag { font-family: sans-serif; font-size: 8.5pt; color: #555; margin-top: 8px; }
+
+/* callouts */
+.callout { border-radius: 8px; padding: 14px 18px; margin: 18px 0; font-size: 10pt; font-family: sans-serif; }
+.callout.warn  { background: #fffbea; border: 1px solid #f6e05e; }
+.callout.info  { background: #ebf8ff; border: 1px solid #90cdf4; }
+.callout.good  { background: #f0fff4; border: 1px solid #68d391; }
+.callout.bad   { background: #fff5f5; border: 1px solid #fc8181; }
+.callout.purple{ background: #faf5ff; border: 1px solid #d6bcfa; }
+
+/* eq note */
+.eq-note { background: #f7fafc; border-left: 4px solid #4a5568; padding: 12px 16px; margin: 14px 0; font-size: 10.5pt; border-radius: 0 6px 6px 0; }
+.eq-note .eq-label { font-family: sans-serif; font-size: 8.5pt; font-weight: 700; color: #4a5568; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+
+/* action steps */
+.steps { counter-reset: step; margin: 20px 0 28px; }
+.step { display: flex; gap: 16px; margin-bottom: 18px; align-items: flex-start; }
+.step-num {
+  background: #1a1a2e; color: #fff;
+  font-family: sans-serif; font-weight: 700; font-size: 10pt;
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 2px;
+}
+.step-body { flex: 1; }
+.step-body strong { display: block; margin-bottom: 3px; }
+.step-body p { margin: 0; font-size: 10.5pt; color: #333; }
+
+/* table */
+.vtable { width: 100%; border-collapse: collapse; font-family: sans-serif; font-size: 9.5pt; margin: 18px 0 28px; }
+.vtable th { background: #1a1a2e; color: #fff; padding: 9px 12px; text-align: left; font-weight: 600; }
+.vtable td { padding: 9px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+.vtable tr:nth-child(even) td { background: #f7fafc; }
+
+/* req box */
+.req-box { background: #faf5ff; border: 1px solid #d6bcfa; border-radius: 8px; padding: 16px 20px; margin: 20px 0; font-family: "Courier New", monospace; font-size: 9.5pt; line-height: 1.8; white-space: pre-wrap; }
+
+header {
+  background: #1a1a2e;
+  padding: 32px 40px;
+  text-align: center;
+}
+header h1 { color: #fff; font-size: 1.9rem; font-weight: 800; margin: 0; }
+header p  { color: #a0aec0; font-size: 0.95rem; margin: 8px 0 0; line-height: 1.6; }
+header .paper-title {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 0.82rem;
+  color: #7f9cf5;
+  font-style: italic;
+}
+@media print { header { display: none; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Publication &amp; Submission Venues</h1>
+  <p>Where to publish, submit, and share your STS research paper</p>
+  <span class="paper-title">Convergence Analysis of Backpropagation-Free Federated Learning via Auxiliary Networks</span>
+</header>
+<nav class="site-nav">
+  <a href="proof_review.html">Proof Review</a>
+  <a href="proof_fitness.html">Proof Fitness</a>
+  <a href="strategy.html">Strategy</a>
+  <a href="proof_paper.html">Proof Paper</a>
+  <a href="BP_Free_Split_Learning.pdf" target="_blank" style="color:#fbbf24;border-bottom-color:transparent;">↗ Paper (PDF)</a>
+</nav>
+<nav class="site-nav-kd">
+  <a href="kd_proof_review.html">KD Proof Review</a>
+  <a href="kd_proof_fitness.html">KD Proof Fitness</a>
+  <a href="kd_strategy.html" class="active">KD Strategy</a>
+  <a href="kd_proof_paper.html">KD Proof Paper</a>
+</style>
+</head>
+<body>
+<header>
+  <h1>Publication &amp; Submission Venues</h1>
+  <p>Where to publish, submit, and share your STS research paper</p>
+  <span class="paper-title">Convergence Analysis of Backpropagation-Free Federated Learning via Auxiliary Networks</span>
+</header>
+<nav class="site-nav">
+  <a href="venues.html">Venues</a>
+  <a href="proof_review.html">Proof Review</a>
+  <a href="proof_fitness.html">Proof Fitness</a>
+  <a href="strategy.html">Strategy</a>
+  <a href="proof_paper.html">Proof Paper</a>
+  <a href="BP_Free_Split_Learning.pdf" target="_blank" style="color:#fbbf24;border-bottom-color:transparent;">↗ Paper (PDF)</a>
+</nav>
+<nav class="site-nav-kd">
+  <a href="kd_venues.html" class="active">KD Venues</a>
+  <a href="kd_proof_review.html">KD Proof Review</a>
+  <a href="kd_proof_fitness.html">KD Proof Fitness</a>
+  <a href="kd_strategy.html">KD Strategy</a>
+  <a href="kd_proof_paper.html">KD Proof Paper</a>
+  <a href="KD_Split_Learning.pdf" target="_blank" style="color:#fbbf24;border-bottom-color:transparent;">↗ KD Paper (PDF)</a>
+</nav>
+
+<div class="page">
+
+<div class="page-header">
+  <h1>KD Paper — Venue Plan</h1>
+  <div class="subtitle">Submission strategy for "Mitigating Forgetting in Split Learning via Knowledge Distillation"</div>
+  <div class="meta">Voore, Supannopaj, Niradi, Qin, Taggart, Huang &nbsp;·&nbsp; May 2, 2026</div>
+</div>
+
+<h2>Venue Plan</h2>
+
+<p>This paper has two distinct submission tracks: the <strong>full multi-author paper</strong> (Dr. Huang's group + Benjamin) targeting ML conferences, and <strong>Benjamin's individual contribution</strong> targeting high-school research venues. The strategy differs significantly between the two.</p>
+
+<h3>Track 1 — Full Paper (Multi-Author)</h3>
+
+<table class="vtable">
+  <tr><th>Venue</th><th>Fit</th><th>Proof requirement</th><th>Notes</th></tr>
+  <tr>
+    <td><strong>FL/CL Workshops<br><small>(NeurIPS, ICML, ICLR)</small></strong></td>
+    <td><span class="tag tag-strong">Strong</span></td>
+    <td>Option B sufficient — reframe appendix as "parallel baseline bound, full sequential analysis is future work"</td>
+    <td>Best near-term target. Empirical gains (+13.7pp CIFAR-10, +19.0pp CIFAR-100) are the story. Proof is supplementary.</td>
+  </tr>
+  <tr>
+    <td><strong>arXiv preprint</strong></td>
+    <td><span class="tag tag-strong">Strong</span></td>
+    <td>None — post as-is</td>
+    <td>Establishes priority, enables citation. Should be posted regardless of conference submission timeline.</td>
+  </tr>
+  <tr>
+    <td><strong>IEEE TNNLS / TPAMI</strong></td>
+    <td><span class="tag tag-border">Possible</span></td>
+    <td>Option A required — full correct proof needed for journal-level rigor</td>
+    <td>Strong empirical results, but journal review will flag the proof gap in Appendix A. Fix proof first.</td>
+  </tr>
+  <tr>
+    <td><strong>ICML / NeurIPS main track</strong></td>
+    <td><span class="tag tag-border">Possible</span></td>
+    <td>Option A preferred — reviewers will check Appendix A</td>
+    <td>The empirical setting (sequential heterogeneous SL) is novel and the results are strong. Proof needs to match the algorithm before top-venue submission.</td>
+  </tr>
+</table>
+
+<h3>Track 2 — Benjamin's Individual Submission</h3>
+
+<p>Benjamin is listed as independent contributor (not affiliated with Montclair State). For high-school venues, the framing should emphasize: (1) Benjamin's specific contribution to the convergence analysis, and (2) the practical significance of the forgetting problem in split learning.</p>
+
+<table class="vtable">
+  <tr><th>Venue</th><th>Fit</th><th>Best option</th><th>Notes</th></tr>
+  <tr>
+    <td><strong>STS — Scholar (top-300)</strong></td>
+    <td><span class="tag tag-strong">Strong</span></td>
+    <td>Option B — empirical contribution framed as primary, appendix proof as supporting analysis</td>
+    <td>The forgetting problem is concrete and impactful. +13.7pp improvement is a clear, communicable result. Advisorship under Dr. Huang strengthens the submission. The incomplete proof should be acknowledged.</td>
+  </tr>
+  <tr>
+    <td><strong>STS — Finalist (top-40)</strong></td>
+    <td><span class="tag tag-border">Possible</span></td>
+    <td>Option A — fixed proof would differentiate from other ML submissions</td>
+    <td>Most STS finalists are applied projects. A paper with both strong empirics AND a fixed convergence proof would be competitive. Option B alone is unlikely to reach top-40.</td>
+  </tr>
+  <tr>
+    <td><strong>JSR</strong></td>
+    <td><span class="tag tag-strong">Strong</span></td>
+    <td>Option B sufficient</td>
+    <td>Empirical results are strong enough on their own for JSR. The clearest path: write a 6–8 page JSR version focused on the forgetting problem, experimental setup, and results. Proof in appendix, disclaimed as preliminary.</td>
+  </tr>
+  <tr>
+    <td><strong>CJSJ</strong></td>
+    <td><span class="tag tag-strong">Strong</span></td>
+    <td>Option B — 3-page limit means experiments only</td>
+    <td>Focus on the setting (sequential non-IID clients), the method (warm-start EMA distillation), and Table I. Drop the proof entirely at this length. Strongest CJSJ submission of the two papers.</td>
+  </tr>
+  <tr>
+    <td><strong>JSHS</strong></td>
+    <td><span class="tag tag-strong">Strong</span></td>
+    <td>Option B</td>
+    <td>Oral presentation format. The forgetting problem with before/after accuracy comparisons is highly visual and accessible. Judges will respond well to the concrete improvement numbers.</td>
+  </tr>
+  <tr>
+    <td><strong>Involve / PUMP</strong></td>
+    <td><span class="tag tag-no">Weak</span></td>
+    <td>Option A only — and requires full proof rewrite</td>
+    <td>Math journals need the proof to be the contribution. With the current appendix, not submittable to Involve. If Option A is completed, could be reframed as a theoretical paper — but the BP-Free paper is a better fit for Involve.</td>
+  </tr>
+  <tr>
+    <td><strong>Davidson Fellows</strong></td>
+    <td><span class="tag tag-border">Possible</span></td>
+    <td>Option A preferred</td>
+    <td>Davidson requires a substantial individual contribution. Benjamin's role as independent contributor on a multi-author paper needs careful framing. A fixed proof that Benjamin derives would strengthen the individual contribution claim significantly.</td>
+  </tr>
+</table>
+
+<div class="callout info">
+  <strong>Recommended submission order for Benjamin:</strong> (1) arXiv + CJSJ immediately — no proof work needed. (2) JSR within 4–6 weeks — write empirical-focused paper with proof disclaimed. (3) STS with Option B proof cleanup. (4) If time permits, Option A proof fixes for Davidson / STS finalist push.
+</div>
+
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BP-Free Paper — Venue Plan</title>
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)'],['$','$']], displayMath: [['\\[','\\]'],['$$','$$']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  font-family: "Georgia", serif;
+  font-size: 11.5pt;
+  line-height: 1.75;
+  color: #111;
+  background: #fff;
+  margin: 0; padding: 0;
+}
+.page { max-width: 720px; margin: 0 auto; padding: 48px 40px 80px; }
+
+nav.site-nav {
+  background: #1a1a2e;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 0 20px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  border-bottom: 1px solid #374151;
+  margin-bottom: 0;
+  border-radius: 8px 8px 0 0;
+}
+nav.site-nav a {
+  color: #9ca3af; text-decoration: none; font-size: 0.82rem;
+  font-weight: 600; padding: 11px 11px; border-bottom: 3px solid transparent;
+  font-family: sans-serif;
+}
+nav.site-nav a:hover { color: #fff; }
+nav.site-nav a.active { color: #fff; border-bottom-color: #7f9cf5; }
+@media print { nav.site-nav { display: none; } }
+
+nav.site-nav-kd {
+  background: #16213e;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 0 20px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  border-bottom: 1px solid #374151;
+  margin-bottom: 36px;
+  border-radius: 0 0 8px 8px;
+}
+nav.site-nav-kd a {
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 11px 11px;
+  border-bottom: 3px solid transparent;
+  font-family: sans-serif;
+}
+nav.site-nav-kd a:hover { color: #fff; }
+nav.site-nav-kd a.active { color: #fff; border-bottom-color: #f6ad55; }
+@media print { nav.site-nav-kd { display: none; } }
+
+.page-header { margin-bottom: 32px; border-bottom: 2px solid #1a1a2e; padding-bottom: 16px; }
+.page-header h1 { font-size: 18pt; font-weight: bold; margin: 0 0 4px; }
+.page-header .subtitle { font-size: 10.5pt; color: #555; font-style: italic; }
+.page-header .meta { font-size: 9.5pt; color: #888; font-family: sans-serif; margin-top: 6px; }
+
+h2 { font-size: 13pt; font-weight: bold; margin: 38px 0 10px; color: #1a1a2e; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; }
+h3 { font-size: 11.5pt; font-weight: bold; margin: 22px 0 6px; }
+p { margin: 0 0 12px; }
+ul, ol { margin: 0 0 14px; padding-left: 24px; }
+li { margin-bottom: 6px; }
+
+.callout { border-radius: 8px; padding: 14px 18px; margin: 18px 0; font-size: 10pt; font-family: sans-serif; }
+.callout.warn   { background: #fffbea; border: 1px solid #f6e05e; }
+.callout.info   { background: #ebf8ff; border: 1px solid #90cdf4; }
+.callout.good   { background: #f0fff4; border: 1px solid #68d391; }
+.callout.purple { background: #faf5ff; border: 1px solid #d6bcfa; }
+
+.vtable { width: 100%; border-collapse: collapse; font-family: sans-serif; font-size: 9.5pt; margin: 18px 0 28px; }
+.vtable th { background: #1a1a2e; color: #fff; padding: 9px 12px; text-align: left; font-weight: 600; }
+.vtable td { padding: 9px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+.vtable tr:nth-child(even) td { background: #f7fafc; }
+.tag { border-radius: 4px; padding: 2px 8px; font-weight: 600; white-space: nowrap; font-size: 8.5pt; font-family: sans-serif; }
+.tag-yes    { background: #c6f6d5; color: #276749; }
+.tag-strong { background: #1a1a2e; color: #fff; }
+.tag-border { background: #fefcbf; color: #744210; }
+.tag-no     { background: #fed7d7; color: #c53030; }
+
+.eq-note { background: #f7fafc; border-left: 4px solid #4a5568; padding: 12px 16px; margin: 14px 0; font-size: 10.5pt; border-radius: 0 6px 6px 0; }
+.eq-note .eq-label { font-family: sans-serif; font-size: 8.5pt; font-weight: 700; color: #4a5568; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+
+.steps { counter-reset: step; margin: 20px 0 28px; }
+.step { display: flex; gap: 16px; margin-bottom: 18px; align-items: flex-start; }
+.step-num {
+  background: #1a1a2e; color: #fff;
+  font-family: sans-serif; font-weight: 700; font-size: 10pt;
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 2px;
+}
+.step-body { flex: 1; }
+.step-body strong { display: block; margin-bottom: 3px; }
+.step-body p { margin: 0; font-size: 10.5pt; color: #333; }
+
+header {
+  background: #1a1a2e;
+  padding: 32px 40px;
+  text-align: center;
+}
+header h1 { color: #fff; font-size: 1.9rem; font-weight: 800; margin: 0; }
+header p  { color: #a0aec0; font-size: 0.95rem; margin: 8px 0 0; line-height: 1.6; }
+header .paper-title {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 0.82rem;
+  color: #7f9cf5;
+  font-style: italic;
+}
+@media print { header { display: none; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Publication &amp; Submission Venues</h1>
+  <p>Where to publish, submit, and share your STS research paper</p>
+  <span class="paper-title">Convergence Analysis of Backpropagation-Free Federated Learning via Auxiliary Networks</span>
+</header>
+<nav class="site-nav">
+  <a href="venues.html">Venues</a>
+  <a href="bp_venues.html" class="active">BP Venues</a>
+  <a href="proof_review.html">Proof Review</a>
+  <a href="proof_fitness.html">Proof Fitness</a>
+  <a href="strategy.html">Strategy</a>
+  <a href="proof_paper.html">Proof Paper</a>
+  <a href="BP_Free_Split_Learning.pdf" target="_blank" style="color:#fbbf24;border-bottom-color:transparent;">↗ Paper (PDF)</a>
+</nav>
+<nav class="site-nav-kd">
+  <a href="kd_venues.html">KD Venues</a>
+  <a href="kd_proof_review.html">KD Proof Review</a>
+  <a href="kd_proof_fitness.html">KD Proof Fitness</a>
+  <a href="kd_strategy.html">KD Strategy</a>
+  <a href="kd_proof_paper.html">KD Proof Paper</a>
+  <a href="KD_Split_Learning.pdf" target="_blank" style="color:#f6ad55;border-bottom-color:transparent;">↗ KD Paper (PDF)</a>
+</nav>
+
+<div class="page">
+
+<div class="page-header">
+  <h1>BP-Free Paper — Venue Plan</h1>
+  <div class="subtitle">Theory-first submission strategy for "Convergence Analysis for BP-Free with Auxiliary Network"</div>
+  <div class="meta">Benjamin Qin &nbsp;·&nbsp; Advised by Dr. Chao Huang &nbsp;·&nbsp; April 2026</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<h2>Proof Quality Assessment</h2>
+
+<p>The BP-Free paper contains a complete convergence proof (Sections 2.1–2.4) with three component analyses and a global combination. Here is an honest assessment of its readiness for submission.</p>
+
+<div class="callout good">
+  <strong>What the proof does well.</strong> The structure is complete and valid: three independent convergence analyses for θ<sub>c</sub> (client), θ<sub>a</sub> (auxiliary), and θ<sub>s</sub> (server), each using the same L-smoothness + bias-variance decomposition + telescoping template, then combined globally via Cauchy-Schwarz and AM-GM. Theorem 1 is clearly stated with an O(1/√T) dominant rate. The proof recovers standard single-cut split learning convergence exactly when ε → 0, which is a meaningful sanity check. This structure is above the bar for JSR, CJSJ, STS Scholar, and JSHS as a standalone theory paper.
+</div>
+
+<div class="callout warn">
+  <strong>The one remaining gap: ε is asserted, not derived.</strong> Assumption 4 states ‖Δ<sub>a</sub> − Δ<sub>traditional</sub>‖ ≤ ε to bound the auxiliary gradient bias, but ε is never characterized in terms of C<sub>a</sub>'s architecture or training. A reviewer will ask: under what conditions does the auxiliary network satisfy this bound, and how large is ε in practice? Two valid paths:
+  <ul>
+    <li><strong>Path 1 (easier):</strong> Define ε explicitly as "the maximum gradient approximation error of C<sub>a</sub> relative to a full backward pass, achievable when C<sub>a</sub> is sufficiently expressive." This makes the theorem self-contained and is sufficient for JSR, CJSJ, STS Scholar, and JSHS immediately.</li>
+    <li><strong>Path 2 (stronger):</strong> Derive ε ≤ f(training loss of C<sub>a</sub>, Lipschitz constant L<sub>b</sub> of M<sub>b</sub>, dimension of the cut-layer activation). This tells practitioners how expressive C<sub>a</sub> must be to achieve ε-accuracy — the result that is actually missing from the DSL paper. Unlocks Involve, Davidson, and STS top-40.</li>
+  </ul>
+</div>
+
+<table class="vtable">
+  <tr><th>Proof component</th><th>Status</th><th>Notes</th></tr>
+  <tr><td>θ<sub>c</sub> convergence (Section 2.1)</td><td><span class="tag tag-yes">Valid</span></td><td>L-smoothness + bias-variance + telescope — correct</td></tr>
+  <tr><td>θ<sub>a</sub> convergence (Section 2.2)</td><td><span class="tag tag-yes">Valid</span></td><td>Same template; auxiliary gradient drives θ<sub>c</sub> update — correctly noted</td></tr>
+  <tr><td>θ<sub>s</sub> convergence (Section 2.3)</td><td><span class="tag tag-yes">Valid</span></td><td>Identical structure to 2.1</td></tr>
+  <tr><td>Global combination (Section 2.4)</td><td><span class="tag tag-yes">Valid</span></td><td>Cauchy-Schwarz and AM-GM applied correctly to combine three components</td></tr>
+  <tr><td>Theorem 1 — O(1/√T) rate</td><td><span class="tag tag-yes">Valid</span></td><td>Bound stated with explicit constants; recovers standard split learning when ε → 0</td></tr>
+  <tr><td>ε-bias assumption (Assumption 4)</td><td><span class="tag tag-no">Undefined</span></td><td>‖Δ<sub>a</sub> − Δ<sub>traditional</sub>‖ ≤ ε is asserted — must be connected to C<sub>a</sub>'s architecture before submission</td></tr>
+</table>
+
+
+<!-- ══════════════════════════════════════════ -->
+<h2>Venue Assessment — Theory-First Paper</h2>
+
+<p>Benjamin's standalone paper leads with the proof (Theorem 1) with potential experiments validating the O(1/√T) convergence rate. The following tables reflect this framing.</p>
+
+<h3>Benjamin's Individual Submissions</h3>
+
+<table class="vtable">
+  <tr><th>Venue</th><th>Fit</th><th>What's needed</th><th>Notes</th></tr>
+  <tr>
+    <td><strong>JSR</strong></td>
+    <td><span class="tag tag-yes">Strong</span></td>
+    <td>Define ε via Path 1</td>
+    <td>A complete 3-component convergence proof with a clean global theorem is well above JSR's bar. Write a 6–8 page paper: two-cut split learning setting → assumptions → Theorem 1 → what ε means for C<sub>a</sub> design → optional experiment. Rolling deadline — submit as soon as ε is defined.</td>
+  </tr>
+  <tr>
+    <td><strong>CJSJ</strong></td>
+    <td><span class="tag tag-yes">Strong</span></td>
+    <td>Define ε via Path 1</td>
+    <td>3-page limit. State Theorem 1, explain the three-component structure (why two cuts require three separate analyses), give one design implication: the model converges no slower than standard split learning provided ε is small. Theory-only fits this format perfectly. Deadline ~September 30.</td>
+  </tr>
+  <tr>
+    <td><strong>JSHS</strong></td>
+    <td><span class="tag tag-yes">Strong</span></td>
+    <td>Define ε via Path 1</td>
+    <td>Oral format. Lead with the problem (BP requires a global backward pass — what if the data can't leave each client?), then show Theorem 1 as the guarantee that BP-free training still converges. The two-cut architecture is visual and easy to present. Stronger than experiments-only because the formal guarantee gives you something concrete to explain.</td>
+  </tr>
+  <tr>
+    <td><strong>STS — Scholar (top-300)</strong></td>
+    <td><span class="tag tag-yes">Strong</span></td>
+    <td>Define ε via Path 1; experiments optional</td>
+    <td>First convergence theorem for BP-free two-cut split learning, written independently by a high-school student with a faculty advisor. Theory-only submissions are uncommon at STS and stand out. The problem motivation (federated learning + privacy) is compelling to non-specialist judges. Strong Scholar submission as-is once ε is defined.</td>
+  </tr>
+  <tr>
+    <td><strong>STS — Finalist (top-40)</strong></td>
+    <td><span class="tag tag-border">Possible</span></td>
+    <td>ε via Path 2 + experiments showing convergence curves</td>
+    <td>Top-40 judges ask in-person questions. You need a defensible answer to "how small does ε need to be?" and "how did you choose C<sub>a</sub>'s architecture?" Path 2 (derive ε from C<sub>a</sub>'s training loss and cut-layer dimension) gives you those answers. Experiments connecting the O(1/√T) rate to real accuracy curves are the strongest complement.</td>
+  </tr>
+  <tr>
+    <td><strong>Involve</strong></td>
+    <td><span class="tag tag-border">Possible</span></td>
+    <td>ε via Path 2 — math journal requires full rigor; Dr. Huang as co-author</td>
+    <td>The most prestigious venue realistically available for this proof. Involve reviewers will ask: "What is ε and how do you know the auxiliary network achieves it?" Path 1 will not satisfy them. Path 2 — deriving a bound ε ≤ f(C<sub>a</sub> training loss, L<sub>b</sub>, dim(z)) — is what makes this a genuine mathematical contribution rather than an application of a known template. Dr. Huang as co-author is required.</td>
+  </tr>
+  <tr>
+    <td><strong>Davidson Fellows</strong></td>
+    <td><span class="tag tag-border">Possible</span></td>
+    <td>ε via Path 2 + clear individual contribution statement</td>
+    <td>Davidson requires a substantial individual contribution at near-graduate level. Framing: "I derived the first convergence analysis for the two-cut BP-free split learning algorithm." Path 2 makes this claim maximally credible — the ε derivation is the novel mathematical content that Benjamin uniquely contributed.</td>
+  </tr>
+</table>
+
+<h3>Multi-Author / Conference Track</h3>
+
+<table class="vtable">
+  <tr><th>Venue</th><th>Fit</th><th>What's needed</th><th>Notes</th></tr>
+  <tr>
+    <td><strong>arXiv preprint</strong></td>
+    <td><span class="tag tag-yes">Strong</span></td>
+    <td>Define ε (Path 1), then post</td>
+    <td>Establishes priority for the proof before STS submission. Dr. Huang's endorsement enables posting. Post immediately — does not block any other submission.</td>
+  </tr>
+  <tr>
+    <td><strong>NeurIPS / ICML FL Workshops</strong></td>
+    <td><span class="tag tag-yes">Strong</span></td>
+    <td>ε via Path 1 + at least one experiment</td>
+    <td>The federated learning workshop community is exactly the right audience. Theorem 1 is the story; experiments validate it. A high-school student proving convergence for BP-free federated training is unusual and will be noticed. Workshop CFPs typically open September–October.</td>
+  </tr>
+  <tr>
+    <td><strong>MIT URTC</strong></td>
+    <td><span class="tag tag-yes">Strong</span></td>
+    <td>ε via Path 1 + experiments; verify HS eligibility</td>
+    <td>IEEE-indexed conference paper. Theory + experiments in 4–6 IEEE-format pages. A formal convergence theorem distinguishes this from most URTC submissions which are empirical projects. Deadline typically August–September.</td>
+  </tr>
+  <tr>
+    <td><strong>IEEE TNNLS</strong></td>
+    <td><span class="tag tag-border">Possible</span></td>
+    <td>ε via Path 2 + full experiments</td>
+    <td>Journal-level rigor required. Path 2 needed for Assumption 4 to pass peer review. Long cycle (~6 months). Realistic as a college-level extension of this work with Dr. Huang leading.</td>
+  </tr>
+  <tr>
+    <td><strong>JMLR</strong></td>
+    <td><span class="tag tag-border">Long-term</span></td>
+    <td>Path 2 + extensive experiments + related work; post-college</td>
+    <td>Gold standard ML journal. Perfect technical fit — convergence theory for federated optimization appears frequently in JMLR. Realistic target in college after expanding the paper with Dr. Huang. Post arXiv now to establish priority.</td>
+  </tr>
+</table>
+
+
+<!-- ══════════════════════════════════════════ -->
+<h2>The One Action That Unlocks Everything</h2>
+
+<div class="eq-note">
+  <div class="eq-label">Define ε — Path 1 (minimum viable, do this week)</div>
+  Add one sentence before Theorem 1: <em>"Let ε denote the maximum gradient approximation error of the auxiliary network C<sub>a</sub> relative to a full backward pass through M<sub>b</sub>, i.e., ‖Δ<sub>a</sub> − Δ<sub>traditional</sub>‖ ≤ ε for all training steps."</em> This makes Assumption 4 self-contained. Unlocks JSR, CJSJ, JSHS, and STS Scholar immediately — no other changes needed.
+</div>
+
+<div class="eq-note">
+  <div class="eq-label">Derive ε — Path 2 (strongest version, needed for Involve and STS top-40)</div>
+  Show that \(\varepsilon \leq f(\varepsilon_{\text{aux}},\ L_b,\ \dim(z))\) where ε<sub>aux</sub> is C<sub>a</sub>'s training loss, L<sub>b</sub> is the Lipschitz constant of M<sub>b</sub>, and dim(z) is the cut-layer activation size. This tells a practitioner exactly how expressive C<sub>a</sub> needs to be to guarantee ε-accuracy. It is the result the DSL paper gestures toward informally ("the client's loss is aligned with the final task") but never formalizes. Ask Dr. Huang whether this is derivable given C<sub>a</sub>'s architecture — a 30-minute conversation is the highest-value use of time right now.
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<h2>Recommended Submission Order</h2>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <strong>Define ε via Path 1 (this week)</strong>
+      <p>One sentence added to the proof. Benjamin can do this alone — no Dr. Huang involvement required. Immediately makes the paper submittable to JSR, CJSJ, and STS Scholar.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <strong>Submit to JSR (rolling deadline)</strong>
+      <p>Write a 6–8 page standalone theory paper: two-cut BP-free setting → three-component proof → Theorem 1 → design implication (what ε means for C<sub>a</sub> capacity). Optionally add one MNIST or UCI Heart Disease convergence curve. No co-author required.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <strong>Submit CJSJ 3-page version (deadline ~September 30)</strong>
+      <p>Condense to: problem (1 paragraph) → Theorem 1 → interpretation of ε, σ², variance terms → one design rule. This is the most theory-friendly venue at 3 pages — don't add experiments here.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <strong>Meet with Dr. Huang — attempt Path 2 (before STS deadline)</strong>
+      <p>Ask: can ε be bounded in terms of C<sub>a</sub>'s training loss, L<sub>b</sub>, and dim(z)? His answer determines whether Involve and STS top-40 are realistic. If yes, add the ε bound as a lemma before Theorem 1 and resubmit to JSR with the stronger version.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <strong>Post to arXiv + submit NeurIPS/ICML FL workshop (fall)</strong>
+      <p>Post arXiv as soon as ε is defined to establish priority. Then submit to NeurIPS or ICML FL workshop — run at least one convergence experiment (MNIST is sufficient) to accompany the theorem.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">6</div>
+    <div class="step-body">
+      <strong>STS submission (fall of senior year)</strong>
+      <p>Lead with Theorem 1 as the primary contribution. If Path 2 was achieved, highlight the ε derivation — it is the non-obvious result not in any prior paper. Emphasize that the proof fills an explicitly open theoretical gap in the DSL paper. Add experiments connecting the β² + σ_h² floor to observed accuracy if available.</p>
+    </div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

@@ -137,7 +137,6 @@ header .paper-title {
 </header>
 <nav class="site-nav">
   <a href="venues.html">Venues</a>
-  <a href="venues.html">Venues</a>
   <a href="kd_venues.html">KD Venues</a>
   <a href="proof_review.html">Proof Review</a>
   <a href="proof_fitness.html">Proof Fitness</a>
@@ -164,6 +163,45 @@ header .paper-title {
 
 <div class="callout info">
   <strong>The key fact:</strong> Dr. Huang's paper already has the algorithm and experiments (CIFAR-10, CIFAR-100, ResNet-110). The convergence analysis is explicitly open — the paper appeals informally to [3] and proves nothing. Your contribution is the missing theory for a validated, published algorithm. That is a legitimate and recognized research role.
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<h2>Which Proof to Build On: BP-Free vs. KD Paper</h2>
+
+<p>Both papers contain convergence proofs. Before choosing a venue strategy, the first question is which proof is worth developing into a standalone submission.</p>
+
+<table class="vtable">
+  <tr><th>Criterion</th><th>BP-Free Paper (this paper)</th><th>KD Paper</th></tr>
+  <tr>
+    <td><strong>Proof structure</strong></td>
+    <td>Complete — 3 component analyses (θ<sub>c</sub>, θ<sub>a</sub>, θ<sub>s</sub>) plus a global combination via Cauchy-Schwarz and AM-GM</td>
+    <td>Broken — Appendix A analyzes a standard parallel FedAvg update; the actual algorithm (sequential clients, EMA teacher, KD loss) never appears in the proof</td>
+  </tr>
+  <tr>
+    <td><strong>Theorem</strong></td>
+    <td>Clearly stated O(1/√T) bound with explicit constants; recovers standard SGD when ε → 0</td>
+    <td>Stated bound is for FedAvg, not the sequential EMA-KD algorithm described in the paper body</td>
+  </tr>
+  <tr>
+    <td><strong>Techniques</strong></td>
+    <td>Standard and valid — L-smoothness, bias-variance decomposition, telescoping</td>
+    <td>Techniques are valid, but applied to the wrong algorithm</td>
+  </tr>
+  <tr>
+    <td><strong>Weakest point</strong></td>
+    <td>The auxiliary bias assumption ‖Δ<sub>a</sub> − Δ<sub>traditional</sub>‖ ≤ ε is asserted, not derived — a reviewer will ask under what conditions on C<sub>a</sub>'s architecture this holds</td>
+    <td>Fatal mismatch: EMA dynamics (θ<sub>t</sub> = βθ<sub>t</sub> + (1−β)θ<sub>s</sub>), KD loss (L<sub>KD</sub> = T²·KL(q<sup>T</sup>‖p<sup>T</sup>)), and sequential client drift are all absent from the proof</td>
+  </tr>
+  <tr>
+    <td><strong>Ready to submit?</strong></td>
+    <td><span class="tag tag-yes">Yes — with one fix</span></td>
+    <td><span class="tag tag-no">No — proof must be rewritten from scratch</span></td>
+  </tr>
+</table>
+
+<div class="callout good">
+  <strong>Recommendation: Build on the BP-Free proof.</strong> The one fix needed before submission is shoring up the ε-bias assumption — add a lemma or sufficient condition stating <em>when</em> the auxiliary network satisfies ‖Δ<sub>a</sub> − Δ<sub>traditional</sub>‖ ≤ ε (e.g., a bound in terms of C<sub>a</sub>'s training loss and architecture). This converts Assumption 4 from an assertion into a verifiable condition, which is what reviewers at Involve, JSR, and STS will require. The KD paper can become a second submission later, either as an empirical paper or after the proof is rewritten for the actual sequential EMA-KD algorithm.
 </div>
 
 

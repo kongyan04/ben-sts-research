@@ -172,9 +172,29 @@ li { margin-bottom: 5px; }
 .score-bar-bg { flex: 1; background: #e2e8f0; border-radius: 4px; height: 10px; }
 .score-bar-fill { height: 10px; border-radius: 4px; }
 .score-val { width: 36px; text-align: right; font-weight: 700; }
+header {
+  background: #1a1a2e;
+  padding: 32px 40px;
+  text-align: center;
+}
+header h1 { color: #fff; font-size: 1.9rem; font-weight: 800; margin: 0; }
+header p  { color: #a0aec0; font-size: 0.95rem; margin: 8px 0 0; line-height: 1.6; }
+header .paper-title {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 0.82rem;
+  color: #7f9cf5;
+  font-style: italic;
+}
+@media print { header { display: none; } }
 </style>
 </head>
 <body>
+<header>
+  <h1>Publication &amp; Submission Venues</h1>
+  <p>Where to publish, submit, and share your STS research paper</p>
+  <span class="paper-title">Convergence Analysis of Backpropagation-Free Federated Learning via Auxiliary Networks</span>
+</header>
 <nav class="site-nav">
   <a href="venues.html">Venues</a>
   <a href="proof_review.html">Proof Review</a>

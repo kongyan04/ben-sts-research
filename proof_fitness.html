@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Proof Fitness Analysis — Does the Convergence Proof Match the Paper?</title>
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)'],['$','$']], displayMath: [['\\[','\\]'],['$$','$$']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  font-family: "Georgia", serif;
+  font-size: 11.5pt;
+  line-height: 1.75;
+  color: #111;
+  background: #fff;
+  margin: 0;
+  padding: 0;
+}
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 40px 80px;
+}
+
+/* ── Nav ── */
+nav.site-nav {
+  background: #1a1a2e;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 0 20px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #374151;
+  margin-bottom: 36px;
+  border-radius: 8px 8px 0 0;
+}
+nav.site-nav a {
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 11px 18px;
+  border-bottom: 3px solid transparent;
+  font-family: sans-serif;
+}
+nav.site-nav a:hover { color: #fff; }
+nav.site-nav a.active { color: #fff; border-bottom-color: #7f9cf5; }
+@media print { nav.site-nav { display: none; } }
+
+/* ── Header ── */
+.page-header {
+  margin-bottom: 32px;
+  border-bottom: 2px solid #1a1a2e;
+  padding-bottom: 16px;
+}
+.page-header h1 { font-size: 18pt; font-weight: bold; margin: 0 0 4px; }
+.page-header .subtitle { font-size: 10.5pt; color: #555; font-style: italic; }
+.page-header .meta { font-size: 9.5pt; color: #888; font-family: sans-serif; margin-top: 6px; }
+
+/* ── Mapping table ── */
+h2 {
+  font-size: 13pt;
+  font-weight: bold;
+  margin: 36px 0 10px;
+  color: #1a1a2e;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 5px;
+}
+h3 { font-size: 11.5pt; font-weight: bold; margin: 22px 0 6px; }
+p { margin: 0 0 12px; }
+ul, ol { margin: 0 0 14px; padding-left: 24px; }
+li { margin-bottom: 5px; }
+
+.map-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: sans-serif;
+  font-size: 9.5pt;
+  margin: 20px 0 28px;
+}
+.map-table th {
+  background: #1a1a2e;
+  color: #fff;
+  padding: 8px 12px;
+  text-align: left;
+  font-weight: 600;
+}
+.map-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: top;
+}
+.map-table tr:nth-child(even) td { background: #f7fafc; }
+.badge-fit    { background: #c6f6d5; color: #276749; border-radius: 4px; padding: 2px 8px; font-weight: 600; white-space: nowrap; }
+.badge-partial{ background: #fefcbf; color: #744210; border-radius: 4px; padding: 2px 8px; font-weight: 600; white-space: nowrap; }
+.badge-miss   { background: #fed7d7; color: #c53030; border-radius: 4px; padding: 2px 8px; font-weight: 600; white-space: nowrap; }
+
+/* ── Two-column compare ── */
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 20px 0 28px;
+}
+.compare-box {
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 10pt;
+}
+.compare-box .label {
+  font-family: sans-serif;
+  font-size: 8pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+.compare-box.paper { background: #ebf8ff; border: 1px solid #90cdf4; }
+.compare-box.proof { background: #f0fff4; border: 1px solid #68d391; }
+.compare-box.paper .label { color: #2c5282; }
+.compare-box.proof .label { color: #276749; }
+
+/* ── Callouts ── */
+.callout {
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin: 20px 0;
+  font-size: 10pt;
+  font-family: sans-serif;
+}
+.callout.warn  { background: #fffbea; border: 1px solid #f6e05e; }
+.callout.info  { background: #ebf8ff; border: 1px solid #90cdf4; }
+.callout.good  { background: #f0fff4; border: 1px solid #68d391; }
+.callout.bad   { background: #fff5f5; border: 1px solid #fc8181; }
+.callout strong { font-weight: 700; }
+
+/* ── Equation note ── */
+.eq-note {
+  background: #f7fafc;
+  border-left: 4px solid #4a5568;
+  padding: 12px 16px;
+  margin: 14px 0;
+  font-size: 10.5pt;
+  border-radius: 0 6px 6px 0;
+}
+.eq-note .eq-label {
+  font-family: sans-serif;
+  font-size: 8.5pt;
+  font-weight: 700;
+  color: #4a5568;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+/* ── Score bar ── */
+.score-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+  font-family: sans-serif;
+  font-size: 9.5pt;
+}
+.score-label { width: 220px; flex-shrink: 0; }
+.score-bar-bg { flex: 1; background: #e2e8f0; border-radius: 4px; height: 10px; }
+.score-bar-fill { height: 10px; border-radius: 4px; }
+.score-val { width: 36px; text-align: right; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<nav class="site-nav">
+  <a href="sts_paper_draft.html">Paper Draft</a>
+  <a href="sts_essays.html">STS Essays</a>
+  <a href="session_log.html">Session Log</a>
+  <a href="prompts.html">Prompts</a>
+  <a href="venues.html">Venues</a>
+  <a href="proof_review.html">Proof Review</a>
+  <a href="proof_fitness.html" class="active">Proof Fitness</a>
+</nav>
+
+<div class="page-header">
+  <h1>Proof Fitness Analysis</h1>
+  <div class="subtitle">Does the convergence proof match the algorithm in <em>Decoupled Split Learning via Auxiliary Loss</em>?</div>
+  <div class="meta">Paper: Zihad, Owino, Tang, Huang (Montclair State / SUSTech) &nbsp;·&nbsp; Reviewed May 2, 2026</div>
+</div>
+
+<div class="callout info">
+  <strong>What this page answers:</strong> The paper (by Dr. Huang's group) describes an algorithm — Decoupled Split Learning (DSL) — but provides no formal convergence proof, only an informal appeal to greedy layer-wise training literature. Benjamin's proof is attempting to fill that gap. This page evaluates how well the proof actually fits the algorithm it claims to analyze.
+</div>
+
+<!-- Overall scores -->
+<h2>Fitness Scores at a Glance</h2>
+
+<div class="score-row">
+  <div class="score-label">Component mapping (Fb/Fa/Ft ↔ Mb/Ca/Mt)</div>
+  <div class="score-bar-bg"><div class="score-bar-fill" style="width:90%;background:#38a169;"></div></div>
+  <div class="score-val" style="color:#276749">9/10</div>
+</div>
+<div class="score-row">
+  <div class="score-label">Server-side (Ft) convergence</div>
+  <div class="score-bar-bg"><div class="score-bar-fill" style="width:90%;background:#38a169;"></div></div>
+  <div class="score-val" style="color:#276749">9/10</div>
+</div>
+<div class="score-row">
+  <div class="score-label">Client-side (Fb) convergence</div>
+  <div class="score-bar-bg"><div class="score-bar-fill" style="width:75%;background:#68d391;"></div></div>
+  <div class="score-val" style="color:#276749">7/10</div>
+</div>
+<div class="score-row">
+  <div class="score-label">Auxiliary bias assumption fitness</div>
+  <div class="score-bar-bg"><div class="score-bar-fill" style="width:40%;background:#e53e3e;"></div></div>
+  <div class="score-val" style="color:#c53030">4/10</div>
+</div>
+<div class="score-row">
+  <div class="score-label">Global objective definition</div>
+  <div class="score-bar-bg"><div class="score-bar-fill" style="width:20%;background:#e53e3e;"></div></div>
+  <div class="score-val" style="color:#c53030">2/10</div>
+</div>
+<div class="score-row">
+  <div class="score-label">Moving target / feature coupling</div>
+  <div class="score-bar-bg"><div class="score-bar-fill" style="width:10%;background:#e53e3e;"></div></div>
+  <div class="score-val" style="color:#c53030">1/10</div>
+</div>
+<div class="score-row">
+  <div class="score-label">Multi-client federated setting</div>
+  <div class="score-bar-bg"><div class="score-bar-fill" style="width:10%;background:#e53e3e;"></div></div>
+  <div class="score-val" style="color:#c53030">1/10</div>
+</div>
+
+
+<h2>What Maps Correctly</h2>
+
+<h3>Component correspondence</h3>
+<p>The paper trains three modules. The proof has three corresponding objective functions. The mapping is direct:</p>
+
+<table class="map-table">
+  <tr><th>Paper module</th><th>Proof component</th><th>Role</th><th>Fit</th></tr>
+  <tr>
+    <td>\(M_b\) — client bottom model</td>
+    <td>\(F_b(\theta_b)\)</td>
+    <td>Client-side feature extractor, optimized with auxiliary loss</td>
+    <td><span class="badge-fit">Good fit</span></td>
+  </tr>
+  <tr>
+    <td>\(C_a\) — auxiliary classifier</td>
+    <td>\(F_a(\theta_a)\)</td>
+    <td>Shallow head at cut layer, generates local loss signal</td>
+    <td><span class="badge-fit">Good fit</span></td>
+  </tr>
+  <tr>
+    <td>\(M_t\) — server top model</td>
+    <td>\(F_t(\theta_t)\)</td>
+    <td>Server model, optimized with global classification loss</td>
+    <td><span class="badge-fit">Good fit</span></td>
+  </tr>
+</table>
+
+<h3>Server convergence (Ft) — well-matched</h3>
+<p>The paper's server update is:</p>
+<div class="eq-note">
+  <div class="eq-label">Algorithm 1, lines 18–20</div>
+  \[\mathcal{L} = \frac{1}{B}\sum_i \mathcal{L}(\hat{y}_i, y_i), \quad \theta_t \leftarrow \theta_t - \eta_t \nabla_{\theta_t}\mathcal{L}\]
+</div>
+<p>This is exactly standard SGD on a fixed-input loss, which is precisely what Section 2.3 of the proof analyzes. The server receives activations \(z_i\) from the client and treats them as fixed inputs for its own optimization. The Ft convergence proof correctly captures this.</p>
+
+<h3>Right spirit: auxiliary gradient as surrogate</h3>
+<p>The core idea of the proof — that the client uses \(\nabla F_a\) (gradient of auxiliary loss) as a local signal instead of the true global gradient — correctly captures what the paper does. The paper explicitly says the client "computes its own gradient immediately after the forward pass using the auxiliary loss" without waiting for the server. The proof's auxiliary bias assumption is the right framework for formalizing this.</p>
+
+
+<h2>The Deep Mismatch: Two Objectives, Not One</h2>
+
+<p>This is the most fundamental problem. The paper's DSL algorithm optimizes <strong>two completely separate objectives</strong>:</p>
+
+<div class="compare">
+  <div class="compare-box paper">
+    <div class="label">Paper (Client)</div>
+    Client minimizes:<br>
+    \[\mathcal{L}_\text{aux}(C_a(M_b(x)), y)\]
+    This is the auxiliary cross-entropy loss. The client <strong>never sees</strong> \(\mathcal{L}\) — the true global loss.
+  </div>
+  <div class="compare-box proof">
+    <div class="label">Proof (Global)</div>
+    Proof analyzes convergence of:<br>
+    \[\frac{1}{T}\sum_{K=0}^{T-1}\|\nabla F^K\|^2\]
+    where \(F\) is a single global objective over \((\theta_b, \theta_a, \theta_t)\) that is never defined.
+  </div>
+</div>
+
+<p>The proof assumes a global objective \(F(\theta_b, \theta_a, \theta_t)\) exists and that the gradient of the auxiliary network \(\nabla F_a\) approximates \(\nabla_{\theta_b} F\) up to bounded error \(\varepsilon\). But the paper's system does not have a single \(F\). The client never computes \(\nabla_{\theta_b}\mathcal{L}\) — not even approximately. It computes \(\nabla_{\theta_b}\mathcal{L}_\text{aux}\), which is a <em>genuinely different</em> objective, not a noisy version of the true one.</p>
+
+<div class="callout bad">
+  <strong>Key mismatch:</strong> The auxiliary bias assumption (eq. 7) says<br>
+  \[\|\mathbb{E}[\nabla F_a(\theta_a;\xi_a)] - \nabla_{\theta_b}F(\theta_b,\theta_a,\theta_t)\| \leq \varepsilon\]
+  This says \(\nabla \mathcal{L}_\text{aux}\) approximates \(\nabla \mathcal{L}\) with small error. But the paper's design <em>does not require this</em>. In DSL, \(\mathcal{L}_\text{aux}\) is a different objective that happens to predict the same labels — not an approximation of the global loss gradient. Whether this gap is small or large depends on how good \(C_a\)'s representation is, which varies during training.
+</div>
+
+
+<h2>The Moving Target Problem</h2>
+
+<p>The paper's Section III.C acknowledges an important coupling: "\(M_t\) is trained to perform the final prediction given those features [from \(M_b\)]." This means as \(\theta_b\) is updated, the activations \(z = M_b(x)\) change — which means \(M_t\) is optimizing a moving target at every round.</p>
+
+<p>The proof's \(F_t\) convergence (Section 2.3) treats the input \(z\) as fixed, which is correct for a single round. But across rounds, as \(\theta_b\) updates, the server's optimization landscape shifts. This is a non-stationarity that standard SGD convergence analysis does not handle and the proof does not address at all.</p>
+
+<div class="compare">
+  <div class="compare-box paper">
+    <div class="label">Reality (paper)</div>
+    Round \(K\): Server minimizes \(\mathcal{L}(M_t(M_b^K(x)), y)\)<br><br>
+    Round \(K+1\): Server minimizes \(\mathcal{L}(M_t(M_b^{K+1}(x)), y)\)<br><br>
+    The server's input distribution changes every round because \(M_b\) is updating simultaneously.
+  </div>
+  <div class="compare-box proof">
+    <div class="label">Proof assumption</div>
+    \(\theta_t^{K+1} = \theta_t^K - \eta\nabla F_t(\theta_t^K; \xi_t^K)\)<br><br>
+    This assumes a fixed objective \(F_t\) — the input \(z\) is treated as stationary. The proof never accounts for \(M_b\) changing.
+  </div>
+</div>
+
+<p>Handling this correctly requires bounding the drift in \(M_t\)'s objective caused by changes in \(M_b\) — something analogous to client drift bounds in FedAvg analysis. This is a legitimate open problem in the greedy/decoupled training literature, and it's why the paper appeals informally to [3] rather than proving convergence directly.</p>
+
+
+<h2>The Separate Learning Rates Problem</h2>
+
+<p>The proof sets a single learning rate:</p>
+<div class="eq-note">
+  <div class="eq-label">Assumptions section</div>
+  \[\eta = \min\!\left(\frac{1}{L_1}, \frac{1}{L_2}, \frac{1}{L_3}\right)\]
+</div>
+
+<p>The paper uses separate learning rates \(\eta_b\) for the client (applied to \(\theta_b\) and \(\theta_a\)) and \(\eta_t\) for the server. These can in principle be different — the client and server are independent. The proof's single-\(\eta\) assumption is a simplification that removes a key design parameter the paper explicitly includes.</p>
+
+
+<h2>What the Proof Gets Right About the Paper's Contribution</h2>
+
+<p>Despite the gaps, the proof correctly identifies and formalizes the paper's key claim:</p>
+<ol>
+  <li><strong>The 50% communication reduction is justified by the proof's structure.</strong> Since the proof shows Fb, Fa, and Ft each converge using only local gradient information — with no backward signal from server to client — the communication pattern is one-directional by construction. This matches the paper's Algorithm 1.</li>
+  <li><strong>The O(1/T) convergence rate is the right target.</strong> The paper uses SGD with momentum; the proof's O(1/T) rate for nonconvex SGD is the correct asymptotic behavior to prove.</li>
+  <li><strong>The irreducible bias floor is the right concept.</strong> The proof's \(3e^2\) floor captures the fact that using \(\mathcal{L}_\text{aux}\) instead of \(\mathcal{L}\) introduces a permanent gap that doesn't vanish with more training. This is exactly the "performance parity" claim in the paper (Observation 1) — DSL never quite matches CSL because the client's gradient signal is an approximation.</li>
+</ol>
+
+
+<h2>What a Correct Proof for This Paper Would Look Like</h2>
+
+<p>A convergence proof that properly matches the DSL algorithm needs to handle the two-objective structure directly. The right framework is a <strong>bi-level or alternating optimization analysis</strong>:</p>
+
+<table class="map-table">
+  <tr><th>Required element</th><th>Why it's needed</th><th>Status in current proof</th></tr>
+  <tr>
+    <td>Define \(F\) as a weighted sum \(\mathcal{L}_\text{aux} + \lambda \mathcal{L}\)</td>
+    <td>Creates a single differentiable objective that both client and server contribute to</td>
+    <td><span class="badge-miss">Not present</span></td>
+  </tr>
+  <tr>
+    <td>Bound \(\|\nabla_{\theta_b}\mathcal{L}_\text{aux} - \nabla_{\theta_b}\mathcal{L}\|\)</td>
+    <td>This is the true auxiliary bias — how well does the auxiliary gradient approximate the global one?</td>
+    <td><span class="badge-partial">Assumed but not derived</span></td>
+  </tr>
+  <tr>
+    <td>Moving target lemma for \(M_t\)</td>
+    <td>Bounds how much \(M_t\)'s loss landscape shifts per round as \(M_b\) updates</td>
+    <td><span class="badge-miss">Not present</span></td>
+  </tr>
+  <tr>
+    <td>Separate \(\eta_b\), \(\eta_t\) learning rates</td>
+    <td>Matches the actual algorithm; different rates may be needed for stability</td>
+    <td><span class="badge-miss">Collapsed to single \(\eta\)</span></td>
+  </tr>
+  <tr>
+    <td>Server-side Ft convergence</td>
+    <td>Server trains independently on received activations</td>
+    <td><span class="badge-fit">Correct as-is</span></td>
+  </tr>
+  <tr>
+    <td>Auxiliary Fa convergence</td>
+    <td>Auxiliary head trains with client on local loss</td>
+    <td><span class="badge-fit">Correct as-is</span></td>
+  </tr>
+</table>
+
+
+<h2>Bottom Line</h2>
+
+<div class="callout warn">
+  <strong>The proof analyzes an idealized version of DSL, not DSL itself.</strong> It treats the auxiliary gradient as a bounded approximation of the true global gradient — which is the right conceptual model, but requires a justification the paper doesn't provide and the proof doesn't derive. The server-side analysis is clean and correct. The client-side analysis is mathematically valid but rests on an assumption (eq. 7) whose fitness to the actual algorithm is unverified.
+</div>
+
+<p>This is not a fatal flaw — it is actually a legitimate research gap that the proof is trying to fill. The paper by Zihad et al. acknowledges the convergence question is open (Section III.C says only that the approach "can approximate the globally optimal solution" based on greedy learning insights from [3]). A rigorous proof that pins down when and how well \(\nabla \mathcal{L}_\text{aux}\) approximates \(\nabla_{\theta_b}\mathcal{L}\) would be a genuine theoretical contribution to the paper's missing analysis.</p>
+
+<p>The most productive next step is to work with Dr. Huang to either:</p>
+<ol>
+  <li><strong>Derive a bound on the auxiliary bias from first principles</strong> — show that if \(C_a\) achieves low auxiliary loss, then \(\|\nabla_{\theta_b}\mathcal{L}_\text{aux} - \nabla_{\theta_b}\mathcal{L}\|\) is small. This would transform the assumption into a lemma.</li>
+  <li><strong>Or reframe the proof goal</strong> — instead of claiming convergence to the global optimum of \(\mathcal{L}\), prove convergence of each component to its own local optimum, and bound the gap between the local and global solutions separately.</li>
+</ol>
+
+</div>
+</body>
+</html>

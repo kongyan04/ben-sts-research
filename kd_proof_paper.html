@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KD Paper — Appendix A Convergence Proof (Eq. 14–58)</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['\\(','\\)'],['$','$']],
+    displayMath: [['\\[','\\]'],['$$','$$']],
+    tags: 'ams',
+    packages: {'[+]': ['ams']}
+  },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 11.5pt;
+  line-height: 1.7;
+  color: #111;
+  background: #fff;
+  margin: 0; padding: 0;
+}
+.no-print {
+  max-width: 780px;
+  margin: 0 auto;
+}
+.page {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 48px 40px 80px;
+}
+
+/* ── Nav ── */
+nav.site-nav {
+  background: #1a1a2e;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 0 20px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  border-bottom: 1px solid #374151;
+  margin-bottom: 0;
+  border-radius: 8px 8px 0 0;
+}
+nav.site-nav a {
+  color: #9ca3af; text-decoration: none; font-size: 0.82rem;
+  font-weight: 600; padding: 11px 11px; border-bottom: 3px solid transparent;
+  font-family: sans-serif;
+}
+nav.site-nav a:hover { color: #fff; }
+nav.site-nav a.active { color: #fff; border-bottom-color: #7f9cf5; }
+
+nav.site-nav-kd {
+  background: #16213e;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 0 20px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  border-bottom: 1px solid #374151;
+  margin-bottom: 0;
+  border-radius: 0;
+}
+nav.site-nav-kd a {
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 11px 11px;
+  border-bottom: 3px solid transparent;
+  font-family: sans-serif;
+}
+nav.site-nav-kd a:hover { color: #fff; }
+nav.site-nav-kd a.active { color: #fff; border-bottom-color: #f6ad55; }
+@media print { nav.site-nav, nav.site-nav-kd { display: none; } }
+
+.print-tip {
+  background: #fffbea;
+  border: 1px solid #f6c90e;
+  padding: 10px 16px;
+  font-family: sans-serif;
+  font-size: 9.5pt;
+  margin-bottom: 32px;
+  border-radius: 0 0 8px 8px;
+}
+
+@media print {
+  .no-print { display: none; }
+  .page { padding: 0; max-width: 100%; }
+  body { font-size: 10.5pt; }
+}
+
+/* ── Paper layout ── */
+.paper-title {
+  text-align: center;
+  font-size: 16pt;
+  font-weight: bold;
+  margin: 0 0 10px;
+  line-height: 1.3;
+}
+.paper-author {
+  text-align: center;
+  font-size: 11pt;
+  margin-bottom: 4px;
+}
+.paper-date {
+  text-align: center;
+  font-size: 10pt;
+  color: #666;
+  margin-bottom: 28px;
+}
+.paper-rule {
+  border: none;
+  border-top: 1px solid #aaa;
+  margin: 0 0 24px;
+}
+
+/* ── Sections ── */
+h2.sec {
+  font-size: 12pt;
+  font-weight: bold;
+  margin: 28px 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+h3.subsec {
+  font-size: 11.5pt;
+  font-weight: bold;
+  font-style: italic;
+  margin: 20px 0 8px;
+}
+p { margin: 0 0 10px; text-align: justify; }
+ul, ol { margin: 0 0 10px; padding-left: 24px; }
+li { margin-bottom: 5px; }
+
+/* ── Equations ── */
+.eq-block {
+  margin: 14px 0;
+  overflow-x: auto;
+}
+
+/* ── Theorem box ── */
+.theorem {
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  padding: 14px 18px;
+  margin: 18px 0;
+  background: #fafafa;
+}
+.theorem .thm-label {
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+/* ── Inline section numbers ── */
+.sec-num { margin-right: 6px; }
+
+/* ── Annotation callouts (non-print) ── */
+.anno {
+  background: #fffbea;
+  border-left: 4px solid #f6c90e;
+  padding: 8px 12px;
+  margin: 10px 0;
+  font-family: sans-serif;
+  font-size: 9pt;
+  border-radius: 0 4px 4px 0;
+}
+.anno.red {
+  background: #fff5f5;
+  border-left-color: #fc8181;
+}
+@media print { .anno { display: none; } }
+
+header {
+  background: #1a1a2e;
+  padding: 32px 40px;
+  text-align: center;
+}
+header h1 { color: #fff; font-size: 1.9rem; font-weight: 800; margin: 0; }
+header p  { color: #a0aec0; font-size: 0.95rem; margin: 8px 0 0; line-height: 1.6; }
+header .paper-title {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 0.82rem;
+  color: #7f9cf5;
+  font-style: italic;
+}
+@media print { header { display: none; } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Publication &amp; Submission Venues</h1>
+  <p>Where to publish, submit, and share your STS research paper</p>
+  <span class="paper-title">Convergence Analysis of Backpropagation-Free Federated Learning via Auxiliary Networks</span>
+</header>
+<nav class="site-nav">
+  <a href="proof_review.html">Proof Review</a>
+  <a href="proof_fitness.html">Proof Fitness</a>
+  <a href="strategy.html">Strategy</a>
+  <a href="proof_paper.html">Proof Paper</a>
+  <a href="BP_Free_Split_Learning.pdf" target="_blank" style="color:#fbbf24;border-bottom-color:transparent;">↗ Paper (PDF)</a>
+</nav>
+<nav class="site-nav-kd">
+  <a href="kd_proof_review.html">KD Proof Review</a>
+  <a href="kd_proof_fitness.html">KD Proof Fitness</a>
+  <a href="kd_strategy.html">KD Strategy</a>
+  <a href="kd_proof_paper.html" class="active">KD Proof Paper</a>
+  <a href="KD_Split_Learning.pdf" target="_blank" style="color:#fbbf24;border-bottom-color:transparent;">↗ KD Paper (PDF)</a>
+</nav>
+
+<div class="no-print">
+  <div class="print-tip">
+    <strong>To save as PDF:</strong> Press <kbd>Cmd + P</kbd> → destination: <strong>"Save as PDF"</strong> → margins: <em>None</em>. Annotations are hidden in print.
+  </div>
+</div>
+
+<div class="page">
+
+<!-- ── Title block ── -->
+<div class="paper-title">Appendix A — Convergence Proof</div>
+<div class="paper-author"><em>Mitigating Forgetting in Split Learning via Knowledge Distillation</em></div>
+<div class="paper-date">Equations 14–58 and Theorem 1 &nbsp;·&nbsp; Rendered May 2, 2026</div>
+<hr class="paper-rule">
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<h2 class="sec">A.1 &nbsp; Setup and Notation</h2>
+
+<p>
+Let \(f: \mathbb{R}^d \to \mathbb{R}\) be the global objective, assumed \(L\)-smooth. There are \(K\) clients, each with local data. Each client performs \(L\) local update steps per round. The server aggregates or distills across rounds. Let \(\eta\) be the learning rate and \(R\) the total number of rounds.
+</p>
+
+<p>
+<strong>Algorithm 1 notation:</strong> At each round, the server-side student \(\theta_s\) is trained with combined loss \(\mathcal{L} = (1-\lambda_e)\mathcal{L}_{CE} + \lambda_e \mathcal{L}_{KD}\), where \(\mathcal{L}_{KD} = T^2 \cdot KL(q^{(T)} \| p^{(T)})\), and the EMA teacher is updated as \(\theta_t^e = \beta\theta_t^{e-1} + (1-\beta)\theta_s^e\) with \(\beta = 0.99\).
+</p>
+
+<div class="anno red">
+  NOTE (annotation, not part of proof): The proof below analyzes a generic smooth f — the KD loss, EMA teacher, and sequential client order from Algorithm 1 do not appear. See KD Proof Review for details.
+</div>
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<h2 class="sec">A.2 &nbsp; L-Smoothness Descent</h2>
+
+<p>For an \(L\)-smooth function \(f\), by the descent lemma:</p>
+
+\begin{equation}
+  \mathbb{E}[f(\theta + \Delta x) - f(\theta)] \leq \mathbb{E}[\langle \nabla f(\theta), \Delta x \rangle] + \frac{L}{2}\mathbb{E}\|\Delta x\|^2
+  \tag{14}
+\end{equation}
+
+<p>We expand the inner product term \(\mathbb{E}[\langle \nabla f, \Delta x \rangle]\) over \(K\) clients, each performing \(L\) local steps. Denoting the local update of client \(m\) at step \(l\) as \(\nabla f(x_{m,l}; \xi_{m,l})\):</p>
+
+\begin{equation}
+  \mathbb{E}[\langle \nabla f, \Delta x \rangle] = -\eta \sum_{m=1}^{K}\sum_{l=0}^{L-1} \mathbb{E}[\langle \nabla f(\theta), \nabla f(x_{m,l}; \xi_{m,l}) \rangle]
+  \tag{15}
+\end{equation}
+
+<div class="anno red">
+  NOTE: Eq. 15 sums over all K clients simultaneously — this models FedAvg (parallel). Algorithm 1 is sequential: one client trains at a time. This mismatch propagates through the entire proof.
+</div>
+
+<p>Applying Young's inequality \(\langle a, b \rangle \geq \frac{1}{2}\|a\|^2 - \frac{1}{2}\|a - b\|^2\):</p>
+
+\begin{equation}
+  \langle \nabla f(\theta), \nabla f(x_{m,l}) \rangle \geq \frac{1}{2}\|\nabla f(\theta)\|^2 - \frac{1}{2}\|\nabla f(\theta) - \nabla f(x_{m,l})\|^2
+  \tag{16}
+\end{equation}
+
+\begin{equation}
+  \mathbb{E}[\langle \nabla f, \Delta x \rangle] \geq -\frac{\eta KL}{2}\|\nabla f(\theta)\|^2 \cdot (-1) - \frac{\eta}{2}\sum_{m,l}\mathbb{E}\|\nabla f(\theta) - \nabla f(x_{m,l})\|^2
+  \tag{17}
+\end{equation}
+
+<p>We split \(\frac{L}{2}\mathbb{E}\|\Delta x\|^2\) into four terms:</p>
+
+\begin{equation}
+  \frac{L}{2}\mathbb{E}\|\Delta x\|^2 = \underbrace{\text{Term 1}}_{\text{stochastic variance}} + \underbrace{\text{Term 2}}_{\text{local drift}} + \underbrace{\text{Term 3}}_{\text{client heterogeneity}} + \underbrace{\text{Term 4}}_{\text{global gradient}}
+  \tag{18}
+\end{equation}
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<h2 class="sec">A.3 &nbsp; Bounding Terms 1–4</h2>
+
+<h3 class="subsec">Terms 1 and 2 — Variance and Local Drift</h3>
+
+<p>For Term 1 (stochastic variance), using bounded variance assumption \(\mathbb{E}\|\nabla f(x;\xi) - \nabla f(x)\|^2 \leq \sigma^2\):</p>
+
+\begin{equation}
+  \text{Term 1} = \frac{L\eta^2}{2}\sum_{m=1}^{K}\sum_{l=0}^{L-1}\mathbb{E}\|\nabla f(x_{m,l};\xi_{m,l}) - \nabla f(x_{m,l})\|^2
+  \tag{19}
+\end{equation}
+
+\begin{equation}
+  \text{Term 1} \leq \frac{L\eta^2 K L}{2}\sigma^2
+  \tag{20}
+\end{equation}
+
+<p>For Term 2 (local drift), applying L-smoothness to bound gradient differences over local steps:</p>
+
+\begin{equation}
+  \|\nabla f(x_{m,l}) - \nabla f(\theta)\|^2 \leq L^2\|x_{m,l} - \theta\|^2
+  \tag{21}
+\end{equation}
+
+\begin{equation}
+  \|x_{m,l} - \theta\|^2 \leq \eta^2 \sum_{j=0}^{l-1}\|\nabla f(x_{m,j};\xi_{m,j})\|^2
+  \tag{22}
+\end{equation}
+
+\begin{equation}
+  \mathbb{E}\|x_{m,l} - \theta\|^2 \leq \eta^2 l \sum_{j=0}^{l-1}\mathbb{E}\|\nabla f(x_{m,j})\|^2 + \eta^2 l \sigma^2
+  \tag{23}
+\end{equation}
+
+\begin{equation}
+  \text{Term 2} \leq L\eta^2 L^2 \sum_{m=1}^{K}\sum_{l=0}^{L-1}\left(\mathbb{E}\|\nabla f(x_{m,l})\|^2 + \sigma^2\right)
+  \tag{24}
+\end{equation}
+
+<div class="anno">
+  NOTE: L appears as both the smoothness constant and the number of local steps in Eqs. 21–24. This notation collision makes the equations ambiguous. See KD Proof Review, notation collision issue.
+</div>
+
+<h3 class="subsec">Terms 3 and 4 — Heterogeneity and Global Gradient</h3>
+
+<p>For Terms 3 and 4, using the sampling-without-replacement lemma: for a set of \(n\) clients with \(s\) sampled per round,</p>
+
+\begin{equation}
+  \mathbb{E}\|x - \bar{x}\|^2 = \frac{n - s}{s(n-1)}\zeta^2
+  \tag{25}
+\end{equation}
+
+<p>where \(\zeta^2\) bounds the gradient heterogeneity across clients \(\frac{1}{K}\sum_{k=1}^{K}\|\nabla f_k(\theta) - \nabla f(\theta)\|^2 \leq \zeta^2\). Applying to Terms 3 and 4:</p>
+
+\begin{equation}
+  \text{Term 3} \leq L\eta^2 \frac{M-K}{K(M-1)}\zeta^2
+  \tag{26}
+\end{equation}
+
+\begin{equation}
+  \text{Term 4} \leq \frac{L\eta^2}{2}\|\nabla f(\theta)\|^2
+  \tag{27}
+\end{equation}
+
+<div class="anno">
+  NOTE: The sampling-without-replacement lemma (Eq. 25) assumes random client selection. Algorithm 1 uses a fixed sequential order (client 1, then 2, ..., then K). This lemma does not apply.
+</div>
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<h2 class="sec">A.4 &nbsp; Main Descent Bound</h2>
+
+<p>Combining all four term bounds with the L-smoothness descent (Eq. 14), and collecting the \(\|\nabla f\|^2\) terms with coefficient \(-(1/6)KL\eta\) (from appropriate choice of \(\eta\)):</p>
+
+\begin{equation}
+  \mathbb{E}[f(\theta^{r+1}) - f(\theta^r)] \leq -\frac{1}{6}KL\eta\|\nabla f(\theta^r)\|^2 + 2L\eta^2 KL\sigma^2 + 2L\eta^2\frac{M-K}{K(M-1)}\zeta^2 + E_r
+  \tag{28}
+\end{equation}
+
+<p>where \(E_r = \frac{L}{2}\mathbb{E}\|\Delta x\|^2 - \text{Terms 1-4 contributions already accounted}\) captures the residual from the second bounding of \(\mathbb{E}\|\Delta x\|^2\).</p>
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<h2 class="sec">A.5 &nbsp; Second Bounding of \(E_r\)</h2>
+
+<p>We now bound \(E_r = \mathbb{E}\|\Delta x\|^2 = \mathbb{E}\|x_{m,l} - x\|^2\) more carefully. Split into four sub-terms:</p>
+
+\begin{equation}
+  \mathbb{E}\|x_{m,l} - x\|^2 \leq 4\left(A_1 + A_2 + A_3 + A_4\right)
+  \tag{29}
+\end{equation}
+
+<p>where:</p>
+
+\begin{equation}
+  A_1 = \eta^2 l \sigma^2 \quad \text{(stochastic noise over } l \text{ steps)}
+  \tag{30}
+\end{equation}
+
+\begin{equation}
+  A_2 = \eta^2 l^2 L^2 \mathbb{E}\|\nabla f(x_{m,0})\|^2 \quad \text{(drift from initial gradient)}
+  \tag{31}
+\end{equation}
+
+\begin{equation}
+  A_3 = \eta^2 \sum_{j=0}^{l-1}\mathbb{E}\|\nabla f(x_{m,j}) - \nabla f(x_{m,0})\|^2 \quad \text{(intra-client gradient variation)}
+  \tag{32}
+\end{equation}
+
+\begin{equation}
+  A_4 = \eta^2 l \mathbb{E}\|\nabla f(x_{m,0}) - \nabla f(x)\|^2 \quad \text{(client-server gradient gap)}
+  \tag{33}
+\end{equation}
+
+<p>Applying L-smoothness to bound \(A_3\) and \(A_4\):</p>
+
+\begin{equation}
+  A_3 \leq \eta^2 L^2 \sum_{j=0}^{l-1}\mathbb{E}\|x_{m,j} - x_{m,0}\|^2
+  \tag{34}
+\end{equation}
+
+\begin{equation}
+  A_4 \leq \eta^2 l L^2 \mathbb{E}\|x_{m,0} - x\|^2
+  \tag{35}
+\end{equation}
+
+<p>Let \(B_{m,k} = \|x_{m,k} - x\|\) denote the distance of local iterate \((m,k)\) from the global parameter. Bounding \(A_3\) via the triangle inequality and recursion on local steps:</p>
+
+\begin{equation}
+  \mathbb{E}\|x_{m,l} - x\|^2 \leq \sum_{j < l}\sum_{k \leq j} B_{m,k} \cdot \eta^2 L^2
+  \tag{36}
+\end{equation}
+
+<p>Summing over all clients and steps using combinatorial bounds:</p>
+
+\begin{equation}
+  \sum_{m=1}^{K}\sum_{l=0}^{L-1} B_{m,l} \leq \frac{1}{2}K^2 L^2
+  \tag{37}
+\end{equation}
+
+\begin{equation}
+  \sum_{m=1}^{K}\sum_{l=0}^{L-1} B_{m,l}^2 \leq \frac{1}{3}K^3 L^3
+  \tag{38}
+\end{equation}
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<h2 class="sec">A.6 &nbsp; Solving for \(E_r\)</h2>
+
+<p>Combining the sub-term bounds from Section A.5, \(E_r\) appears on both sides of the resulting inequality:</p>
+
+\begin{equation}
+  E_r \leq 2K^2 L^2 \eta^2 \sigma^2 + 2L^2 K^2 L^2 \eta^2 E_r + 4K^2 L^2 \eta^2 \mathbb{E}\|\nabla f\|^2 + 2(\beta_K^2 + 1)K^3 L^3 \eta^2\|\nabla f\|^2
+  \tag{39}
+\end{equation}
+
+<div class="anno">
+  NOTE: \(\beta_K\) is never defined in the proof. It is not connected to the EMA decay \(\beta = 0.99\) from Algorithm 1. The algebra solving for \(E_r\) (from Eq. 39 to Eq. 41 via Eq. 40) is skipped; the coefficient 9/4 is asserted without derivation.
+</div>
+
+<p>To close the self-reference, we require the learning rate to satisfy:</p>
+
+\begin{equation}
+  \eta \leq \frac{1}{6LKL(1 + \beta_K^2)}
+  \tag{40}
+\end{equation}
+
+<p>Under constraint (40), collecting the \(E_r\) terms and solving (steps omitted in original):</p>
+
+\begin{equation}
+  E_r \leq \frac{9}{4}K^2 L^2 \eta^2 \sigma^2 + \frac{9}{4}K^2 L^2 \eta^2 \zeta^2 + c \cdot K^3 L^3 \eta^2 \|\nabla f\|^2
+  \tag{41}
+\end{equation}
+
+<p>for some constant \(c > 0\) depending on \(\beta_K\).</p>
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<h2 class="sec">A.7 &nbsp; Substituting Back into Main Descent</h2>
+
+<p>Substituting Eq. (41) into the main descent (Eq. 28):</p>
+
+\begin{equation}
+  \mathbb{E}[f(\theta^{r+1}) - f(\theta^r)] \leq -\frac{1}{6}KL\eta\|\nabla f\|^2 + 2L\eta^2 KL\sigma^2 + E_r
+  \tag{42}
+\end{equation}
+
+\begin{equation}
+  \leq -\frac{1}{6}KL\eta\|\nabla f\|^2 + 2L\eta^2 KL\sigma^2 + \frac{9}{4}K^2 L^2\eta^2\sigma^2 + \frac{9}{4}K^2 L^2\eta^2\zeta^2 + cK^3L^3\eta^2\|\nabla f\|^2
+  \tag{43}
+\end{equation}
+
+<p>Collecting \(\|\nabla f\|^2\) terms on the right side:</p>
+
+\begin{equation}
+  \leq -\left(\frac{KL\eta}{6} - cK^3L^3\eta^2\right)\|\nabla f\|^2 + \left(2KL + \frac{9K^2L^2\eta}{4}\right)L\eta^2\sigma^2 + \frac{9K^2L^2\eta^2}{4}\zeta^2
+  \tag{44}
+\end{equation}
+
+<p>Defining \(\bar{\eta} = KL\eta\) for compactness:</p>
+
+\begin{equation}
+  \mathbb{E}[f(\theta^{r+1}) - f(\theta^r)] \leq -\frac{\bar{\eta}}{6}\|\nabla f\|^2\!\left(1 - cKL\bar{\eta}\right) + \frac{2L\bar{\eta}^2\sigma^2}{KL} + \frac{9L^2\bar{\eta}^3\sigma^2}{16KL} + \frac{9L^2\bar{\eta}^3\zeta^2}{16K}
+  \tag{45}
+\end{equation}
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<h2 class="sec">A.8 &nbsp; Per-Round Bound with Rescaled Learning Rate</h2>
+
+<p>Define:</p>
+
+\begin{equation}
+  \bar{\eta} = KL\eta
+  \tag{46}
+\end{equation}
+
+<p>Then the per-round descent satisfies:</p>
+
+\begin{equation}
+  \mathbb{E}[f(x^{r+1}) - f^*] \leq \mathbb{E}[f(x^r) - f^*] - \frac{\bar{\eta}}{10}\mathbb{E}\|\nabla f\|^2 + \frac{2L\bar{\eta}^2\sigma^2}{KL} + \frac{2L\bar{\eta}^2(M-K)}{K(M-1)}\zeta^2 + \frac{15L^2\bar{\eta}^3\sigma^2}{8KL} + \frac{15L^2\bar{\eta}^3\zeta^2}{8K}
+  \tag{47}
+\end{equation}
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<h2 class="sec">A.9 &nbsp; Weighted Averaging and Nonconvex Convergence</h2>
+
+<p>Let \(p_r \propto (1 - c\bar{\eta})^{R-r}\) be the weights for a weighted average over rounds. Define \(\bar{x} = \sum_{r=0}^{R-1} p_r x^r / \sum_r p_r\). Then:</p>
+
+\begin{equation}
+  \mathbb{E}\|\nabla f(\bar{x})\|^2 \leq \frac{\mathbb{E}[f(x^0) - f^*]}{\sum_{r=0}^{R-1} p_r \cdot \frac{\bar{\eta}}{10}} + \text{variance and heterogeneity terms}
+  \tag{48}
+\end{equation}
+
+\begin{equation}
+  \sum_{r=0}^{R-1} p_r \geq \frac{1 - (1-c\bar{\eta})^R}{c\bar{\eta}}
+  \tag{49}
+\end{equation}
+
+<p>For small \(\bar{\eta}\), \((1 - c\bar{\eta})^R \approx e^{-c\bar{\eta} R}\). In the regime \(\bar{\eta} R \gg 1\):</p>
+
+\begin{equation}
+  \sum_{r=0}^{R-1} p_r \approx \frac{1}{c\bar{\eta}}
+  \tag{50}
+\end{equation}
+
+<p>Substituting back and using \(\bar{\eta} \leq \frac{1}{10cKL}\):</p>
+
+\begin{equation}
+  \mathbb{E}\|\nabla f(\bar{x})\|^2 \leq \frac{10c(f(x^0) - f^*)}{\bar{\eta} R} + \frac{20L\bar{\eta}\sigma^2}{KL} + \frac{20L\bar{\eta}(M-K)}{K(M-1)}\zeta^2 + \frac{15L^2\bar{\eta}^2}{KL}\left(\sigma^2 + \zeta^2\right)
+  \tag{51}
+\end{equation}
+
+<p>Collecting all \(\bar{\eta}\)-dependent terms:</p>
+
+\begin{equation}
+  \mathbb{E}\|\nabla f(\bar{x})\|^2 \leq \frac{C_1}{\bar{\eta} R} + C_2 \bar{\eta} + C_3 \bar{\eta}^2
+  \tag{52}
+\end{equation}
+
+<p>for constants \(C_1, C_2, C_3\) depending on \(f(x^0) - f^*\), \(\sigma^2\), \(\zeta^2\), \(K\), \(L\), \(L\) (smoothness), and \(M\).</p>
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<h2 class="sec">A.10 &nbsp; Optimal Learning Rate and Final Bound</h2>
+
+<p>Minimizing the right side of (52) over \(\bar{\eta}\), the dominant terms are \(C_1/(\bar{\eta} R)\) and \(C_2\bar{\eta}\). Setting \(\bar{\eta} \propto 1/\sqrt{R}\) balances these:</p>
+
+\begin{equation}
+  \bar{\eta}^* = \sqrt{\frac{C_1}{C_2 R}}
+  \tag{53}
+\end{equation}
+
+\begin{equation}
+  \mathbb{E}\|\nabla f(\bar{x})\|^2 \leq \frac{2\sqrt{C_1 C_2}}{\sqrt{R}} + \frac{C_3 C_1}{C_2 R}
+  \tag{54}
+\end{equation}
+
+<p>Substituting back the definitions of \(\bar{\eta} = KL\eta\) and the constants:</p>
+
+\begin{equation}
+  \mathbb{E}\|\nabla f(\bar{x})\|^2 \leq \frac{A}{\sqrt{KLR}} + \frac{B}{KLR}
+  \tag{55}
+\end{equation}
+
+<p>where \(A\) and \(B\) depend on \(f(x^0) - f^*\), \(L\), \(\sigma^2\), \(\zeta^2\), \(K\), \(M\). For large \(R\):</p>
+
+\begin{equation}
+  \mathbb{E}\|\nabla f(\bar{x})\|^2 = O\!\left(\frac{1}{\sqrt{KLR}}\right)
+  \tag{56}
+\end{equation}
+
+\begin{equation}
+  \eta^* = \frac{1}{KL}\sqrt{\frac{C_1}{C_2 R}} = O\!\left(\frac{1}{\sqrt{KLR}}\right)
+  \tag{57}
+\end{equation}
+
+<p>Corresponding convergence speed (number of rounds needed for \(\epsilon\)-approximate stationary point):</p>
+
+\begin{equation}
+  R = O\!\left(\frac{1}{KL\epsilon^2}\right)
+  \tag{58}
+\end{equation}
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<h2 class="sec">Theorem 1</h2>
+
+<div class="theorem">
+  <div class="thm-label">Theorem 1 (Convergence of sequential split learning with knowledge distillation).</div>
+  <p>
+  Under Assumptions (1), (6), (15), (18) [L-smoothness, bounded variance, bounded gradient, bounded heterogeneity], and with learning rate \(\eta = O(1/\sqrt{KLR})\), the iterates \(\{x^r\}_{r=0}^{R-1}\) of the algorithm satisfy:
+  </p>
+  \[
+    \frac{1}{R}\sum_{r=0}^{R-1}\mathbb{E}\|\nabla f(x^r)\|^2 \leq O\!\left(\frac{1}{\sqrt{KLR}}\right)
+  \]
+  <p>
+  That is, the algorithm converges to an \(\epsilon\)-approximate first-order stationary point in \(R = O(1/(KL\epsilon^2))\) rounds.
+  </p>
+</div>
+
+<div class="anno red">
+  NOTE: Theorem 1 cites "Assumptions (1),(6),(15),(18)" — these are equation numbers in the appendix, not labeled Assumption environments. There are no environments titled "Assumption 1," "Assumption 6," etc. The references are broken. Additionally, Theorem 1 is stated for "sequential split learning with KD" but the proof (Eqs. 14–58) analyzes a parallel FedAvg-style algorithm on a generic smooth f. See KD Proof Review for the full analysis.
+</div>
+
+</div><!-- end .page -->
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KD Paper — Proof Strategy</title>
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)'],['$','$']], displayMath: [['\\[','\\]'],['$$','$$']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  font-family: "Georgia", serif;
+  font-size: 11.5pt;
+  line-height: 1.75;
+  color: #111;
+  background: #fff;
+  margin: 0; padding: 0;
+}
+.page { max-width: 720px; margin: 0 auto; padding: 48px 40px 80px; }
+
+nav.site-nav {
+  background: #1a1a2e;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 0 20px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  border-bottom: 1px solid #374151;
+  margin-bottom: 0;
+  border-radius: 8px 8px 0 0;
+}
+nav.site-nav a {
+  color: #9ca3af; text-decoration: none; font-size: 0.82rem;
+  font-weight: 600; padding: 11px 11px; border-bottom: 3px solid transparent;
+  font-family: sans-serif;
+}
+nav.site-nav a:hover { color: #fff; }
+nav.site-nav a.active { color: #fff; border-bottom-color: #7f9cf5; }
+@media print { nav.site-nav { display: none; } }
+
+nav.site-nav-kd {
+  background: #16213e;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 0 20px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  border-bottom: 1px solid #374151;
+  margin-bottom: 36px;
+  border-radius: 0 0 8px 8px;
+}
+nav.site-nav-kd a {
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 11px 11px;
+  border-bottom: 3px solid transparent;
+  font-family: sans-serif;
+}
+nav.site-nav-kd a:hover { color: #fff; }
+nav.site-nav-kd a.active { color: #fff; border-bottom-color: #f6ad55; }
+@media print { nav.site-nav-kd { display: none; } }
+
+.page-header { margin-bottom: 32px; border-bottom: 2px solid #1a1a2e; padding-bottom: 16px; }
+.page-header h1 { font-size: 18pt; font-weight: bold; margin: 0 0 4px; }
+.page-header .subtitle { font-size: 10.5pt; color: #555; font-style: italic; }
+.page-header .meta { font-size: 9.5pt; color: #888; font-family: sans-serif; margin-top: 6px; }
+
+h2 { font-size: 13pt; font-weight: bold; margin: 38px 0 10px; color: #1a1a2e; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; }
+h3 { font-size: 11.5pt; font-weight: bold; margin: 22px 0 6px; }
+p { margin: 0 0 12px; }
+ul, ol { margin: 0 0 14px; padding-left: 24px; }
+li { margin-bottom: 6px; }
+
+/* option cards */
+.options { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0 28px; }
+.opt-card { border-radius: 10px; padding: 18px 20px; }
+.opt-card .opt-label { font-family: sans-serif; font-size: 8pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+.opt-card.a { background: #ebf8ff; border: 1px solid #90cdf4; }
+.opt-card.b { background: #f0fff4; border: 1px solid #68d391; }
+.opt-card.a .opt-label { color: #2c5282; }
+.opt-card.b .opt-label { color: #276749; }
+.opt-card ul { margin: 8px 0 0; padding-left: 18px; font-size: 10pt; }
+
+/* proof version cards */
+.versions { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0 28px; }
+.ver-card { border-radius: 10px; padding: 18px 20px; }
+.ver-card .ver-label { font-family: sans-serif; font-size: 8pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+.ver-card.va { background: #fffff0; border: 2px solid #f6e05e; }
+.ver-card.vb { background: #faf5ff; border: 2px solid #d6bcfa; }
+.ver-card.va .ver-label { color: #744210; }
+.ver-card.vb .ver-label { color: #553c9a; }
+.ver-card p { font-size: 10pt; margin: 0 0 8px; }
+.ver-card .venues-tag { font-family: sans-serif; font-size: 8.5pt; color: #555; margin-top: 8px; }
+
+/* callouts */
+.callout { border-radius: 8px; padding: 14px 18px; margin: 18px 0; font-size: 10pt; font-family: sans-serif; }
+.callout.warn  { background: #fffbea; border: 1px solid #f6e05e; }
+.callout.info  { background: #ebf8ff; border: 1px solid #90cdf4; }
+.callout.good  { background: #f0fff4; border: 1px solid #68d391; }
+.callout.bad   { background: #fff5f5; border: 1px solid #fc8181; }
+.callout.purple{ background: #faf5ff; border: 1px solid #d6bcfa; }
+
+/* eq note */
+.eq-note { background: #f7fafc; border-left: 4px solid #4a5568; padding: 12px 16px; margin: 14px 0; font-size: 10.5pt; border-radius: 0 6px 6px 0; }
+.eq-note .eq-label { font-family: sans-serif; font-size: 8.5pt; font-weight: 700; color: #4a5568; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+
+/* action steps */
+.steps { counter-reset: step; margin: 20px 0 28px; }
+.step { display: flex; gap: 16px; margin-bottom: 18px; align-items: flex-start; }
+.step-num {
+  background: #1a1a2e; color: #fff;
+  font-family: sans-serif; font-weight: 700; font-size: 10pt;
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 2px;
+}
+.step-body { flex: 1; }
+.step-body strong { display: block; margin-bottom: 3px; }
+.step-body p { margin: 0; font-size: 10.5pt; color: #333; }
+
+/* table */
+.vtable { width: 100%; border-collapse: collapse; font-family: sans-serif; font-size: 9.5pt; margin: 18px 0 28px; }
+.vtable th { background: #1a1a2e; color: #fff; padding: 9px 12px; text-align: left; font-weight: 600; }
+.vtable td { padding: 9px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+.vtable tr:nth-child(even) td { background: #f7fafc; }
+
+/* req box */
+.req-box { background: #faf5ff; border: 1px solid #d6bcfa; border-radius: 8px; padding: 16px 20px; margin: 20px 0; font-family: "Courier New", monospace; font-size: 9.5pt; line-height: 1.8; white-space: pre-wrap; }
+
+header {
+  background: #1a1a2e;
+  padding: 32px 40px;
+  text-align: center;
+}
+header h1 { color: #fff; font-size: 1.9rem; font-weight: 800; margin: 0; }
+header p  { color: #a0aec0; font-size: 0.95rem; margin: 8px 0 0; line-height: 1.6; }
+header .paper-title {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 0.82rem;
+  color: #7f9cf5;
+  font-style: italic;
+}
+@media print { header { display: none; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Publication &amp; Submission Venues</h1>
+  <p>Where to publish, submit, and share your STS research paper</p>
+  <span class="paper-title">Convergence Analysis of Backpropagation-Free Federated Learning via Auxiliary Networks</span>
+</header>
+<nav class="site-nav">
+  <a href="proof_review.html">Proof Review</a>
+  <a href="proof_fitness.html">Proof Fitness</a>
+  <a href="strategy.html">Strategy</a>
+  <a href="proof_paper.html">Proof Paper</a>
+  <a href="BP_Free_Split_Learning.pdf" target="_blank" style="color:#fbbf24;border-bottom-color:transparent;">↗ Paper (PDF)</a>
+</nav>
+<nav class="site-nav-kd">
+  <a href="kd_proof_review.html">KD Proof Review</a>
+  <a href="kd_proof_fitness.html">KD Proof Fitness</a>
+  <a href="kd_strategy.html" class="active">KD Strategy</a>
+  <a href="kd_proof_paper.html">KD Proof Paper</a>
+  <a href="KD_Split_Learning.pdf" target="_blank" style="color:#fbbf24;border-bottom-color:transparent;">↗ KD Paper (PDF)</a>
+</nav>
+
+<div class="page">
+
+<div class="page-header">
+  <h1>KD Paper — Proof Strategy</h1>
+  <div class="subtitle">How to fix or reframe the convergence analysis in Appendix A — and what can stand as-is</div>
+  <div class="meta">May 2, 2026</div>
+</div>
+
+<div class="callout info">
+  <strong>The key fact:</strong> The paper's empirical results are strong and independent of the proof. Table I shows +13.7 percentage points on CIFAR-10 over sequential split learning without KD. Those results do not depend on Appendix A being correct. The strategy question is: what to do with the proof?
+</div>
+
+
+<h2>Option A vs. Option B</h2>
+
+<div class="options">
+  <div class="opt-card a">
+    <div class="opt-label">Option A — Fix the proof</div>
+    <ul>
+      <li>Rewrite Appendix A to actually analyze Algorithm 1</li>
+      <li>Model sequential client order (not parallel)</li>
+      <li>Include EMA teacher and KD loss in the analysis</li>
+      <li>Requires new analytical work — not a minor edit</li>
+      <li>Result: first rigorous convergence guarantee for sequential split learning with KD</li>
+    </ul>
+  </div>
+  <div class="opt-card b">
+    <div class="opt-label">Option B — Reframe as baseline bound</div>
+    <ul>
+      <li>Label the existing proof as an "upper bound for the parallel case"</li>
+      <li>Add a brief section noting that sequential training introduces additional drift \(\delta_r\)</li>
+      <li>Claim: the parallel bound + \(O(\delta_r)\) correction frames the sequential setting</li>
+      <li>Lower risk, but weaker — reviewers may ask for the sequential proof directly</li>
+    </ul>
+  </div>
+</div>
+
+<div class="callout warn">
+  <strong>For submission to a venue with theory review:</strong> Option B may not survive review. A reviewer who reads Algorithm 1 and Appendix A will immediately notice the sequential/parallel mismatch. Claiming the parallel analysis "upper bounds" the sequential case requires proving the claim — which is itself non-trivial work. Option B is safer for venues focused on empirical results; Option A is required for theory-focused venues.
+</div>
+
+
+<h2>The Empirical Results Stand Independently</h2>
+
+<p>This is the most important strategic point. The paper's contribution is primarily empirical:</p>
+<ul>
+  <li>Algorithm 1 (sequential split learning + EMA-guided KD) is novel</li>
+  <li>Table I demonstrates +13.7pp on CIFAR-10, with consistent gains on CIFAR-100 and other datasets</li>
+  <li>The forgetting problem in sequential split learning is a real and documented issue</li>
+  <li>The EMA teacher + KD approach is a clean, practical solution</li>
+</ul>
+<p>None of this depends on Appendix A. If the paper is submitted to an applications or systems venue (AAAI, ICLR workshop, IEEE FL workshop), reviewers may not scrutinize the appendix proof. The paper can be submitted as-is with the caveat that the convergence analysis is exploratory.</p>
+
+<div class="callout good">
+  <strong>Recommended framing for submission:</strong> In the paper text, do not overclaim the proof. The appendix should be labeled "Exploratory Convergence Analysis" or "Motivation for the KD design" rather than "Theorem." This sets accurate reviewer expectations and protects the strong empirical results from being undermined by proof issues.
+</div>
+
+
+<h2>What a Correct Proof Would Need to Model</h2>
+
+<p>A convergence proof that actually supports Algorithm 1 faces three challenges that the current proof does not address. These are listed in order of difficulty:</p>
+
+<h3>Challenge 1: Sequential non-stationarity (hardest)</h3>
+<p>In Algorithm 1, when client \(k\) trains, the server's task is to support client \(k\)'s representation. When client \(k+1\) starts, the server must shift — this is forgetting. The server's effective loss landscape changes between client rounds. A proof must model this non-stationarity explicitly.</p>
+
+<div class="eq-note">
+  <div class="eq-label">What a correct proof must bound</div>
+  Define the server's loss under client \(k\)'s distribution as \(f_k(\theta_s)\). After client \(k\) trains, before client \(k+1\) begins, the server's parameters \(\theta_s\) have drifted toward \(\arg\min f_k\). But client \(k+1\) needs \(\arg\min f_{k+1}\). The gap \(\|\arg\min f_k - \arg\min f_{k+1}\|\) is the source of forgetting. The proof must bound how KD controls this drift.
+</div>
+
+<h3>Challenge 2: EMA teacher as a reference point (moderate difficulty)</h3>
+<p>The EMA teacher \(\theta_t\) is not trained by gradient descent. It is a convex combination of past student weights. To include it in a convergence proof, one must either:</p>
+<ul>
+  <li>Show that \(\theta_t\) tracks the student closely: \(\|\theta_t^e - \theta_s^e\| \leq \delta_e\) for some bounded \(\delta_e\) (derivable from the EMA formula with \(\beta = 0.99\))</li>
+  <li>Or treat the KD loss \(\mathcal{L}_{KD} = T^2 \cdot KL(q^{(T)}\|\theta_t)\) as a regularizer with a slowly-moving reference, and bound its gradient</li>
+</ul>
+
+<div class="eq-note">
+  <div class="eq-label">EMA drift bound (derivable)</div>
+  Under the EMA update \(\theta_t^e = \beta \theta_t^{e-1} + (1-\beta)\theta_s^e\) with \(\beta = 0.99\):<br>
+  \[\|\theta_t^e - \theta_s^e\| = \|\beta\theta_t^{e-1} + (1-\beta)\theta_s^e - \theta_s^e\| = \beta\|\theta_t^{e-1} - \theta_s^e\|\]
+  If gradients are bounded (\(\|\nabla f\| \leq G\)), then \(\|\theta_t^e - \theta_s^e\|\) stays bounded by \(O(\eta G / (1-\beta))\). This can be derived explicitly.
+</div>
+
+<h3>Challenge 3: KD loss smoothness (easier)</h3>
+<p>The KD loss \(\mathcal{L}_{KD} = T^2 \cdot KL(q^{(T)}\|p^{(T)})\) must be shown to be L-smooth (or have bounded gradient norm) for the combined objective to satisfy the L-smoothness assumption. The KL divergence between softmax distributions is well-behaved when the teacher is stable (EMA ensures this). This is likely the most tractable part of a correct proof.</p>
+
+<div class="eq-note">
+  <div class="eq-label">KD loss gradient</div>
+  \[\nabla_{\theta_s} \mathcal{L}_{KD} = T^2 \nabla_{\theta_s} KL(q^{(T)} \| p^{(T)})\]
+  where \(p^{(T)} = \text{softmax}(z_s / T)\), \(q^{(T)} = \text{softmax}(z_t / T)\), and \(z_s, z_t\) are the student and teacher logits. The gradient is bounded when logits are bounded — a standard assumption in deep learning theory.
+</div>
+
+
+<h2>The Hardest Gap: f is Non-Stationary</h2>
+
+<p>This is the most fundamental theoretical obstacle. The warm-start schedule sets:</p>
+<div class="eq-note">
+  <div class="eq-label">Warm-start schedule</div>
+  \[\lambda_e = 0 \text{ for } e \leq w, \quad \lambda_e \text{ ramps to } \lambda_{\max} \text{ for } e > w\]
+  Combined loss: \(\mathcal{L}_e = (1-\lambda_e)\mathcal{L}_{CE} + \lambda_e \mathcal{L}_{KD}\)
+</div>
+
+<p>Because \(\lambda_e\) changes with epoch \(e\), the objective function changes during training. Standard SGD convergence analysis requires a fixed objective \(f\). There are two ways to handle this:</p>
+
+<div class="versions">
+  <div class="ver-card va">
+    <div class="ver-label">Phase separation approach</div>
+    <p>Analyze each phase separately:</p>
+    <p><strong>Phase 1</strong> (\(e \leq w\)): \(\mathcal{L} = \mathcal{L}_{CE}\) — standard cross-entropy SGD. Proven convergence.</p>
+    <p><strong>Phase 2</strong> (\(e > w\)): \(\mathcal{L} = (1-\lambda)\mathcal{L}_{CE} + \lambda\mathcal{L}_{KD}\) for fixed \(\lambda = \lambda_{\max}\). Smooth if \(\mathcal{L}_{KD}\) is smooth.</p>
+    <p>Connect: Phase 1 gives a warm starting point for Phase 2.</p>
+    <div class="venues-tag">Cleaner and more rigorous; requires two separate analyses</div>
+  </div>
+  <div class="ver-card vb">
+    <div class="ver-label">Slowly-varying objective approach</div>
+    <p>Treat the changing \(\lambda_e\) as a slowly-varying perturbation:</p>
+    <p>If \(|\lambda_{e+1} - \lambda_e| \leq \delta\) (bounded rate of change), then the objective changes slowly, and convergence results for slowly-varying objectives apply.</p>
+    <p>This is a known technique in online learning and non-stationary optimization.</p>
+    <div class="venues-tag">More general; harder to make rigorous for a specific schedule</div>
+  </div>
+</div>
+
+
+<h2>For Submission: Recommended Actions</h2>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <strong>Protect the empirical results (immediate)</strong>
+      <p>The paper's empirical contribution is strong and self-contained. Do not weaken it by over-linking it to the proof. In the paper body, present Table I and the algorithm clearly. In the appendix, explicitly label the convergence analysis as "motivation" or "analysis for the parallel approximation case" to set accurate expectations.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <strong>Decide: fix or reframe the proof</strong>
+      <p>For empirical venues (FL workshops, applied ML conferences): Option B (reframe as baseline bound) is sufficient. Add a sentence noting that "a complete sequential convergence analysis is future work." For theory venues (Involve, JMLR, NeurIPS theory track): Option A is required.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <strong>If pursuing Option A: start with the EMA lemma</strong>
+      <p>The EMA drift bound is the most tractable piece (see Challenge 2 above). Deriving \(\|\theta_t^e - \theta_s^e\| \leq O(\eta G/(1-\beta))\) from the \(\beta=0.99\) formula is elementary and can be done immediately. This gives the proof a solid foundation. The sequential non-stationarity (Challenge 1) is the hardest piece and should be last.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <strong>Define what f is, precisely</strong>
+      <p>The hardest prerequisite: what is the global objective \(f\) for this algorithm? Is it \(\sum_{k=1}^K f_k(\theta_s)\) where \(f_k\) is client \(k\)'s loss? Is it \((1-\lambda)\mathcal{L}_{CE} + \lambda\mathcal{L}_{KD}\) for fixed \(\lambda\)? Until this is defined, no proof structure can be written. The answer determines everything downstream.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <strong>Fix the minor issues in the existing proof regardless</strong>
+      <p>The notation collision (L = smoothness AND local steps), the undefined \(\beta_K\), the skipped algebra in Eq. 39→41, and the broken assumption references in Theorem 1 should all be fixed. These are editorial issues independent of the bigger structural problems. Fix them first — they are fast and unambiguous.</p>
+    </div>
+  </div>
+</div>
+
+
+<h2>Summary: What Can Stay, What Must Change</h2>
+
+<table class="vtable">
+  <tr><th>Element</th><th>Action</th></tr>
+  <tr><td>Empirical results (Table I, experiments)</td><td>Keep as-is. Strong contribution. Do not touch.</td></tr>
+  <tr><td>Algorithm 1 description</td><td>Keep as-is. Clear and correct.</td></tr>
+  <tr><td>EMA motivation in text</td><td>Keep. Informal justification is adequate for applications venues.</td></tr>
+  <tr><td>L-smoothness framework (Eq. 14)</td><td>Keep as starting point for a fixed proof.</td></tr>
+  <tr><td>4-term decomposition (Eq. 18)</td><td>Keep structure; adapt for sequential single-client setting.</td></tr>
+  <tr><td>Variance bound, local drift (Eqs. 19–24)</td><td>Keep. These are correct and reusable.</td></tr>
+  <tr><td>K-parallel summation (Eq. 15)</td><td>Must change. Replace with sequential single-client model.</td></tr>
+  <tr><td>Sampling-without-replacement lemma (Eq. 25)</td><td>Must change or remove. Algorithm 1 uses fixed sequential order.</td></tr>
+  <tr><td>Undefined \(\beta_K\) (Eqs. 39–41)</td><td>Must define or replace.</td></tr>
+  <tr><td>Notation collision L = smoothness + steps</td><td>Must fix. Rename one symbol.</td></tr>
+  <tr><td>KD loss \(\mathcal{L}_{KD}\) in proof</td><td>Must add for a correct proof. Central contribution is absent.</td></tr>
+  <tr><td>EMA teacher in proof</td><td>Must add. Derive EMA drift bound as a lemma.</td></tr>
+  <tr><td>Broken Theorem 1 assumption references</td><td>Must fix. Add labeled Assumption environments.</td></tr>
+  <tr><td>Skipped algebra Eq. 39 → 41</td><td>Must fill in the steps explicitly.</td></tr>
+</table>
+
+<div class="callout purple">
+  <strong>The core strategic insight:</strong> The most impactful proof addition for this paper — more than any algebraic cleanup — is a lemma showing that the EMA teacher with \(\beta = 0.99\) stays close to the student, and therefore \(\mathcal{L}_{KD}\) acts as a bounded regularizer rather than a disruptive term. If that lemma can be derived, it provides genuine theoretical support for the paper's design choice (\(\beta = 0.99\) specifically). That is the result that would make the proof meaningful rather than just correct.
+</div>
+
+</div>
+</body>
+</html>

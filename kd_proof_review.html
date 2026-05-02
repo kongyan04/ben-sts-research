@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KD Paper — Proof Rigor Review</title>
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)'],['$','$']], displayMath: [['\\[','\\]'],['$$','$$']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  font-family: "Georgia", serif;
+  font-size: 11.5pt;
+  line-height: 1.75;
+  color: #111;
+  background: #fff;
+  margin: 0;
+  padding: 0;
+}
+.page { max-width: 720px; margin: 0 auto; padding: 48px 40px 80px; }
+
+nav.site-nav {
+  background: #1a1a2e;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 0 20px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  border-bottom: 1px solid #374151;
+  margin-bottom: 0;
+  border-radius: 8px 8px 0 0;
+}
+nav.site-nav a {
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 11px 11px;
+  border-bottom: 3px solid transparent;
+  font-family: sans-serif;
+}
+nav.site-nav a:hover { color: #fff; }
+nav.site-nav a.active { color: #fff; border-bottom-color: #7f9cf5; }
+@media print { nav.site-nav { display: none; } }
+
+nav.site-nav-kd {
+  background: #16213e;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 0 20px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  border-bottom: 1px solid #374151;
+  margin-bottom: 36px;
+  border-radius: 0 0 8px 8px;
+}
+nav.site-nav-kd a {
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 11px 11px;
+  border-bottom: 3px solid transparent;
+  font-family: sans-serif;
+}
+nav.site-nav-kd a:hover { color: #fff; }
+nav.site-nav-kd a.active { color: #fff; border-bottom-color: #f6ad55; }
+@media print { nav.site-nav-kd { display: none; } }
+
+.page-header { margin-bottom: 32px; border-bottom: 2px solid #1a1a2e; padding-bottom: 16px; }
+.page-header h1 { font-size: 18pt; font-weight: bold; margin: 0 0 4px; }
+.page-header .subtitle { font-size: 10.5pt; color: #555; font-style: italic; }
+.page-header .meta { font-size: 9.5pt; color: #888; font-family: sans-serif; margin-top: 6px; }
+
+h2 {
+  font-size: 13pt; font-weight: bold; margin: 36px 0 10px;
+  color: #1a1a2e; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;
+}
+h3 { font-size: 11.5pt; font-weight: bold; margin: 22px 0 6px; }
+p { margin: 0 0 12px; }
+ul, ol { margin: 0 0 14px; padding-left: 24px; }
+li { margin-bottom: 6px; }
+
+/* verdict cards */
+.verdict { display: flex; gap: 14px; margin-bottom: 32px; flex-wrap: wrap; }
+.verdict-card { flex: 1; min-width: 150px; border-radius: 8px; padding: 13px 16px; font-family: sans-serif; font-size: 9.5pt; }
+.verdict-card .label { font-weight: 700; font-size: 8pt; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.verdict-card.green  { background: #f0fff4; border: 1px solid #68d391; color: #276749; }
+.verdict-card.yellow { background: #fffff0; border: 1px solid #f6e05e; color: #744210; }
+.verdict-card.red    { background: #fff5f5; border: 1px solid #fc8181; color: #c53030; }
+
+/* status table */
+.status-table { width: 100%; border-collapse: collapse; font-family: sans-serif; font-size: 9.5pt; margin: 20px 0 28px; }
+.status-table th { background: #1a1a2e; color: #fff; padding: 8px 12px; text-align: left; font-weight: 600; }
+.status-table td { padding: 8px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+.status-table tr:nth-child(even) td { background: #f7fafc; }
+.badge-ok   { background: #c6f6d5; color: #276749; border-radius: 4px; padding: 2px 8px; font-weight: 600; white-space: nowrap; }
+.badge-warn { background: #fefcbf; color: #744210; border-radius: 4px; padding: 2px 8px; font-weight: 600; white-space: nowrap; }
+.badge-gap  { background: #fed7d7; color: #c53030; border-radius: 4px; padding: 2px 8px; font-weight: 600; white-space: nowrap; }
+
+/* equation callout */
+.eq-note { background: #f7fafc; border-left: 4px solid #4a5568; padding: 12px 16px; margin: 14px 0; font-size: 10.5pt; border-radius: 0 6px 6px 0; }
+.eq-note .eq-label { font-family: sans-serif; font-size: 8.5pt; font-weight: 700; color: #4a5568; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+
+/* callouts */
+.callout { border-radius: 8px; padding: 14px 18px; margin: 18px 0; font-size: 10pt; font-family: sans-serif; }
+.callout.warn { background: #fffbea; border: 1px solid #f6e05e; }
+.callout.info { background: #ebf8ff; border: 1px solid #90cdf4; }
+.callout.good { background: #f0fff4; border: 1px solid #68d391; }
+.callout.bad  { background: #fff5f5; border: 1px solid #fc8181; }
+
+/* side-by-side compare */
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0 24px; }
+.cbox { border-radius: 8px; padding: 13px 15px; font-size: 10pt; }
+.cbox .clabel { font-family: sans-serif; font-size: 8pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+.cbox.paper { background: #ebf8ff; border: 1px solid #90cdf4; }
+.cbox.proof { background: #f0fff4; border: 1px solid #68d391; }
+.cbox.paper .clabel { color: #2c5282; }
+.cbox.proof .clabel { color: #276749; }
+
+/* recommendation box */
+.rec-box { background: #faf5ff; border: 1px solid #d6bcfa; border-radius: 8px; padding: 16px 20px; margin: 20px 0; font-family: "Courier New", monospace; font-size: 9.5pt; line-height: 1.8; white-space: pre-wrap; }
+header {
+  background: #1a1a2e;
+  padding: 32px 40px;
+  text-align: center;
+}
+header h1 { color: #fff; font-size: 1.9rem; font-weight: 800; margin: 0; }
+header p  { color: #a0aec0; font-size: 0.95rem; margin: 8px 0 0; line-height: 1.6; }
+header .paper-title {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 0.82rem;
+  color: #7f9cf5;
+  font-style: italic;
+}
+@media print { header { display: none; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Publication &amp; Submission Venues</h1>
+  <p>Where to publish, submit, and share your STS research paper</p>
+  <span class="paper-title">Convergence Analysis of Backpropagation-Free Federated Learning via Auxiliary Networks</span>
+</header>
+<nav class="site-nav">
+  <a href="proof_review.html">Proof Review</a>
+  <a href="proof_fitness.html">Proof Fitness</a>
+  <a href="strategy.html">Strategy</a>
+  <a href="proof_paper.html">Proof Paper</a>
+  <a href="BP_Free_Split_Learning.pdf" target="_blank" style="color:#fbbf24;border-bottom-color:transparent;">↗ Paper (PDF)</a>
+</nav>
+<nav class="site-nav-kd">
+  <a href="kd_proof_review.html" class="active">KD Proof Review</a>
+  <a href="kd_proof_fitness.html">KD Proof Fitness</a>
+  <a href="kd_strategy.html">KD Strategy</a>
+  <a href="kd_proof_paper.html">KD Proof Paper</a>
+  <a href="KD_Split_Learning.pdf" target="_blank" style="color:#fbbf24;border-bottom-color:transparent;">↗ KD Paper (PDF)</a>
+</nav>
+
+<div class="page">
+
+<div class="page-header">
+  <h1>KD Paper — Proof Rigor Review</h1>
+  <div class="subtitle">Line-by-line analysis of Appendix A convergence proof, cross-referenced against Algorithm 1 of <em>Mitigating Forgetting in Split Learning via Knowledge Distillation</em></div>
+  <div class="meta">Reviewed May 2, 2026 &nbsp;·&nbsp; Based on Appendix A (Eq. 14–58) + Algorithm 1</div>
+</div>
+
+<div class="verdict">
+  <div class="verdict-card green">
+    <div class="label">Standard SGD Mechanics</div>
+    L-smoothness framework, 4-term decomposition, variance bound, Young's inequality, and weighted averaging lemma are all standard and correctly applied for parallel SGD.
+  </div>
+  <div class="verdict-card yellow">
+    <div class="label">3 Structural Warnings</div>
+    Sampling lemma misapplied (fixed vs. random order); notation collision (L = smoothness AND local steps); E_r on both sides of Eq. 39 with skipped algebra to reach Eq. 41.
+  </div>
+  <div class="verdict-card red">
+    <div class="label">KD Loss Absent (Critical)</div>
+    The paper's entire contribution — EMA-guided knowledge distillation loss \(\mathcal{L}_{KD}\) — never appears in the proof. Proof analyzes a generic smooth \(f\), not distillation.
+  </div>
+  <div class="verdict-card red">
+    <div class="label">Algorithm Mismatch (Critical)</div>
+    Proof models parallel FedAvg-style updates (all K clients simultaneously). Algorithm 1 is sequential — one client trains at a time. The K summations in Eq. 15, 18 are wrong for this setting.
+  </div>
+</div>
+
+<table class="status-table">
+  <tr><th>Proof element</th><th>Verdict</th><th>Grounded finding</th></tr>
+  <tr><td>L-smoothness descent (Eq. 14)</td><td><span class="badge-ok">Correct</span></td><td>Standard nonconvex descent lemma. Compatible with any smooth objective.</td></tr>
+  <tr><td>Gradient expansion Eq. 15 (K clients, L steps summed)</td><td><span class="badge-gap">Mismatch</span></td><td>Sums over all K clients simultaneously (FedAvg-style). Algorithm 1 is sequential: one client active per round.</td></tr>
+  <tr><td>Young's inequality Eqs. 16–17</td><td><span class="badge-ok">Correct</span></td><td>Standard technique, correctly applied to separate gradient cross-terms.</td></tr>
+  <tr><td>4-term decomposition Eq. 18</td><td><span class="badge-ok">Correct</span></td><td>Valid split of \((L/2)\mathbb{E}\|\Delta x\|^2\) into variance, local drift, heterogeneity, and global gradient. Standard in FedAvg analysis.</td></tr>
+  <tr><td>Variance bound Eqs. 19–20</td><td><span class="badge-ok">Correct</span></td><td>Term 1 bounded by \(\sigma^2\). Standard and correctly applied.</td></tr>
+  <tr><td>Local drift bound Eqs. 21–24</td><td><span class="badge-ok">Correct</span></td><td>Term 2 bounded via L-smoothness. Valid for any SGD with local steps.</td></tr>
+  <tr><td>Sampling lemma Eqs. 25–27</td><td><span class="badge-warn">Misapplied</span></td><td>Uses sampling-without-replacement lemma \(\frac{n-s}{s(n-1)}\zeta^2\). Algorithm 1 uses a fixed sequential client order, not random sampling.</td></tr>
+  <tr><td>Main descent Eq. 28</td><td><span class="badge-warn">Parallel only</span></td><td>Correct for parallel FedAvg. Not valid for sequential split learning where only one client updates per round.</td></tr>
+  <tr><td>Second bounding Eqs. 29–36</td><td><span class="badge-ok">Correct</span></td><td>4-term split of \(\mathbb{E}\|x_{m,l}-x\|^2\). Standard, correctly applied for local drift in multi-step SGD.</td></tr>
+  <tr><td>Sum bounds Eqs. 37–38</td><td><span class="badge-ok">Correct</span></td><td>\(\sum\sum B_{m,k} \leq \frac{1}{2}K^2L^2\) and \(\sum\sum B^2_{m,k} \leq \frac{1}{3}K^3L^3\). Valid combinatorial bounds.</td></tr>
+  <tr><td>E_r self-referential bound Eq. 39</td><td><span class="badge-warn">Skipped step</span></td><td>E_r appears on both sides. The algebraic step of collecting E_r and dividing (yielding coefficient 9/4 in Eq. 41) is asserted without derivation.</td></tr>
+  <tr><td>Learning rate constraint Eq. 40</td><td><span class="badge-ok">Correct form</span></td><td>\(\eta \leq \frac{1}{6LKL(1+\beta^2_K)}\). Standard constraint to close the E_r self-reference, but \(\beta_K\) is undefined (see below).</td></tr>
+  <tr><td>E_r solution Eq. 41</td><td><span class="badge-warn">Asserted</span></td><td>Coefficient 9/4 claimed after solving for E_r. Steps skipped. Should be derived explicitly.</td></tr>
+  <tr><td>Substitution Eqs. 42–45</td><td><span class="badge-ok">Correct</span></td><td>Substituting Eq. 41 into main descent. Algebra appears valid given Eq. 41.</td></tr>
+  <tr><td>Notation: L = smoothness AND local steps</td><td><span class="badge-warn">Collision</span></td><td>In Eq. 28, \(-(1/6)KL\eta\|\nabla f\|^2\) has L = local steps, but L also denotes the smoothness constant throughout. Ambiguous in the same equation.</td></tr>
+  <tr><td>\(\beta_K\) in Eqs. 39–41</td><td><span class="badge-gap">Undefined</span></td><td>\(\beta_K\) is never defined or connected to the EMA decay \(\beta=0.99\) in Algorithm 1. A different symbol, appearing without explanation.</td></tr>
+  <tr><td>KD loss \(\mathcal{L}_{KD} = T^2 \cdot KL(q^{(T)} \| p^{(T)})\)</td><td><span class="badge-gap">Absent</span></td><td>Nowhere in Eqs. 14–58. The warm-start schedule \(\lambda_e\), temperature T, and KL divergence term are all missing.</td></tr>
+  <tr><td>EMA update \(\theta_t^e = \beta\theta_t^{e-1} + (1-\beta)\theta_s^e\)</td><td><span class="badge-gap">Absent</span></td><td>The teacher update rule from Algorithm 1 never appears. The proof has no teacher model, no EMA, no \(\beta=0.99\).</td></tr>
+  <tr><td>Sequential client order</td><td><span class="badge-gap">Absent</span></td><td>Algorithm 1 trains K clients one at a time. Proof assumes all K clients update simultaneously each round.</td></tr>
+  <tr><td>Weighted averaging lemma Eqs. 48–52</td><td><span class="badge-ok">Correct</span></td><td>Standard nonconvex convergence argument. Correctly applied.</td></tr>
+  <tr><td>Optimal learning rate and final bound Eqs. 53–57</td><td><span class="badge-ok">Correct form</span></td><td>Rate \(O(1/\sqrt{KLR})\) is the expected result for parallel SGD with K clients, L steps, R rounds. Right form for the wrong algorithm.</td></tr>
+  <tr><td>Theorem 1 assumption references "(1),(6),(15),(18)"</td><td><span class="badge-warn">Broken refs</span></td><td>These are equation numbers, not named "Assumption" environments. There are no labeled Assumption blocks in the appendix.</td></tr>
+</table>
+
+
+<h2>The Biggest Gap: The Proof Does Not Analyze What It Claims to Analyze</h2>
+
+<div class="callout bad">
+  <strong>Core finding:</strong> The proof in Appendix A is a correct convergence analysis for a <em>parallel FedAvg-style algorithm with generic smooth loss</em>. It is not a convergence analysis for Algorithm 1, which is sequential split learning with EMA-guided knowledge distillation. The paper's main contribution — the EMA teacher and the KD loss \(\mathcal{L}_{KD}\) — is entirely absent from the proof. The algorithm structure is also fundamentally different: parallel vs. sequential. The proof cannot be repaired by minor edits; it requires a different analytical approach.
+</div>
+
+<h2>Section-by-Section Analysis</h2>
+
+<h3>Eq. 14 — L-smoothness descent — correct</h3>
+<p>The standard nonconvex descent lemma. \(\mathbb{E}[f(\theta+\Delta x) - f(\theta)] \leq \mathbb{E}[\langle\nabla f, \Delta x\rangle] + (L/2)\mathbb{E}\|\Delta x\|^2\). This is correct and applies to any L-smooth objective. No issues here.</p>
+
+<h3>Eq. 15 — Gradient expansion with K clients, L steps — mismatch</h3>
+
+<div class="compare">
+  <div class="cbox paper">
+    <div class="clabel">Algorithm 1 (sequential)</div>
+    Round \(r\): client 1 trains for \(E_\text{train}\) epochs. Then client 2 trains. Then client 3. Only one client is active at any time.<br><br>
+    \(\Delta x\) involves one client's updates, not K simultaneous clients.
+  </div>
+  <div class="cbox proof">
+    <div class="clabel">Proof Eq. 15 (parallel)</div>
+    Expands \(\langle\nabla f, \Delta x\rangle\) with a double sum over \(m=1\ldots K\) clients and \(l=1\ldots L\) steps simultaneously.<br><br>
+    This is FedAvg: all K clients update in parallel each round.
+  </div>
+</div>
+
+<p>The K summation in Eq. 15 assumes all K clients contribute to \(\Delta x\) in a single round. In Algorithm 1, only one client contributes per round. This is the most fundamental mismatch, and it propagates forward to Eq. 18 (4-term decomposition), Eq. 28 (main descent), and the final convergence rate.</p>
+
+<h3>Eqs. 16–17 — Young's inequality — correct</h3>
+<p>Standard technique to separate \(\langle a, b\rangle \leq \frac{1}{2}\|a\|^2 + \frac{1}{2}\|b\|^2\). No issues. These steps are independent of whether the algorithm is parallel or sequential.</p>
+
+<h3>Eq. 18 — 4-term decomposition — correct structure, wrong context</h3>
+<p>The split of \((L/2)\mathbb{E}\|\Delta x\|^2\) into four terms (stochastic variance, local drift, client heterogeneity, global gradient) is a standard technique from FedAvg analysis papers. The decomposition is mathematically valid. The problem is that terms 3 and 4 involve sums over K simultaneous clients — which is the wrong model for Algorithm 1.</p>
+
+<h3>Eqs. 19–24 — Variance and local drift bounds — correct</h3>
+<p>Terms 1 and 2 are bounded correctly. The variance bound using \(\sigma^2\) and the local drift bound via L-smoothness are both standard and valid for SGD with local steps.</p>
+
+<h3>Eqs. 25–27 — Sampling lemma — misapplied</h3>
+
+<div class="eq-note">
+  <div class="eq-label">Eq. 25–27 — Sampling without replacement</div>
+  \[\mathbb{E}\|x - \bar{x}\|^2 = \frac{n-s}{s(n-1)}\zeta^2\]
+  Applied to bound the heterogeneity term (Term 3) using \(\zeta^2\) (bounded data heterogeneity across clients).
+</div>
+
+<p>This lemma applies when clients are selected by <em>random sampling without replacement</em>. Algorithm 1 uses a <strong>fixed sequential order</strong>: client 1 trains, then client 2, then client 3, ..., then client K, and repeats. There is no randomness in client selection. The sampling-without-replacement formula does not apply. The heterogeneity bound is therefore incorrect.</p>
+
+<h3>Eq. 28 — Main descent bound — correct form, wrong model</h3>
+<p>The main descent inequality \(\mathbb{E}[f(\theta^{r+1}) - f(\theta^r)] \leq -(1/6)KL\eta\|\nabla f\|^2 + \ldots\) is correct for the parallel FedAvg setting. But because it incorporates the K-parallel structure and the misapplied sampling lemma, it does not bound Algorithm 1's behavior.</p>
+
+<h3>Eqs. 29–38 — Second bounding of E_r — correct mechanics</h3>
+<p>The 4-term bounding of \(\mathbb{E}\|x_{m,l}-x\|^2\) and the sum bounds \(\sum\sum B_{m,k} \leq \frac{1}{2}K^2L^2\) are valid combinatorial results. These steps are technically correct for a multi-client multi-step SGD analysis.</p>
+
+<h3>Eq. 39 — E_r on both sides — skipped algebra</h3>
+
+<div class="eq-note">
+  <div class="eq-label">Eq. 39 — self-referential bound</div>
+  \[E_r \leq 2K^2L^2\eta^2\sigma^2 + 2L^2K^2L^2\eta^2 E_r + \cdots + 2(\beta^2_K+1)K^3L^3\eta^2\|\nabla f\|^2\]
+  \(\Rightarrow\) Eq. 41: \(E_r \leq \frac{9}{4}K^2L^2\eta^2\sigma^2 + \cdots\) (coefficient 9/4 asserted without derivation)
+</div>
+
+<p>With \(E_r\) on the right side, one must rearrange: collect the \(E_r\) terms, factor, and divide. The learning rate constraint in Eq. 40 (\(\eta \leq \frac{1}{6LKL(1+\beta^2_K)}\)) is what makes this division valid. But the step from Eq. 39 to Eq. 41 is never shown. The coefficient 9/4 is asserted. This gap should be filled explicitly.</p>
+
+<h3>The undefined \(\beta_K\)</h3>
+<p>The symbol \(\beta_K\) appears in Eq. 39–41 and in the learning rate constraint Eq. 40. It is never defined. Given the notation, one might guess it is meant to relate to the EMA decay \(\beta = 0.99\) in Algorithm 1, but no such connection is drawn. If it is the EMA parameter, then \(\beta_K\) and \(\beta\) should be the same symbol with an explicit definition. If it is something else (e.g., a bound related to the K-th client), it needs to be introduced.</p>
+
+<h3>Eqs. 42–52 — Substitution and weighted averaging — correct</h3>
+<p>Given the bound from Eq. 41, the substitution into the main descent and the subsequent weighted averaging lemma (Eqs. 48–52) are standard and correctly applied. The technique is the same used in FedAvg convergence proofs.</p>
+
+<h3>Eqs. 53–57 and Theorem 1 — correct form, broken references</h3>
+<p>The optimal learning rate \(\eta^* = O(1/\sqrt{KLR})\) and the resulting convergence rate \(O(1/\sqrt{KLR})\) are the expected results for a parallel algorithm. Theorem 1 then cites "Assumptions (1),(6),(15),(18)" — but these are equation numbers in the appendix, not labeled Assumption environments. There are no environments titled "Assumption 1," "Assumption 6," etc. in the text. The references are broken.</p>
+
+<h2>The Two Critical Absences</h2>
+
+<h3>1. The KD loss is entirely missing</h3>
+<p>Algorithm 1 uses a combined loss:</p>
+<div class="eq-note">
+  <div class="eq-label">Algorithm 1 — combined loss</div>
+  \[\mathcal{L} = (1-\lambda_e)\mathcal{L}_{CE} + \lambda_e \mathcal{L}_{KD}\]
+  where \(\mathcal{L}_{KD} = T^2 \cdot KL(q^{(T)} \| p^{(T)})\) is the KL divergence between the EMA teacher's and student's soft distributions at temperature \(T\).
+</div>
+<p>This is the paper's core contribution. None of \(\mathcal{L}_{KD}\), the warm-start schedule \(\lambda_e\), the temperature \(T\), or the EMA teacher appear anywhere in Eqs. 14–58. The proof analyzes a generic \(f\) that could be any smooth function. A proof meant to support this paper's contribution must show that using \(\mathcal{L}_{KD}\) helps (or at least does not hurt) convergence compared to \(\mathcal{L}_{CE}\) alone.</p>
+
+<h3>2. The EMA teacher is entirely missing</h3>
+<p>Algorithm 1 maintains an EMA teacher model \(\theta_t\) updated every epoch:</p>
+<div class="eq-note">
+  <div class="eq-label">Algorithm 1 — EMA update (end of each epoch)</div>
+  \[\theta_t^e = \beta \cdot \theta_t^{e-1} + (1-\beta) \cdot \theta_s^e \quad (\beta = 0.99)\]
+</div>
+<p>The teacher is not trained by gradient descent; it is an exponential moving average of the student weights. The proof has no such object. The \(\beta_K\) in Eq. 39 is presumably unrelated (and undefined), but even if it were intended to model EMA decay, the structure of EMA (not a gradient update but a convex combination) is fundamentally different from any gradient step in the proof.</p>
+
+<h2>Notation Collision</h2>
+<p>In many equations including Eq. 28, the letter \(L\) simultaneously denotes:</p>
+<ul>
+  <li>The Lipschitz constant of \(\nabla f\) (L-smoothness)</li>
+  <li>The number of local update steps per client per round</li>
+</ul>
+<p>In Eq. 28 the term \(-(1/6)KL\eta\|\nabla f\|^2\), the first \(L\) is the step count, while L in the coefficient \(2L\eta^2K\) is the smoothness constant. These are two different mathematical objects. One should be renamed (e.g., use \(\ell\) for local steps, or \(E\) as in Algorithm 1 which uses \(E_\text{train}\)).</p>
+
+<h2>What IS Correct</h2>
+<div class="callout good">
+  The following components are standard and correctly applied for a <strong>parallel SGD / FedAvg-style</strong> analysis:<br><br>
+  L-smoothness descent lemma (Eq. 14) &nbsp;·&nbsp; Young's inequality (Eqs. 16–17) &nbsp;·&nbsp; 4-term decomposition structure (Eqs. 18, 29–36) &nbsp;·&nbsp; Variance bound (Eqs. 19–20) &nbsp;·&nbsp; Local drift bound (Eqs. 21–24) &nbsp;·&nbsp; Weighted averaging lemma (Eqs. 48–52) &nbsp;·&nbsp; Convergence rate form \(O(1/\sqrt{KLR})\)
+</div>
+
+<h2>Recommended Fix Structure</h2>
+
+<div class="rec-box">For a proof that actually covers Algorithm 1, the following structure is needed:
+
+Assumption 1  L-smoothness of f (keep as-is, Eq. 14 form)
+Assumption 2  Bounded variance of stochastic gradients σ² (keep)
+Assumption 3  (NEW) Bounded data heterogeneity across K clients: ζ²
+Assumption 4  (NEW) EMA teacher approximation quality:
+             ‖θ_t^e - θ_s^e‖ ≤ δ_e (or derive from β=0.99 formula)
+Assumption 5  (NEW) KD loss alignment: when the teacher is well-trained,
+             ‖∇L_KD - ∇L_CE‖ ≤ ε_KD (or show KD adds no divergence)
+
+Lemma 1  (Sequential one-client descent per round)
+         Only client k is active in round r: prove
+         E[f(θ^{r+1}) - f(θ^r)] ≤ -αE‖∇f‖² + variance terms
+         without K-parallel structure.
+
+Lemma 2  (EMA teacher is a valid reference point)
+         Show ‖θ_t - θ_s‖ stays bounded under β=0.99 update.
+         This replaces the undefined β_K in Eq. 39.
+
+Lemma 3  (KD loss does not destabilize convergence)
+         Show that adding λ_e·L_KD to L_CE keeps the combined
+         objective L-smooth with the same or related constants.
+         The warm-start schedule (λ_e=0 for e≤w) simplifies this
+         for early rounds.
+
+Theorem 1
+  Sequential convergence: (1/R)Σ_r E‖∇f(θ^r)‖² ≤ O(1/√R) + O(ε_KD)
+  Proof: Lemmas 1–3, telescope over R rounds, set η optimally. □
+
+Note: The empirical results (Table I showing +13.7pp on CIFAR-10)
+      stand independently of the proof issues. The proof is in
+      Appendix A and the empirical contribution does not depend on it.
+</div>
+
+<div class="callout warn">
+  <strong>Most important question before rewriting:</strong> With a sequential algorithm, the server model does not receive gradients while client k is training, and when client k+1 starts, the server has drifted from what client k experienced. This non-stationarity — exactly the forgetting the paper studies — is what a correct proof must model. The warm-start KD schedule (\(\lambda_e = 0\) for \(e \leq w\)) suggests the authors know this is delicate; a proof should make it precise.
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KD Paper — Proof Fitness Analysis</title>
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)'],['$','$']], displayMath: [['\\[','\\]'],['$$','$$']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  font-family: "Georgia", serif;
+  font-size: 11.5pt;
+  line-height: 1.75;
+  color: #111;
+  background: #fff;
+  margin: 0;
+  padding: 0;
+}
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 40px 80px;
+}
+
+/* ── Nav ── */
+nav.site-nav {
+  background: #1a1a2e;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 0 20px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  border-bottom: 1px solid #374151;
+  margin-bottom: 0;
+  border-radius: 8px 8px 0 0;
+}
+nav.site-nav a {
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 11px 11px;
+  border-bottom: 3px solid transparent;
+  font-family: sans-serif;
+}
+nav.site-nav a:hover { color: #fff; }
+nav.site-nav a.active { color: #fff; border-bottom-color: #7f9cf5; }
+@media print { nav.site-nav { display: none; } }
+
+nav.site-nav-kd {
+  background: #16213e;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 0 20px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  border-bottom: 1px solid #374151;
+  margin-bottom: 36px;
+  border-radius: 0 0 8px 8px;
+}
+nav.site-nav-kd a {
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 11px 11px;
+  border-bottom: 3px solid transparent;
+  font-family: sans-serif;
+}
+nav.site-nav-kd a:hover { color: #fff; }
+nav.site-nav-kd a.active { color: #fff; border-bottom-color: #f6ad55; }
+@media print { nav.site-nav-kd { display: none; } }
+
+/* ── Header ── */
+.page-header {
+  margin-bottom: 32px;
+  border-bottom: 2px solid #1a1a2e;
+  padding-bottom: 16px;
+}
+.page-header h1 { font-size: 18pt; font-weight: bold; margin: 0 0 4px; }
+.page-header .subtitle { font-size: 10.5pt; color: #555; font-style: italic; }
+.page-header .meta { font-size: 9.5pt; color: #888; font-family: sans-serif; margin-top: 6px; }
+
+/* ── Mapping table ── */
+h2 {
+  font-size: 13pt;
+  font-weight: bold;
+  margin: 36px 0 10px;
+  color: #1a1a2e;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 5px;
+}
+h3 { font-size: 11.5pt; font-weight: bold; margin: 22px 0 6px; }
+p { margin: 0 0 12px; }
+ul, ol { margin: 0 0 14px; padding-left: 24px; }
+li { margin-bottom: 5px; }
+
+.map-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: sans-serif;
+  font-size: 9.5pt;
+  margin: 20px 0 28px;
+}
+.map-table th {
+  background: #1a1a2e;
+  color: #fff;
+  padding: 8px 12px;
+  text-align: left;
+  font-weight: 600;
+}
+.map-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: top;
+}
+.map-table tr:nth-child(even) td { background: #f7fafc; }
+.badge-fit    { background: #c6f6d5; color: #276749; border-radius: 4px; padding: 2px 8px; font-weight: 600; white-space: nowrap; }
+.badge-partial{ background: #fefcbf; color: #744210; border-radius: 4px; padding: 2px 8px; font-weight: 600; white-space: nowrap; }
+.badge-miss   { background: #fed7d7; color: #c53030; border-radius: 4px; padding: 2px 8px; font-weight: 600; white-space: nowrap; }
+
+/* ── Two-column compare ── */
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 20px 0 28px;
+}
+.compare-box {
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 10pt;
+}
+.compare-box .label {
+  font-family: sans-serif;
+  font-size: 8pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+.compare-box.paper { background: #ebf8ff; border: 1px solid #90cdf4; }
+.compare-box.proof { background: #f0fff4; border: 1px solid #68d391; }
+.compare-box.paper .label { color: #2c5282; }
+.compare-box.proof .label { color: #276749; }
+
+/* ── Callouts ── */
+.callout {
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin: 20px 0;
+  font-size: 10pt;
+  font-family: sans-serif;
+}
+.callout.warn  { background: #fffbea; border: 1px solid #f6e05e; }
+.callout.info  { background: #ebf8ff; border: 1px solid #90cdf4; }
+.callout.good  { background: #f0fff4; border: 1px solid #68d391; }
+.callout.bad   { background: #fff5f5; border: 1px solid #fc8181; }
+.callout strong { font-weight: 700; }
+
+/* ── Equation note ── */
+.eq-note {
+  background: #f7fafc;
+  border-left: 4px solid #4a5568;
+  padding: 12px 16px;
+  margin: 14px 0;
+  font-size: 10.5pt;
+  border-radius: 0 6px 6px 0;
+}
+.eq-note .eq-label {
+  font-family: sans-serif;
+  font-size: 8.5pt;
+  font-weight: 700;
+  color: #4a5568;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+/* ── Score bar ── */
+.score-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+  font-family: sans-serif;
+  font-size: 9.5pt;
+}
+.score-label { width: 260px; flex-shrink: 0; }
+.score-bar-bg { flex: 1; background: #e2e8f0; border-radius: 4px; height: 10px; }
+.score-bar-fill { height: 10px; border-radius: 4px; }
+.score-val { width: 36px; text-align: right; font-weight: 700; }
+
+header {
+  background: #1a1a2e;
+  padding: 32px 40px;
+  text-align: center;
+}
+header h1 { color: #fff; font-size: 1.9rem; font-weight: 800; margin: 0; }
+header p  { color: #a0aec0; font-size: 0.95rem; margin: 8px 0 0; line-height: 1.6; }
+header .paper-title {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 0.82rem;
+  color: #7f9cf5;
+  font-style: italic;
+}
+@media print { header { display: none; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Publication &amp; Submission Venues</h1>
+  <p>Where to publish, submit, and share your STS research paper</p>
+  <span class="paper-title">Convergence Analysis of Backpropagation-Free Federated Learning via Auxiliary Networks</span>
+</header>
+<nav class="site-nav">
+  <a href="proof_review.html">Proof Review</a>
+  <a href="proof_fitness.html">Proof Fitness</a>
+  <a href="strategy.html">Strategy</a>
+  <a href="proof_paper.html">Proof Paper</a>
+  <a href="BP_Free_Split_Learning.pdf" target="_blank" style="color:#fbbf24;border-bottom-color:transparent;">↗ Paper (PDF)</a>
+</nav>
+<nav class="site-nav-kd">
+  <a href="kd_proof_review.html">KD Proof Review</a>
+  <a href="kd_proof_fitness.html" class="active">KD Proof Fitness</a>
+  <a href="kd_strategy.html">KD Strategy</a>
+  <a href="kd_proof_paper.html">KD Proof Paper</a>
+  <a href="KD_Split_Learning.pdf" target="_blank" style="color:#fbbf24;border-bottom-color:transparent;">↗ KD Paper (PDF)</a>
+</nav>
+
+<div class="page">
+
+<div class="page-header">
+  <h1>KD Paper — Proof Fitness Analysis</h1>
+  <div class="subtitle">Does Appendix A analyze Algorithm 1's EMA-guided distillation? A component-by-component evaluation.</div>
+  <div class="meta">Paper: <em>Mitigating Forgetting in Split Learning via Knowledge Distillation</em> &nbsp;·&nbsp; Reviewed May 2, 2026</div>
+</div>
+
+<div class="callout info">
+  <strong>What this page answers:</strong> The KD paper's main algorithmic contribution is sequential split learning with an EMA teacher and knowledge distillation loss. Appendix A provides a convergence proof. This page evaluates how well that proof actually fits the algorithm it claims to support — component by component.
+</div>
+
+<!-- Overall scores -->
+<h2>Fitness Scores at a Glance</h2>
+
+<div class="score-row">
+  <div class="score-label">Standard SGD mechanics (L-smoothness, variance)</div>
+  <div class="score-bar-bg"><div class="score-bar-fill" style="width:80%;background:#38a169;"></div></div>
+  <div class="score-val" style="color:#276749">8/10</div>
+</div>
+<div class="score-row">
+  <div class="score-label">Variance bound (σ² term)</div>
+  <div class="score-bar-bg"><div class="score-bar-fill" style="width:90%;background:#38a169;"></div></div>
+  <div class="score-val" style="color:#276749">9/10</div>
+</div>
+<div class="score-row">
+  <div class="score-label">Convergence rate form O(1/√KLR)</div>
+  <div class="score-bar-bg"><div class="score-bar-fill" style="width:70%;background:#68d391;"></div></div>
+  <div class="score-val" style="color:#276749">7/10</div>
+</div>
+<div class="score-row">
+  <div class="score-label">Heterogeneity bounding (ζ² term)</div>
+  <div class="score-bar-bg"><div class="score-bar-fill" style="width:60%;background:#d69e2e;"></div></div>
+  <div class="score-val" style="color:#744210">6/10</div>
+</div>
+<div class="score-row">
+  <div class="score-label">Algorithm structure match (sequential vs parallel)</div>
+  <div class="score-bar-bg"><div class="score-bar-fill" style="width:20%;background:#e53e3e;"></div></div>
+  <div class="score-val" style="color:#c53030">2/10</div>
+</div>
+<div class="score-row">
+  <div class="score-label">KD loss inclusion (L_KD in proof)</div>
+  <div class="score-bar-bg"><div class="score-bar-fill" style="width:0%;background:#e53e3e;"></div></div>
+  <div class="score-val" style="color:#c53030">0/10</div>
+</div>
+<div class="score-row">
+  <div class="score-label">EMA teacher modeling (β=0.99 update)</div>
+  <div class="score-bar-bg"><div class="score-bar-fill" style="width:0%;background:#e53e3e;"></div></div>
+  <div class="score-val" style="color:#c53030">0/10</div>
+</div>
+<div class="score-row">
+  <div class="score-label">Sequential forgetting analysis</div>
+  <div class="score-bar-bg"><div class="score-bar-fill" style="width:0%;background:#e53e3e;"></div></div>
+  <div class="score-val" style="color:#c53030">0/10</div>
+</div>
+
+
+<h2>Component-by-Component: Algorithm 1 vs. Appendix A</h2>
+
+<h3>Algorithm structure: sequential vs. parallel</h3>
+
+<div class="compare">
+  <div class="compare-box paper">
+    <div class="label">Algorithm 1 (what the paper does)</div>
+    K clients train <strong>one at a time</strong>. Each client trains for \(E_\text{train}\) epochs before the next client begins.<br><br>
+    In round \(r\): client 1 trains → client 2 trains → ... → client K trains → move to round \(r+1\).<br><br>
+    Only one client is active at any moment. Server does not receive concurrent updates from multiple clients.
+  </div>
+  <div class="compare-box proof">
+    <div class="label">Appendix A (what the proof analyzes)</div>
+    All K clients participate <strong>simultaneously</strong> each round (FedAvg-style).<br><br>
+    Eq. 15 sums over \(m = 1 \ldots K\) clients simultaneously. Eq. 18 decomposes the joint update of all K clients at once.<br><br>
+    This is the standard parallel SGD / FedAvg model from McMahan et al. 2017.
+  </div>
+</div>
+
+<p>This is the most consequential fitness failure. A sequential algorithm and a parallel algorithm have fundamentally different convergence behavior. In sequential training, after client \(k\) finishes, the server model may drift before client \(k+1\) starts — this is precisely the forgetting phenomenon the paper studies and mitigates with KD. The proof does not model this drift at all.</p>
+
+<h3>Knowledge distillation loss</h3>
+
+<div class="compare">
+  <div class="compare-box paper">
+    <div class="label">Algorithm 1 — combined loss</div>
+    \[\mathcal{L} = (1-\lambda_e)\mathcal{L}_{CE} + \lambda_e \mathcal{L}_{KD}\]
+    where \(\mathcal{L}_{KD} = T^2 \cdot KL(q^{(T)} \| p^{(T)})\)<br><br>
+    Warm-start schedule: \(\lambda_e = 0\) for \(e \leq w\), then ramps to \(\lambda_{\max}\).<br><br>
+    The KD term is the paper's <strong>main contribution</strong> for mitigating forgetting.
+  </div>
+  <div class="compare-box proof">
+    <div class="label">Appendix A — objective</div>
+    Analyzes a generic smooth function \(f(\theta)\).<br><br>
+    No \(\mathcal{L}_{KD}\), no KL divergence, no temperature \(T\), no \(\lambda_e\), no warm-start schedule.<br><br>
+    The proof would apply equally to any L-smooth SGD objective.
+  </div>
+</div>
+
+<p>The KD loss is the paper's entire contribution to mitigating forgetting. A fitness score of 0/10 is not an exaggeration — the object the proof is analyzing (\(f\)) is not the object the paper actually optimizes (\((1-\lambda_e)\mathcal{L}_{CE} + \lambda_e \mathcal{L}_{KD}\)). Moreover, \(\lambda_e\) changes during training (warm-start), making the objective non-stationary. Standard SGD convergence analysis assumes a fixed objective.</p>
+
+<h3>EMA teacher model</h3>
+
+<div class="compare">
+  <div class="compare-box paper">
+    <div class="label">Algorithm 1 — EMA update</div>
+    At the end of each epoch \(e\):<br>
+    \[\theta_t^e = \beta \cdot \theta_t^{e-1} + (1-\beta) \cdot \theta_s^e \quad (\beta = 0.99)\]<br>
+    The teacher is a running average of student weights — not trained by any gradient step.
+  </div>
+  <div class="compare-box proof">
+    <div class="label">Appendix A — teacher</div>
+    No teacher model of any kind appears.<br><br>
+    The symbol \(\beta_K\) appears in Eqs. 39–41 but is never defined and is not connected to the EMA decay \(\beta = 0.99\).<br><br>
+    An EMA update is a convex combination, not a gradient step — it is incompatible with the proof's gradient-descent framework.
+  </div>
+</div>
+
+<h3>Sequential forgetting and client drift</h3>
+
+<div class="compare">
+  <div class="compare-box paper">
+    <div class="label">What the paper studies</div>
+    When client \(k+1\) starts training, it sees a server model that was last updated during client \(k\)'s training. The server has "forgotten" client \(k+1\)'s data distribution.<br><br>
+    This is the core problem: sequential training causes the server to catastrophically forget earlier clients' representations as it adapts to each new client.
+  </div>
+  <div class="compare-box proof">
+    <div class="label">What the proof models</div>
+    A stationary loss landscape \(f\) with bounded heterogeneity \(\zeta^2\) across clients.<br><br>
+    No notion of the server drifting between one client's training period and the next. No forgetting, no non-stationarity across the sequential client schedule.
+  </div>
+</div>
+
+<p>The non-stationarity induced by sequential client training is the central phenomenon the paper identifies, studies, and addresses with KD. The proof does not model it. This is not a minor gap — it is the entire motivating problem of the paper, and the proof provides no theoretical support for the claim that KD mitigates it.</p>
+
+
+<h2>What the Proof Does Correctly Analyze</h2>
+
+<table class="map-table">
+  <tr><th>Proof component</th><th>Fitness</th><th>Comment</th></tr>
+  <tr>
+    <td>L-smoothness descent framework (Eq. 14)</td>
+    <td><span class="badge-fit">Correct</span></td>
+    <td>Standard, applies to any smooth f. Valid as a starting point.</td>
+  </tr>
+  <tr>
+    <td>Variance bound σ² (Eqs. 19–20)</td>
+    <td><span class="badge-fit">Correct</span></td>
+    <td>Standard stochastic gradient variance bound. Correctly applied.</td>
+  </tr>
+  <tr>
+    <td>Local drift bound (Eqs. 21–24)</td>
+    <td><span class="badge-fit">Correct</span></td>
+    <td>Bounding how far parameters drift over L local steps. Standard in multi-step SGD.</td>
+  </tr>
+  <tr>
+    <td>Heterogeneity term ζ² (Eqs. 25–27)</td>
+    <td><span class="badge-partial">Partial</span></td>
+    <td>ζ² captures cross-client data heterogeneity. Present and bounded, but sampling lemma assumes random selection (not sequential).</td>
+  </tr>
+  <tr>
+    <td>4-term decomposition (Eqs. 18, 29–36)</td>
+    <td><span class="badge-fit">Correct</span></td>
+    <td>Valid decomposition structure for parallel SGD analysis.</td>
+  </tr>
+  <tr>
+    <td>Weighted averaging / telescoping (Eqs. 48–52)</td>
+    <td><span class="badge-fit">Correct</span></td>
+    <td>Standard nonconvex convergence argument. Correct.</td>
+  </tr>
+  <tr>
+    <td>Convergence rate O(1/√KLR) (Eqs. 53–57)</td>
+    <td><span class="badge-partial">Right form</span></td>
+    <td>Correct asymptotic form for parallel FedAvg. Wrong for sequential single-client-per-round setting where the effective "K" is 1.</td>
+  </tr>
+  <tr>
+    <td>KD loss \(\mathcal{L}_{KD} = T^2 \cdot KL(q^{(T)}\|p^{(T)})\)</td>
+    <td><span class="badge-miss">Absent</span></td>
+    <td>Nowhere in the proof.</td>
+  </tr>
+  <tr>
+    <td>EMA teacher θ_t with β=0.99</td>
+    <td><span class="badge-miss">Absent</span></td>
+    <td>Nowhere in the proof.</td>
+  </tr>
+  <tr>
+    <td>Sequential client order (client 1 → 2 → ... → K)</td>
+    <td><span class="badge-miss">Absent</span></td>
+    <td>Proof assumes parallel simultaneous participation.</td>
+  </tr>
+  <tr>
+    <td>Warm-start schedule λ_e</td>
+    <td><span class="badge-miss">Absent</span></td>
+    <td>Non-stationary objective not modeled.</td>
+  </tr>
+  <tr>
+    <td>Sequential forgetting / non-stationarity</td>
+    <td><span class="badge-miss">Absent</span></td>
+    <td>The core motivating problem of the paper.</td>
+  </tr>
+</table>
+
+
+<h2>The Fundamental Problem: Proof is FedAvg Convergence, Not KD Convergence</h2>
+
+<div class="callout bad">
+  <strong>Bottom line:</strong> Appendix A proves that a generic parallel SGD algorithm with K clients, L local steps, and heterogeneous data converges at rate \(O(1/\sqrt{KLR})\). This is a correct and well-known result. It is not a convergence analysis for sequential split learning with knowledge distillation. The paper's main contribution — that EMA-guided distillation prevents forgetting in sequential split learning — receives zero theoretical support from the proof.
+</div>
+
+<p>The proof is not wrong within its own context. The L-smoothness framework, variance bounds, and convergence rate are all standard results correctly derived. The problem is that the context — parallel FedAvg on a smooth stationary objective — is not the context of the paper.</p>
+
+<h3>Why the empirical results still stand</h3>
+<p>The paper reports strong empirical results: +13.7 percentage points on CIFAR-10 compared to sequential split learning without KD (Table I). These results are independent of the proof. Experiments do not depend on the convergence analysis in Appendix A being correct. The empirical contribution is the paper's primary strength and is not affected by the proof issues identified here.</p>
+
+<div class="callout good">
+  <strong>What a correct proof would need to model, minimally:</strong>
+  <ol style="margin:8px 0 0; padding-left:20px; font-size:10pt;">
+    <li>Sequential training order: prove descent when exactly one client trains per round</li>
+    <li>EMA teacher: show that \(\theta_t = \beta\theta_t + (1-\beta)\theta_s\) provides a stable reference point (bounded \(\|\theta_t - \theta_s\|\))</li>
+    <li>KD loss regularity: show that \(\mathcal{L}_{KD} = T^2 \cdot KL(q^{(T)}\|p^{(T)})\) is smooth (or provide a bound on its gradient) so the combined loss is L-smooth</li>
+    <li>Warm-start non-stationarity: handle the changing weight \(\lambda_e\) — perhaps by analyzing each phase (pre-warm-start and post-warm-start) separately</li>
+  </ol>
+</div>
+
+</div>
+</body>
+</html>

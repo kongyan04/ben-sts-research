@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Proof Comparison &amp; Paper Writing Guide</title>
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)'],['$','$']], displayMath: [['\\[','\\]'],['$$','$$']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  font-family: "Georgia", serif;
+  font-size: 11.5pt;
+  line-height: 1.75;
+  color: #111;
+  background: #fff;
+  margin: 0; padding: 0;
+}
+.page { max-width: 720px; margin: 0 auto; padding: 48px 40px 80px; }
+
+nav.site-nav {
+  background: #1a1a2e;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 0 20px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  border-bottom: 1px solid #374151;
+  margin-bottom: 0;
+  border-radius: 8px 8px 0 0;
+}
+nav.site-nav a {
+  color: #9ca3af; text-decoration: none; font-size: 0.82rem;
+  font-weight: 600; padding: 11px 11px; border-bottom: 3px solid transparent;
+  font-family: sans-serif;
+}
+nav.site-nav a:hover { color: #fff; }
+nav.site-nav a.active { color: #fff; border-bottom-color: #7f9cf5; }
+@media print { nav.site-nav { display: none; } }
+
+nav.site-nav-kd {
+  background: #16213e;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 0 20px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  border-bottom: 1px solid #374151;
+  margin-bottom: 36px;
+  border-radius: 0 0 8px 8px;
+}
+nav.site-nav-kd a {
+  color: #9ca3af; text-decoration: none; font-size: 0.82rem;
+  font-weight: 600; padding: 11px 11px; border-bottom: 3px solid transparent;
+  font-family: sans-serif;
+}
+nav.site-nav-kd a:hover { color: #fff; }
+nav.site-nav-kd a.active { color: #fff; border-bottom-color: #f6ad55; }
+@media print { nav.site-nav-kd { display: none; } }
+
+header {
+  background: #1a1a2e;
+  padding: 32px 40px;
+  text-align: center;
+}
+header h1 { color: #fff; font-size: 1.9rem; font-weight: 800; margin: 0; }
+header p  { color: #a0aec0; font-size: 0.95rem; margin: 8px 0 0; line-height: 1.6; }
+header .paper-title {
+  display: inline-block; margin-top: 10px;
+  font-size: 0.82rem; color: #7f9cf5; font-style: italic;
+}
+@media print { header { display: none; } }
+
+.page-header { margin-bottom: 32px; border-bottom: 2px solid #1a1a2e; padding-bottom: 16px; }
+.page-header h1 { font-size: 18pt; font-weight: bold; margin: 0 0 4px; }
+.page-header .subtitle { font-size: 10.5pt; color: #555; font-style: italic; }
+.page-header .meta { font-size: 9.5pt; color: #888; font-family: sans-serif; margin-top: 6px; }
+
+h2 { font-size: 13pt; font-weight: bold; margin: 40px 0 10px; color: #1a1a2e; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; }
+h3 { font-size: 11.5pt; font-weight: bold; margin: 24px 0 6px; }
+p { margin: 0 0 12px; }
+ul, ol { margin: 0 0 14px; padding-left: 24px; }
+li { margin-bottom: 6px; }
+
+.vtable { width: 100%; border-collapse: collapse; font-family: sans-serif; font-size: 9.5pt; margin: 18px 0 28px; }
+.vtable th { background: #1a1a2e; color: #fff; padding: 9px 12px; text-align: left; font-weight: 600; }
+.vtable td { padding: 9px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+.vtable tr:nth-child(even) td { background: #f7fafc; }
+.tag { border-radius: 4px; padding: 2px 8px; font-weight: 600; white-space: nowrap; font-size: 8.5pt; font-family: sans-serif; }
+.tag-yes    { background: #c6f6d5; color: #276749; }
+.tag-border { background: #fefcbf; color: #744210; }
+.tag-no     { background: #fed7d7; color: #c53030; }
+.tag-strong { background: #1a1a2e; color: #fff; }
+
+.callout { border-radius: 8px; padding: 14px 18px; margin: 18px 0; font-size: 10pt; font-family: sans-serif; }
+.callout.good   { background: #f0fff4; border: 1px solid #68d391; }
+.callout.info   { background: #ebf8ff; border: 1px solid #90cdf4; }
+.callout.warn   { background: #fffbea; border: 1px solid #f6e05e; }
+.callout.purple { background: #faf5ff; border: 1px solid #d6bcfa; }
+
+/* two-column proof compare */
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0 28px; }
+.compare-card { border-radius: 10px; padding: 18px 20px; }
+.compare-card .compare-label { font-family: sans-serif; font-size: 8pt; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+.compare-card.bp { background: #ebf8ff; border: 2px solid #90cdf4; }
+.compare-card.kd { background: #fff5f5; border: 2px solid #fc8181; }
+.compare-card.bp .compare-label { color: #2c5282; }
+.compare-card.kd .compare-label { color: #c53030; }
+.compare-card ul { margin: 0; padding-left: 18px; font-size: 10pt; }
+.compare-card li { margin-bottom: 5px; }
+
+/* paper section blocks */
+.section-block { border-left: 4px solid #1a1a2e; background: #f7fafc;
+  padding: 14px 18px; margin: 14px 0; border-radius: 0 8px 8px 0; }
+.section-block .sec-label { font-family: sans-serif; font-size: 8.5pt; font-weight: 700;
+  color: #1a1a2e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.section-block .sec-title { font-size: 11pt; font-weight: bold; margin-bottom: 4px; }
+.section-block .sec-desc { font-size: 10pt; color: #333; margin: 0; }
+.section-block .sec-note { font-size: 9pt; color: #718096; font-style: italic;
+  font-family: sans-serif; margin-top: 6px; }
+
+.eq-note { background: #f7fafc; border-left: 4px solid #4a5568; padding: 12px 16px;
+  margin: 14px 0; font-size: 10.5pt; border-radius: 0 6px 6px 0; }
+.eq-note .eq-label { font-family: sans-serif; font-size: 8.5pt; font-weight: 700;
+  color: #4a5568; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+
+.steps { counter-reset: step; margin: 20px 0 28px; }
+.step { display: flex; gap: 16px; margin-bottom: 18px; align-items: flex-start; }
+.step-num {
+  background: #1a1a2e; color: #fff; font-family: sans-serif; font-weight: 700; font-size: 10pt;
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;
+}
+.step-body { flex: 1; }
+.step-body strong { display: block; margin-bottom: 3px; }
+.step-body p { margin: 0; font-size: 10.5pt; color: #333; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Publication &amp; Submission Venues</h1>
+  <p>Where to publish, submit, and share your STS research paper</p>
+  <span class="paper-title">Convergence Analysis of Backpropagation-Free Federated Learning via Auxiliary Networks</span>
+</header>
+<nav class="site-nav">
+  <a href="venues.html">Venues</a>
+  <a href="bp_venues.html">BP Venues</a>
+  <a href="proof_review.html">Proof Review</a>
+  <a href="proof_fitness.html">Proof Fitness</a>
+  <a href="strategy.html">Strategy</a>
+  <a href="proof_paper.html">Proof Paper</a>
+  <a href="paper_guide.html" class="active">Paper Guide</a>
+  <a href="BP_Free_Split_Learning.pdf" target="_blank" style="color:#fbbf24;border-bottom-color:transparent;">↗ Paper (PDF)</a>
+</nav>
+<nav class="site-nav-kd">
+  <a href="kd_venues.html">KD Venues</a>
+  <a href="kd_proof_review.html">KD Proof Review</a>
+  <a href="kd_proof_fitness.html">KD Proof Fitness</a>
+  <a href="kd_strategy.html">KD Strategy</a>
+  <a href="kd_proof_paper.html">KD Proof Paper</a>
+  <a href="KD_Split_Learning.pdf" target="_blank" style="color:#f6ad55;border-bottom-color:transparent;">↗ KD Paper (PDF)</a>
+</nav>
+
+<div class="page">
+
+<div class="page-header">
+  <h1>Proof Comparison &amp; Paper Writing Guide</h1>
+  <div class="subtitle">Side-by-side proof assessment and a step-by-step guide to turning your proof into a submission</div>
+  <div class="meta">Benjamin Qin &nbsp;·&nbsp; May 2026</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<h2>Part 1 — Side-by-Side Proof Comparison</h2>
+
+<p>You have completed proofs for both papers. This section compares them on every dimension that matters for deciding which to develop into a standalone submission first.</p>
+
+<table class="vtable">
+  <tr><th>Dimension</th><th>BP-Free Proof</th><th>KD Proof</th></tr>
+  <tr>
+    <td><strong>Structure</strong></td>
+    <td>3 independent component analyses (θ<sub>c</sub>, θ<sub>a</sub>, θ<sub>s</sub>) combined globally via Cauchy-Schwarz and AM-GM</td>
+    <td>Single FedAvg-style analysis with a 4-component client drift split; 5-term final bound</td>
+  </tr>
+  <tr>
+    <td><strong>Convergence rate</strong></td>
+    <td>O(1/√T) — dominant term, recovers standard split learning when ε → 0</td>
+    <td>O(1/√KLR) — dominant term, correct for non-convex federated optimization</td>
+  </tr>
+  <tr>
+    <td><strong>All steps valid?</strong></td>
+    <td><span class="tag tag-yes">Yes</span></td>
+    <td><span class="tag tag-yes">Yes</span></td>
+  </tr>
+  <tr>
+    <td><strong>Undefined parameter</strong></td>
+    <td>ε — auxiliary gradient bias (Assumption 4)</td>
+    <td>β<sub>K</sub> — distillation drift (appears in Eq. 39, 40, 57)</td>
+  </tr>
+  <tr>
+    <td><strong>Difficulty of defining the gap</strong></td>
+    <td><span class="tag tag-yes">Easier</span> — ε is a property of C<sub>a</sub> alone; self-contained</td>
+    <td><span class="tag tag-border">Harder</span> — β<sub>K</sub> must connect EMA decay + KD temperature, two interacting mechanisms</td>
+  </tr>
+  <tr>
+    <td><strong>Proof matches actual algorithm?</strong></td>
+    <td><span class="tag tag-yes">Yes</span> — analyzes the two-cut auxiliary network architecture</td>
+    <td><span class="tag tag-border">Partially</span> — analyzes parallel updates; EMA teacher and KD loss absent</td>
+  </tr>
+  <tr>
+    <td><strong>Documented open problem?</strong></td>
+    <td><span class="tag tag-yes">Yes</span> — DSL paper explicitly leaves convergence open</td>
+    <td><span class="tag tag-border">Implicit</span> — KD paper has an appendix but it doesn't analyze the real algorithm</td>
+  </tr>
+  <tr>
+    <td><strong>Best venue for the proof alone</strong></td>
+    <td>Involve (math journal) — theory is the entire contribution</td>
+    <td>JSR / CJSJ — empirical results (+13.7pp, +19.0pp) carry more weight than the proof</td>
+  </tr>
+  <tr>
+    <td><strong>Ready to submit after one fix?</strong></td>
+    <td><span class="tag tag-yes">Yes — define ε</span></td>
+    <td><span class="tag tag-border">Almost — define β<sub>K</sub>, then note EMA/KD absent as future work</span></td>
+  </tr>
+</table>
+
+<div class="callout good">
+  <strong>Recommendation: start with the BP-Free proof.</strong> One sentence defines ε, and the paper is submittable to JSR, CJSJ, and STS Scholar. The KD proof requires the same fix for β<sub>K</sub> but with the additional complexity of connecting it to two interacting components (EMA + KD temperature). Build the BP-Free paper first, then use what you learn to write the KD paper.
+</div>
+
+<div class="compare">
+  <div class="compare-card bp">
+    <div class="compare-label">BP-Free — Start Here</div>
+    <ul>
+      <li>One fix: define ε in one sentence</li>
+      <li>Fills a documented gap in a published paper</li>
+      <li>Three-component structure is novel and clear</li>
+      <li>O(1/√T) with explicit ε and σ² terms</li>
+      <li>Target: JSR → Involve (with Dr. Huang)</li>
+    </ul>
+  </div>
+  <div class="compare-card kd">
+    <div class="compare-label">KD — Build Second</div>
+    <ul>
+      <li>One fix: define β<sub>K</sub> (harder — needs EMA+KD connection)</li>
+      <li>Empirical results (+13.7pp) are the stronger story</li>
+      <li>Proof covers parallel baseline only</li>
+      <li>5-term bound is detailed once β<sub>K</sub> is defined</li>
+      <li>Target: JSR (empirical-led) → fix proof for Involve later</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<h2>Part 2 — Paper Writing Guide</h2>
+
+<p>This guide shows how to turn the BP-Free proof into a standalone submission. The same structure applies to the KD paper once β<sub>K</sub> is defined.</p>
+
+<h3>Paper Structure (6–8 pages for JSR; 10–12 for Involve)</h3>
+
+<div class="section-block">
+  <div class="sec-label">Section 1 &nbsp;·&nbsp; ~0.5 pages</div>
+  <div class="sec-title">Introduction</div>
+  <p class="sec-desc">Open with the problem: standard split learning requires a global backward pass, which is incompatible with federated settings where data cannot leave each client. State the gap: no convergence guarantee exists for the two-cut BP-free variant. State the contribution in one sentence: "We prove the first convergence theorem for backpropagation-free split learning with auxiliary networks, establishing an O(1/√T) rate." End with a one-paragraph paper outline.</p>
+  <p class="sec-note">Key sentence to include: "The convergence analysis for the DSL model with auxiliary networks is explicitly left open in [Zihad et al.] — this paper provides it."</p>
+</div>
+
+<div class="section-block">
+  <div class="sec-label">Section 2 &nbsp;·&nbsp; ~0.5 pages</div>
+  <div class="sec-title">Related Work</div>
+  <p class="sec-desc">Three short paragraphs: (1) Split learning and its variants — cite the original SL paper and DSL. (2) Federated learning convergence — cite FedAvg (McMahan et al. 2017) and SCAFFOLD. (3) Auxiliary network approaches in BP-free learning — cite the DSL paper and 1–2 others. The point is to show that convergence for this specific setting has not been proved.</p>
+  <p class="sec-note">Keep this short for JSR. Involve will want a more thorough review — expand it when writing the Involve version.</p>
+</div>
+
+<div class="section-block">
+  <div class="sec-label">Section 3 &nbsp;·&nbsp; ~1 page</div>
+  <div class="sec-title">Problem Setup &amp; Assumptions</div>
+  <p class="sec-desc">Describe the two-cut model: client side M<sub>c</sub>, auxiliary network C<sub>a</sub>, server side M<sub>s</sub>. State all four assumptions formally: (1) L-smoothness for each component, (2) bounded stochastic gradient variance σ², (3) bounded client heterogeneity, (4) auxiliary bias ε — <strong>this is where you add the definition of ε</strong>. Write it as: "Assumption 4 (Auxiliary Bias). There exists ε ≥ 0 such that at every training step, ‖Δ<sub>a</sub> − Δ<sub>traditional</sub>‖ ≤ ε, where Δ<sub>traditional</sub> denotes the gradient signal from a full backward pass through M<sub>b</sub>."</p>
+  <p class="sec-note">Add one sentence after Assumption 4: "In practice, ε decreases as C<sub>a</sub> is made more expressive — deriving a formal bound on ε in terms of C<sub>a</sub>'s architecture is a direction for future work." This honestly scopes the assumption.</p>
+</div>
+
+<div class="section-block">
+  <div class="sec-label">Section 4 &nbsp;·&nbsp; ~3 pages</div>
+  <div class="sec-title">Convergence Analysis</div>
+  <p class="sec-desc">Present the proof in four subsections matching Sections 2.1–2.4 of your draft: θ<sub>c</sub> convergence, θ<sub>a</sub> convergence, θ<sub>s</sub> convergence, and the global combination. End with Theorem 1 in a formal theorem box. After the theorem, add a <em>Remark</em>: "When ε → 0, Theorem 1 recovers the standard convergence rate of single-cut split learning, confirming BP-free training as a sound generalization."</p>
+  <p class="sec-note">For JSR: you can abbreviate Sections 2.2 and 2.3 with "by an analogous argument to Section 2.1." For Involve: write out all three in full — reviewers will check every step.</p>
+</div>
+
+<div class="section-block">
+  <div class="sec-label">Section 5 &nbsp;·&nbsp; ~0.5 pages</div>
+  <div class="sec-title">Design Implications</div>
+  <p class="sec-desc">Derive two actionable rules directly from Theorem 1: (1) For ε-accuracy, the auxiliary network must satisfy ε = O(√ε<sub>target</sub>) — so a tighter target accuracy demands a more expressive C<sub>a</sub>. (2) Once ε² falls below the variance floor σ², improving C<sub>a</sub> further yields no benefit — this gives a stopping condition for auxiliary network training. These are the results that make the theorem useful to practitioners.</p>
+  <p class="sec-note">This section is what separates a math paper from a useful paper. Even for JSR, include it — it shows you understand why the theorem matters.</p>
+</div>
+
+<div class="section-block">
+  <div class="sec-label">Section 6 &nbsp;·&nbsp; ~1 page (optional for JSR, recommended for Involve)</div>
+  <div class="sec-title">Experiments</div>
+  <p class="sec-desc">Two experiments are sufficient: (1) MNIST — show convergence curves for varying ε (approximate by controlling C<sub>a</sub> capacity). Verify the O(1/√T) rate visually. (2) UCI Heart Disease (4 real hospital institutions) — show that BP-free federated training achieves competitive accuracy relative to standard split learning. The goal is to show the theorem predicts real behavior, not to maximize accuracy.</p>
+  <p class="sec-note">For JSR submission: leave this section as "Experiments (preliminary)" with one figure if available. Rolling deadline means you can submit now and strengthen later.</p>
+</div>
+
+<div class="section-block">
+  <div class="sec-label">Section 7 &nbsp;·&nbsp; ~0.5 pages</div>
+  <div class="sec-title">Conclusion</div>
+  <p class="sec-desc">Restate the contribution in 2–3 sentences. Identify two concrete open problems: (1) deriving a formal bound on ε from C<sub>a</sub>'s architecture (Path 2 on the BP Venues page), and (2) extending the analysis to the sequential client setting of the KD paper. The second open problem connects the two papers and sets up your future work.</p>
+</div>
+
+
+<h3>Key Sentences to Write Before Anything Else</h3>
+
+<div class="callout info">
+  <strong>These four sentences unlock the paper.</strong> Write them first — everything else fills in around them.
+  <ol style="margin:10px 0 0; padding-left:20px;">
+    <li><strong>The gap sentence</strong> (Introduction): "The convergence of backpropagation-free split learning with auxiliary networks has not been formally analyzed."</li>
+    <li><strong>The contribution sentence</strong> (Introduction): "We prove an O(1/√T) convergence bound for BP-free split learning, establishing it as a mathematically rigorous alternative to standard split learning in federated settings."</li>
+    <li><strong>The ε definition</strong> (Assumption 4): "There exists ε ≥ 0 such that ‖Δ<sub>a</sub> − Δ<sub>traditional</sub>‖ ≤ ε at every training step."</li>
+    <li><strong>The recovery remark</strong> (after Theorem 1): "When ε → 0, the bound recovers the convergence rate of standard single-cut split learning."</li>
+  </ol>
+</div>
+
+
+<h3>Submission Checklist</h3>
+
+<table class="vtable">
+  <tr><th>Item</th><th>Status</th><th>Notes</th></tr>
+  <tr><td>Proof of θ<sub>c</sub>, θ<sub>a</sub>, θ<sub>s</sub> convergence</td><td><span class="tag tag-yes">Done</span></td><td>Sections 2.1–2.3 of your draft</td></tr>
+  <tr><td>Global combination (Theorem 1)</td><td><span class="tag tag-yes">Done</span></td><td>Section 2.4 of your draft</td></tr>
+  <tr><td>ε defined in Assumption 4</td><td><span class="tag tag-no">To do</span></td><td>One sentence — highest priority</td></tr>
+  <tr><td>Introduction with gap + contribution sentences</td><td><span class="tag tag-no">To do</span></td><td>~0.5 pages</td></tr>
+  <tr><td>Related work (3 short paragraphs)</td><td><span class="tag tag-no">To do</span></td><td>~0.5 pages; cite FedAvg, DSL, SL original</td></tr>
+  <tr><td>Recovery remark after Theorem 1</td><td><span class="tag tag-no">To do</span></td><td>One sentence</td></tr>
+  <tr><td>Design implications section</td><td><span class="tag tag-no">To do</span></td><td>~0.5 pages; derive the ε = O(√ε<sub>target</sub>) rule</td></tr>
+  <tr><td>Experiments (at least one figure)</td><td><span class="tag tag-border">Optional for JSR</span></td><td>Required for Involve and NeurIPS/ICML workshops</td></tr>
+  <tr><td>Conclusion with two open problems</td><td><span class="tag tag-no">To do</span></td><td>~0.5 pages; connect to KD paper as future work</td></tr>
+  <tr><td>arXiv post</td><td><span class="tag tag-no">To do</span></td><td>After ε is defined — establishes priority before STS</td></tr>
+</table>
+
+</div>
+</body>
+</html>

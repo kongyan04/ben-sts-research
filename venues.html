@@ -2,25 +2,122 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Publication Venues — STS Research</title>
+<title>BP-Free Paper — Venue Plan</title>
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)'],['$','$']], displayMath: [['\\[','\\]'],['$$','$$']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; }
 body {
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background: #f4f5f7;
-  color: #1a202c;
-  min-height: 100vh;
-  font-size: 14px;
+  font-family: "Georgia", serif;
+  font-size: 11.5pt;
+  line-height: 1.75;
+  color: #111;
+  background: #fff;
+  margin: 0; padding: 0;
 }
+.page { max-width: 720px; margin: 0 auto; padding: 48px 40px 80px; }
+
+nav.site-nav {
+  background: #1a1a2e;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 0 20px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  border-bottom: 1px solid #374151;
+  margin-bottom: 0;
+  border-radius: 8px 8px 0 0;
+}
+nav.site-nav a {
+  color: #9ca3af; text-decoration: none; font-size: 0.82rem;
+  font-weight: 600; padding: 11px 11px; border-bottom: 3px solid transparent;
+  font-family: sans-serif;
+}
+nav.site-nav a:hover { color: #fff; }
+nav.site-nav a.active { color: #fff; border-bottom-color: #7f9cf5; }
+@media print { nav.site-nav { display: none; } }
+
+nav.site-nav-kd {
+  background: #16213e;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 0 20px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  border-bottom: 1px solid #374151;
+  margin-bottom: 36px;
+  border-radius: 0 0 8px 8px;
+}
+nav.site-nav-kd a {
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 11px 11px;
+  border-bottom: 3px solid transparent;
+  font-family: sans-serif;
+}
+nav.site-nav-kd a:hover { color: #fff; }
+nav.site-nav-kd a.active { color: #fff; border-bottom-color: #f6ad55; }
+@media print { nav.site-nav-kd { display: none; } }
+
+.page-header { margin-bottom: 32px; border-bottom: 2px solid #1a1a2e; padding-bottom: 16px; }
+.page-header h1 { font-size: 18pt; font-weight: bold; margin: 0 0 4px; }
+.page-header .subtitle { font-size: 10.5pt; color: #555; font-style: italic; }
+.page-header .meta { font-size: 9.5pt; color: #888; font-family: sans-serif; margin-top: 6px; }
+
+h2 { font-size: 13pt; font-weight: bold; margin: 38px 0 10px; color: #1a1a2e; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; }
+h3 { font-size: 11.5pt; font-weight: bold; margin: 22px 0 6px; }
+p { margin: 0 0 12px; }
+ul, ol { margin: 0 0 14px; padding-left: 24px; }
+li { margin-bottom: 6px; }
+
+.callout { border-radius: 8px; padding: 14px 18px; margin: 18px 0; font-size: 10pt; font-family: sans-serif; }
+.callout.warn   { background: #fffbea; border: 1px solid #f6e05e; }
+.callout.info   { background: #ebf8ff; border: 1px solid #90cdf4; }
+.callout.good   { background: #f0fff4; border: 1px solid #68d391; }
+.callout.purple { background: #faf5ff; border: 1px solid #d6bcfa; }
+
+.vtable { width: 100%; border-collapse: collapse; font-family: sans-serif; font-size: 9.5pt; margin: 18px 0 28px; }
+.vtable th { background: #1a1a2e; color: #fff; padding: 9px 12px; text-align: left; font-weight: 600; }
+.vtable td { padding: 9px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+.vtable tr:nth-child(even) td { background: #f7fafc; }
+.tag { border-radius: 4px; padding: 2px 8px; font-weight: 600; white-space: nowrap; font-size: 8.5pt; font-family: sans-serif; }
+.tag-yes    { background: #c6f6d5; color: #276749; }
+.tag-strong { background: #1a1a2e; color: #fff; }
+.tag-border { background: #fefcbf; color: #744210; }
+.tag-no     { background: #fed7d7; color: #c53030; }
+
+.eq-note { background: #f7fafc; border-left: 4px solid #4a5568; padding: 12px 16px; margin: 14px 0; font-size: 10.5pt; border-radius: 0 6px 6px 0; }
+.eq-note .eq-label { font-family: sans-serif; font-size: 8.5pt; font-weight: 700; color: #4a5568; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+
+.steps { counter-reset: step; margin: 20px 0 28px; }
+.step { display: flex; gap: 16px; margin-bottom: 18px; align-items: flex-start; }
+.step-num {
+  background: #1a1a2e; color: #fff;
+  font-family: sans-serif; font-weight: 700; font-size: 10pt;
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 2px;
+}
+.step-body { flex: 1; }
+.step-body strong { display: block; margin-bottom: 3px; }
+.step-body p { margin: 0; font-size: 10.5pt; color: #333; }
 
 header {
   background: #1a1a2e;
   padding: 32px 40px;
   text-align: center;
 }
-header h1 { color: #fff; font-size: 1.9rem; font-weight: 800; }
-header p  { color: #a0aec0; font-size: 0.95rem; margin-top: 8px; line-height: 1.6; }
+header h1 { color: #fff; font-size: 1.9rem; font-weight: 800; margin: 0; }
+header p  { color: #a0aec0; font-size: 0.95rem; margin: 8px 0 0; line-height: 1.6; }
 header .paper-title {
   display: inline-block;
   margin-top: 10px;
@@ -28,193 +125,17 @@ header .paper-title {
   color: #7f9cf5;
   font-style: italic;
 }
-
-/* ── Nav tabs ── */
-.tabs {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  padding: 20px 20px 0;
-  flex-wrap: wrap;
-}
-.tab {
-  padding: 7px 18px;
-  border-radius: 99px;
-  font-size: 0.82rem;
-  font-weight: 700;
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: all 0.15s;
-}
-.tab:hover { opacity: 0.8; }
-.tab.all     { background: #1a1a2e; color: #fff; }
-.tab.strong  { background: #c6f6d5; color: #276749; border-color: #276749; }
-.tab.hs-only { background: #bee3f8; color: #2c5282; border-color: #3182ce; }
-.tab.moderate{ background: #fefcbf; color: #744210; border-color: #d69e2e; }
-.tab.ineligible { background: #fed7d7; color: #c53030; border-color: #c53030; }
-
-main {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 24px 20px 60px;
-}
-
-/* ── Section header ── */
-.section-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #718096;
-  margin: 32px 0 14px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid #e2e8f0;
-}
-
-/* ── Cards grid ── */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
-}
-
-/* ── Venue card ── */
-.card {
-  background: #fff;
-  border-radius: 14px;
-  padding: 20px 22px;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.08);
-  border-top: 4px solid #ccc;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  transition: box-shadow 0.15s;
-}
-.card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.13); }
-
-.card.strong   { border-top-color: #38a169; }
-.card.moderate { border-top-color: #d69e2e; }
-.card.ineligible { border-top-color: #e53e3e; opacity: 0.75; }
-
-.card-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 8px;
-}
-.card-name {
-  font-size: 1rem;
-  font-weight: 800;
-  color: #1a202c;
-  line-height: 1.3;
-}
-.card-name a {
-  color: inherit;
-  text-decoration: none;
-}
-.card-name a:hover { text-decoration: underline; color: #3b5bdb; }
-
-/* ── Badges ── */
-.badges { display: flex; flex-wrap: wrap; gap: 5px; }
-.badge {
-  font-size: 0.68rem;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 99px;
-  white-space: nowrap;
-}
-.badge.type-journal    { background: #e9d8fd; color: #553c9a; }
-.badge.type-conference { background: #bee3f8; color: #2c5282; }
-.badge.type-preprint   { background: #e2e8f0; color: #4a5568; }
-.badge.type-competition{ background: #feebc8; color: #744210; }
-.badge.hs-yes  { background: #c6f6d5; color: #276749; }
-.badge.hs-likely { background: #fefcbf; color: #744210; }
-.badge.hs-no   { background: #fed7d7; color: #c53030; }
-.badge.fit-high   { background: #1a1a2e; color: #fff; }
-.badge.fit-medium { background: #4a5568; color: #fff; }
-.badge.fit-low    { background: #a0aec0; color: #fff; }
-
-/* ── Card sections ── */
-.card-desc {
-  font-size: 0.86rem;
-  color: #4a5568;
-  line-height: 1.7;
-}
-.card-meta {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 3px 10px;
-  font-size: 0.82rem;
-}
-.meta-label { color: #a0aec0; font-weight: 600; white-space: nowrap; }
-.meta-value { color: #2d3748; }
-
-.card-action {
-  margin-top: auto;
-  padding-top: 10px;
-  border-top: 1px solid #f0f0f0;
-  font-size: 0.82rem;
-  font-weight: 700;
-}
-.card.strong   .card-action { color: #276749; }
-.card.moderate .card-action { color: #744210; }
-.card.ineligible .card-action { color: #c53030; }
-
-/* ── Priority badge (top right of card) ── */
-.priority {
-  font-size: 0.7rem;
-  font-weight: 800;
-  padding: 3px 9px;
-  border-radius: 6px;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-.p1 { background: #c6f6d5; color: #276749; }
-.p2 { background: #fefcbf; color: #744210; }
-.p3 { background: #e2e8f0; color: #4a5568; }
-
-/* ── Filter script hides cards ── */
-.card.hidden { display: none; }
-
-/* ── Summary bar ── */
-.summary {
-  background: #fff;
-  border-radius: 12px;
-  padding: 16px 24px;
-  margin-bottom: 8px;
-  display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-  font-size: 0.88rem;
-}
-.summary-item { display: flex; align-items: center; gap: 8px; }
-.summary-dot  { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
-
-.site-nav { background:#111827; display:flex; justify-content:center; padding:0 20px; flex-wrap:nowrap; overflow-x:auto; border-bottom:1px solid #374151; }
-.site-nav a { color:#9ca3af; text-decoration:none; font-size:0.82rem; font-weight:600; padding:11px 11px; border-bottom:3px solid transparent; white-space:nowrap; transition:color 0.15s; }
-.site-nav a:hover { color:#e5e7eb; }
-.site-nav a.active { color:#fff; border-bottom-color:#7f9cf5; }
-
-footer {
-  text-align: center;
-  color: #aaa;
-  font-size: 0.82rem;
-  padding: 24px;
-  border-top: 1px solid #e2e8f0;
-}
+@media print { header { display: none; } }
 </style>
 </head>
 <body>
-
 <header>
-  <h1>Publication & Submission Venues</h1>
+  <h1>Publication &amp; Submission Venues</h1>
   <p>Where to publish, submit, and share your STS research paper</p>
   <span class="paper-title">Convergence Analysis of Backpropagation-Free Federated Learning via Auxiliary Networks</span>
 </header>
-
 <nav class="site-nav">
-  <a href="venues.html" class="active">Venues</a>
+  <a href="venues.html" class="active">BP Venues</a>
   <a href="kd_venues.html">KD Venues</a>
   <a href="proof_review.html">Proof Review</a>
   <a href="proof_fitness.html">Proof Fitness</a>
@@ -222,620 +143,204 @@ footer {
   <a href="proof_paper.html">Proof Paper</a>
   <a href="BP_Free_Split_Learning.pdf" target="_blank" style="color:#fbbf24;border-bottom-color:transparent;">↗ Paper (PDF)</a>
 </nav>
-<nav style="background:#16213e;display:flex;justify-content:center;gap:0;padding:0 20px;flex-wrap:nowrap;overflow-x:auto;border-bottom:2px solid #374151;margin-bottom:0;">
-  <a href="kd_venues.html" style="color:#9ca3af;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 11px;border-bottom:3px solid transparent;display:inline-block;font-family:sans-serif;">KD Venues</a>
-  <a href="kd_proof_review.html" style="color:#9ca3af;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 11px;border-bottom:3px solid transparent;display:inline-block;font-family:sans-serif;">KD Proof Review</a>
-  <a href="kd_proof_fitness.html" style="color:#9ca3af;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 11px;border-bottom:3px solid transparent;display:inline-block;font-family:sans-serif;">KD Proof Fitness</a>
-  <a href="kd_strategy.html" style="color:#9ca3af;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 11px;border-bottom:3px solid transparent;display:inline-block;font-family:sans-serif;">KD Strategy</a>
-  <a href="kd_proof_paper.html" style="color:#9ca3af;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 11px;border-bottom:3px solid transparent;display:inline-block;font-family:sans-serif;">KD Proof Paper</a>
-  <a href="KD_Split_Learning.pdf" target="_blank" style="color:#f6ad55;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 11px;border-bottom:3px solid transparent;display:inline-block;font-family:sans-serif;">↗ KD Paper (PDF)</a>
+<nav class="site-nav-kd">
+  <a href="kd_venues.html">KD Venues</a>
+  <a href="kd_proof_review.html">KD Proof Review</a>
+  <a href="kd_proof_fitness.html">KD Proof Fitness</a>
+  <a href="kd_strategy.html">KD Strategy</a>
+  <a href="kd_proof_paper.html">KD Proof Paper</a>
+  <a href="KD_Split_Learning.pdf" target="_blank" style="color:#f6ad55;border-bottom-color:transparent;">↗ KD Paper (PDF)</a>
 </nav>
 
-<!-- ── Filter tabs ── -->
-<div class="tabs">
-  <div class="tab all" onclick="filter('all')">All venues</div>
-  <div class="tab strong" onclick="filter('strong')">Strong fit</div>
-  <div class="tab hs-only" onclick="filter('hs-only')">High School Only</div>
-  <div class="tab moderate" onclick="filter('moderate')">Possible</div>
-  <div class="tab ineligible" onclick="filter('ineligible')">Not eligible yet</div>
+<div class="page">
+
+<div class="page-header">
+  <h1>BP-Free Paper — Venue Plan</h1>
+  <div class="subtitle">Theory-first submission strategy for "Convergence Analysis for BP-Free with Auxiliary Network"</div>
+  <div class="meta">Benjamin Qin &nbsp;·&nbsp; Advised by Dr. Chao Huang &nbsp;·&nbsp; April 2026</div>
 </div>
 
-<main>
 
-<div class="summary">
-  <div class="summary-item"><div class="summary-dot" style="background:#38a169"></div> Strong fit — pursue these</div>
-  <div class="summary-item"><div class="summary-dot" style="background:#d69e2e"></div> Possible — worth trying</div>
-  <div class="summary-item"><div class="summary-dot" style="background:#e53e3e"></div> Not eligible until college</div>
+<!-- ══════════════════════════════════════════ -->
+<h2>Proof Quality Assessment</h2>
+
+<p>The BP-Free paper contains a complete convergence proof (Sections 2.1–2.4) with three component analyses and a global combination. Here is an honest assessment of its readiness for submission.</p>
+
+<div class="callout good">
+  <strong>What the proof does well.</strong> The structure is complete and valid: three independent convergence analyses for θ<sub>c</sub> (client), θ<sub>a</sub> (auxiliary), and θ<sub>s</sub> (server), each using the same L-smoothness + bias-variance decomposition + telescoping template, then combined globally via Cauchy-Schwarz and AM-GM. Theorem 1 is clearly stated with an O(1/√T) dominant rate. The proof recovers standard single-cut split learning convergence exactly when ε → 0, which is a meaningful sanity check. This structure is above the bar for JSR, CJSJ, STS Scholar, and JSHS as a standalone theory paper.
 </div>
 
-<!-- ════════════════════════════════════════════════ -->
-<div class="section-label">Do First — No Submission Barrier</div>
-<div class="grid">
-
-  <!-- arXiv -->
-  <div class="card strong" data-fit="strong" data-hs="true">
-    <div class="card-header">
-      <div class="card-name"><a href="https://arxiv.org" target="_blank">arXiv Preprint</a></div>
-      <div class="priority p1">Do Now</div>
-    </div>
-    <div class="badges">
-      <span class="badge type-preprint">Preprint</span>
-      <span class="badge hs-yes">✓ Any age</span>
-      <span class="badge fit-high">Best fit</span>
-    </div>
-    <div class="card-desc">
-      Free, open-access preprint server used by every ML and math researcher. Posting here establishes a public timestamp proving the idea is yours before any competition or journal submission. Not peer-reviewed, but universally respected. Almost every ICML/NeurIPS paper appears on arXiv before the conference.
-    </div>
-    <div class="card-meta">
-      <span class="meta-label">Cost</span><span class="meta-value">Free</span>
-      <span class="meta-label">Timeline</span><span class="meta-value">1–3 days after submission</span>
-      <span class="meta-label">Format</span><span class="meta-value">PDF (LaTeX preferred)</span>
-      <span class="meta-label">Section</span><span class="meta-value">cs.LG (Machine Learning) or math.OC (Optimization)</span>
-      <span class="meta-label">Requires</span><span class="meta-value">Endorsement from someone in the field (Dr. Huang can endorse)</span>
-    </div>
-    <div class="card-action">→ Post this before STS submission deadline</div>
-  </div>
-
+<div class="callout warn">
+  <strong>The one remaining gap: ε is asserted, not derived.</strong> Assumption 4 states ‖Δ<sub>a</sub> − Δ<sub>traditional</sub>‖ ≤ ε to bound the auxiliary gradient bias, but ε is never characterized in terms of C<sub>a</sub>'s architecture or training. A reviewer will ask: under what conditions does the auxiliary network satisfy this bound, and how large is ε in practice? Two valid paths:
+  <ul>
+    <li><strong>Path 1 (easier):</strong> Define ε explicitly as "the maximum gradient approximation error of C<sub>a</sub> relative to a full backward pass, achievable when C<sub>a</sub> is sufficiently expressive." This makes the theorem self-contained and is sufficient for JSR, CJSJ, STS Scholar, and JSHS immediately.</li>
+    <li><strong>Path 2 (stronger):</strong> Derive ε ≤ f(training loss of C<sub>a</sub>, Lipschitz constant L<sub>b</sub> of M<sub>b</sub>, dimension of the cut-layer activation). This tells practitioners how expressive C<sub>a</sub> must be to achieve ε-accuracy — the result that is actually missing from the DSL paper. Unlocks Involve, Davidson, and STS top-40.</li>
+  </ul>
 </div>
 
-<!-- ════════════════════════════════════════════════ -->
-<div class="section-label">High School Eligible — Strong Fit</div>
-<div class="grid">
+<table class="vtable">
+  <tr><th>Proof component</th><th>Status</th><th>Notes</th></tr>
+  <tr><td>θ<sub>c</sub> convergence (Section 2.1)</td><td><span class="tag tag-yes">Valid</span></td><td>L-smoothness + bias-variance + telescope — correct</td></tr>
+  <tr><td>θ<sub>a</sub> convergence (Section 2.2)</td><td><span class="tag tag-yes">Valid</span></td><td>Same template; auxiliary gradient drives θ<sub>c</sub> update — correctly noted</td></tr>
+  <tr><td>θ<sub>s</sub> convergence (Section 2.3)</td><td><span class="tag tag-yes">Valid</span></td><td>Identical structure to 2.1</td></tr>
+  <tr><td>Global combination (Section 2.4)</td><td><span class="tag tag-yes">Valid</span></td><td>Cauchy-Schwarz and AM-GM applied correctly to combine three components</td></tr>
+  <tr><td>Theorem 1 — O(1/√T) rate</td><td><span class="tag tag-yes">Valid</span></td><td>Bound stated with explicit constants; recovers standard split learning when ε → 0</td></tr>
+  <tr><td>ε-bias assumption (Assumption 4)</td><td><span class="tag tag-no">Undefined</span></td><td>‖Δ<sub>a</sub> − Δ<sub>traditional</sub>‖ ≤ ε is asserted — must be connected to C<sub>a</sub>'s architecture before submission</td></tr>
+</table>
 
-  <!-- Regeneron STS -->
-  <div class="card strong" data-fit="strong" data-hs="true">
-    <div class="card-header">
-      <div class="card-name"><a href="https://www.regeneron.com/science-talent-search" target="_blank">Regeneron Science Talent Search (STS)</a></div>
-      <div class="priority p1">Already Pursuing</div>
-    </div>
-    <div class="badges">
-      <span class="badge type-competition">Competition</span>
-      <span class="badge hs-yes">✓ High school seniors</span>
-      <span class="badge fit-high">Best fit</span>
-    </div>
-    <div class="card-desc">
-      Most prestigious high school science research competition in the US. Selects 300 Scholars and 40 Finalists. Winners receive up to $250,000. Judged by leading scientists. Your paper — first convergence theorem for BP-free federated learning — is a stronger submission than most: it's original theory, not an application project.
-    </div>
-    <div class="card-meta">
-      <span class="meta-label">Deadline</span><span class="meta-value">Mid-October (senior year) — confirm at regeneron.org/sts</span>
-      <span class="meta-label">Format</span><span class="meta-value">Research paper + application essays (250 words each)</span>
-      <span class="meta-label">Mentor</span><span class="meta-value">Dr. Chao Huang, Montclair State University</span>
-      <span class="meta-label">Status</span><span class="meta-value">All 7 sections drafted. Experiments need figures.</span>
-    </div>
-    <div class="card-action">→ Run experiments, add figures, submit this fall</div>
-  </div>
 
-  <!-- MIT URTC -->
-  <div class="card strong" data-fit="strong">
-    <div class="card-header">
-      <div class="card-name"><a href="https://urtc.mit.edu" target="_blank">MIT Undergraduate Research Technology Conference (URTC)</a></div>
-      <div class="priority p1">This Fall</div>
-    </div>
-    <div class="badges">
-      <span class="badge type-conference">IEEE Conference</span>
-      <span class="badge hs-likely">✓ Likely accepts HS — verify</span>
-      <span class="badge fit-high">Strong fit</span>
-    </div>
-    <div class="card-desc">
-      Annual conference organized by MIT graduate students. Papers published in IEEE Xplore — a real, citable, indexed publication. Acceptance rate ~50–70%. Most submissions are applied empirical projects; a formal convergence theorem stands out significantly. Verify current eligibility on the URTC website as policies can change year to year.
-    </div>
-    <div class="card-meta">
-      <span class="meta-label">Publisher</span><span class="meta-value">IEEE Xplore (indexed, citable)</span>
-      <span class="meta-label">Deadline</span><span class="meta-value">Typically August–September</span>
-      <span class="meta-label">Format</span><span class="meta-value">4–6 pages, IEEE two-column format</span>
-      <span class="meta-label">Acceptance</span><span class="meta-value">~50–70% — above average for a conference</span>
-      <span class="meta-label">Prestige</span><span class="meta-value">Good for undergrad/HS level. Not a top ML venue but IEEE-indexed.</span>
-    </div>
-    <div class="card-action">→ Verify HS eligibility at urtc.mit.edu, then submit this fall</div>
-  </div>
+<!-- ══════════════════════════════════════════ -->
+<h2>Venue Assessment — Theory-First Paper</h2>
 
-  <!-- Journal of Student Research -->
-  <div class="card strong" data-fit="strong" data-hs="true">
-    <div class="card-header">
-      <div class="card-name"><a href="https://www.jsr.org" target="_blank">Journal of Student Research (JSR)</a></div>
-      <div class="priority p2">This Fall</div>
-    </div>
-    <div class="badges">
-      <span class="badge type-journal">Peer-Reviewed Journal</span>
-      <span class="badge hs-yes">✓ High school through grad</span>
-      <span class="badge fit-high">Strong fit</span>
-    </div>
-    <div class="card-desc">
-      Explicitly designed for student researchers from high school through graduate level. Peer-reviewed, open access, indexed. Less prestigious than JMLR or SIAM but it is a legitimate peer-reviewed publication credit — meaningful on a college application and resume. Good parallel submission alongside URTC.
-    </div>
-    <div class="card-meta">
-      <span class="meta-label">Eligibility</span><span class="meta-value">High school, undergraduate, graduate</span>
-      <span class="meta-label">Cost</span><span class="meta-value">Free to submit</span>
-      <span class="meta-label">Timeline</span><span class="meta-value">Rolling submissions, ~2–4 month review</span>
-      <span class="meta-label">Format</span><span class="meta-value">Standard journal format, no strict page limit</span>
-      <span class="meta-label">Prestige</span><span class="meta-value">Moderate — student-focused but peer-reviewed and indexed</span>
-    </div>
-    <div class="card-action">→ Good parallel submission with URTC — different audiences</div>
-  </div>
+<p>Benjamin's standalone paper leads with the proof (Theorem 1) with potential experiments validating the O(1/√T) convergence rate. The following tables reflect this framing.</p>
 
-  <!-- NeurIPS FL Workshop -->
-  <div class="card strong" data-fit="strong">
-    <div class="card-header">
-      <div class="card-name"><a href="https://neurips.cc" target="_blank">NeurIPS Federated Learning Workshop</a></div>
-      <div class="priority p2">After Experiments</div>
-    </div>
-    <div class="badges">
-      <span class="badge type-conference">Workshop Paper</span>
-      <span class="badge hs-likely">No age restriction</span>
-      <span class="badge fit-high">Best technical fit</span>
-    </div>
-    <div class="card-desc">
-      NeurIPS is the most prestigious ML conference in the world. Its annual Federated Learning workshops (FL-NeurIPS, FL@FM-NeurIPS, etc.) are exactly the right audience for your paper — researchers who know FedAvg, non-IID data, and convergence proofs. Workshop papers don't carry the same weight as main track but are read by the right community. A few high school students have appeared at NeurIPS workshops. This is the most technically appropriate venue.
-    </div>
-    <div class="card-meta">
-      <span class="meta-label">Prestige</span><span class="meta-value">Very high — top ML conference globally</span>
-      <span class="meta-label">Deadline</span><span class="meta-value">Workshop CFPs typically September–October</span>
-      <span class="meta-label">Format</span><span class="meta-value">4–8 pages, NeurIPS style</span>
-      <span class="meta-label">Requires</span><span class="meta-value">Completed experiments with real figures</span>
-      <span class="meta-label">Competition</span><span class="meta-value">High — reviewed by active FL researchers</span>
-    </div>
-    <div class="card-action">→ Run experiments first, then target FL workshop at NeurIPS or ICML</div>
-  </div>
+<h3>Benjamin's Individual Submissions</h3>
 
+<table class="vtable">
+  <tr><th>Venue</th><th>Fit</th><th>What's needed</th><th>Notes</th></tr>
+  <tr>
+    <td><strong>JSR</strong></td>
+    <td><span class="tag tag-yes">Strong</span></td>
+    <td>Define ε via Path 1</td>
+    <td>A complete 3-component convergence proof with a clean global theorem is well above JSR's bar. Write a 6–8 page paper: two-cut split learning setting → assumptions → Theorem 1 → what ε means for C<sub>a</sub> design → optional experiment. Rolling deadline — submit as soon as ε is defined.</td>
+  </tr>
+  <tr>
+    <td><strong>CJSJ</strong></td>
+    <td><span class="tag tag-yes">Strong</span></td>
+    <td>Define ε via Path 1</td>
+    <td>3-page limit. State Theorem 1, explain the three-component structure (why two cuts require three separate analyses), give one design implication: the model converges no slower than standard split learning provided ε is small. Theory-only fits this format perfectly. Deadline ~September 30.</td>
+  </tr>
+  <tr>
+    <td><strong>JSHS</strong></td>
+    <td><span class="tag tag-yes">Strong</span></td>
+    <td>Define ε via Path 1</td>
+    <td>Oral format. Lead with the problem (BP requires a global backward pass — what if the data can't leave each client?), then show Theorem 1 as the guarantee that BP-free training still converges. The two-cut architecture is visual and easy to present. Stronger than experiments-only because the formal guarantee gives you something concrete to explain.</td>
+  </tr>
+  <tr>
+    <td><strong>STS — Scholar (top-300)</strong></td>
+    <td><span class="tag tag-yes">Strong</span></td>
+    <td>Define ε via Path 1; experiments optional</td>
+    <td>First convergence theorem for BP-free two-cut split learning, written independently by a high-school student with a faculty advisor. Theory-only submissions are uncommon at STS and stand out. The problem motivation (federated learning + privacy) is compelling to non-specialist judges. Strong Scholar submission as-is once ε is defined.</td>
+  </tr>
+  <tr>
+    <td><strong>STS — Finalist (top-40)</strong></td>
+    <td><span class="tag tag-border">Possible</span></td>
+    <td>ε via Path 2 + experiments showing convergence curves</td>
+    <td>Top-40 judges ask in-person questions. You need a defensible answer to "how small does ε need to be?" and "how did you choose C<sub>a</sub>'s architecture?" Path 2 (derive ε from C<sub>a</sub>'s training loss and cut-layer dimension) gives you those answers. Experiments connecting the O(1/√T) rate to real accuracy curves are the strongest complement.</td>
+  </tr>
+  <tr>
+    <td><strong>Involve</strong></td>
+    <td><span class="tag tag-border">Possible</span></td>
+    <td>ε via Path 2 — math journal requires full rigor; Dr. Huang as co-author</td>
+    <td>The most prestigious venue realistically available for this proof. Involve reviewers will ask: "What is ε and how do you know the auxiliary network achieves it?" Path 1 will not satisfy them. Path 2 — deriving a bound ε ≤ f(C<sub>a</sub> training loss, L<sub>b</sub>, dim(z)) — is what makes this a genuine mathematical contribution rather than an application of a known template. Dr. Huang as co-author is required.</td>
+  </tr>
+  <tr>
+    <td><strong>Davidson Fellows</strong></td>
+    <td><span class="tag tag-border">Possible</span></td>
+    <td>ε via Path 2 + clear individual contribution statement</td>
+    <td>Davidson requires a substantial individual contribution at near-graduate level. Framing: "I derived the first convergence analysis for the two-cut BP-free split learning algorithm." Path 2 makes this claim maximally credible — the ε derivation is the novel mathematical content that Benjamin uniquely contributed.</td>
+  </tr>
+</table>
+
+<h3>Multi-Author / Conference Track</h3>
+
+<table class="vtable">
+  <tr><th>Venue</th><th>Fit</th><th>What's needed</th><th>Notes</th></tr>
+  <tr>
+    <td><strong>arXiv preprint</strong></td>
+    <td><span class="tag tag-yes">Strong</span></td>
+    <td>Define ε (Path 1), then post</td>
+    <td>Establishes priority for the proof before STS submission. Dr. Huang's endorsement enables posting. Post immediately — does not block any other submission.</td>
+  </tr>
+  <tr>
+    <td><strong>NeurIPS / ICML FL Workshops</strong></td>
+    <td><span class="tag tag-yes">Strong</span></td>
+    <td>ε via Path 1 + at least one experiment</td>
+    <td>The federated learning workshop community is exactly the right audience. Theorem 1 is the story; experiments validate it. A high-school student proving convergence for BP-free federated training is unusual and will be noticed. Workshop CFPs typically open September–October.</td>
+  </tr>
+  <tr>
+    <td><strong>MIT URTC</strong></td>
+    <td><span class="tag tag-yes">Strong</span></td>
+    <td>ε via Path 1 + experiments; verify HS eligibility</td>
+    <td>IEEE-indexed conference paper. Theory + experiments in 4–6 IEEE-format pages. A formal convergence theorem distinguishes this from most URTC submissions which are empirical projects. Deadline typically August–September.</td>
+  </tr>
+  <tr>
+    <td><strong>IEEE TNNLS</strong></td>
+    <td><span class="tag tag-border">Possible</span></td>
+    <td>ε via Path 2 + full experiments</td>
+    <td>Journal-level rigor required. Path 2 needed for Assumption 4 to pass peer review. Long cycle (~6 months). Realistic as a college-level extension of this work with Dr. Huang leading.</td>
+  </tr>
+  <tr>
+    <td><strong>JMLR</strong></td>
+    <td><span class="tag tag-border">Long-term</span></td>
+    <td>Path 2 + extensive experiments + related work; post-college</td>
+    <td>Gold standard ML journal. Perfect technical fit — convergence theory for federated optimization appears frequently in JMLR. Realistic target in college after expanding the paper with Dr. Huang. Post arXiv now to establish priority.</td>
+  </tr>
+</table>
+
+
+<!-- ══════════════════════════════════════════ -->
+<h2>The One Action That Unlocks Everything</h2>
+
+<div class="eq-note">
+  <div class="eq-label">Define ε — Path 1 (minimum viable, do this week)</div>
+  Add one sentence before Theorem 1: <em>"Let ε denote the maximum gradient approximation error of the auxiliary network C<sub>a</sub> relative to a full backward pass through M<sub>b</sub>, i.e., ‖Δ<sub>a</sub> − Δ<sub>traditional</sub>‖ ≤ ε for all training steps."</em> This makes Assumption 4 self-contained. Unlocks JSR, CJSJ, JSHS, and STS Scholar immediately — no other changes needed.
 </div>
 
-<!-- ════════════════════════════════════════════════ -->
-<div class="section-label">High School Only — Built For You</div>
-<div class="grid">
-
-  <!-- Columbia Junior Science Journal -->
-  <div class="card strong" data-fit="strong" data-hs="true">
-    <div class="card-header">
-      <div class="card-name"><a href="http://cjsjournal.org" target="_blank">Columbia Junior Science Journal (CJSJ)</a></div>
-      <div class="priority p1">This Fall</div>
-    </div>
-    <div class="badges">
-      <span class="badge type-journal">Peer-Reviewed Journal</span>
-      <span class="badge hs-yes">✓ HS only</span>
-      <span class="badge fit-high">Strong fit</span>
-    </div>
-    <div class="card-desc">
-      A peer-reviewed journal run by Columbia University students, exclusively for high school researchers worldwide. Publishes original research papers (2–3 pages) and review articles (4–5 pages) across STEM and social sciences. Your convergence analysis — particularly the theorem statement and key design implications — can be condensed into a tight 3-page research paper. Submissions open July–September each year; the full volume releases the following March.
-    </div>
-    <div class="card-meta">
-      <span class="meta-label">Eligibility</span><span class="meta-value">High school students only (worldwide)</span>
-      <span class="meta-label">Deadline</span><span class="meta-value">~September 30 (opens July) — check cjsjournal.org</span>
-      <span class="meta-label">Format</span><span class="meta-value">2–3 pages (research paper) or 4–5 pages (review article)</span>
-      <span class="meta-label">Cost</span><span class="meta-value">Free</span>
-      <span class="meta-label">Note</span><span class="meta-value">Requires condensed version of your paper — write a 3-page "research letter" version</span>
-    </div>
-    <div class="card-action">→ Submit a condensed version this fall alongside STS</div>
-  </div>
-
-  <!-- Davidson Fellows -->
-  <div class="card strong" data-fit="strong" data-hs="true">
-    <div class="card-header">
-      <div class="card-name"><a href="https://www.davidsongifted.org/gifted-programs/fellows-scholarship/" target="_blank">Davidson Fellows Scholarship</a></div>
-      <div class="priority p2">2027 Cycle</div>
-    </div>
-    <div class="badges">
-      <span class="badge type-competition">Scholarship</span>
-      <span class="badge hs-yes">✓ Age 18 and under</span>
-      <span class="badge fit-high">Exceptional fit</span>
-    </div>
-    <div class="card-desc">
-      Awards $25,000, $50,000, and $100,000 to students 18 and under who have completed a significant piece of work reviewed at near-graduate level. Has a Mathematics category and a Science/Technology category — your paper fits both. Unlike STS it's not limited to high school seniors, and unlike most competitions it explicitly values depth over breadth and rewards theoretical contributions. The 2026 application is closed; the 2027 application opens Fall 2026.
-    </div>
-    <div class="card-meta">
-      <span class="meta-label">Awards</span><span class="meta-value">$25,000 / $50,000 / $100,000</span>
-      <span class="meta-label">Eligibility</span><span class="meta-value">US citizens/permanent residents, age 18 or under</span>
-      <span class="meta-label">2027 app opens</span><span class="meta-value">Fall 2026</span>
-      <span class="meta-label">Category</span><span class="meta-value">Mathematics or Science/Technology</span>
-      <span class="meta-label">Bar</span><span class="meta-value">Work reviewed at "college graduate level" — your paper qualifies</span>
-    </div>
-    <div class="card-action">→ Apply in Fall 2026 for the 2027 cycle — top-tier prize for this work</div>
-  </div>
-
-  <!-- JSHS -->
-  <div class="card strong" data-fit="strong" data-hs="true">
-    <div class="card-header">
-      <div class="card-name"><a href="https://www.jshs.org" target="_blank">Junior Science & Humanities Symposium (JSHS)</a></div>
-      <div class="priority p2">Regional 2027</div>
-    </div>
-    <div class="badges">
-      <span class="badge type-competition">Competition</span>
-      <span class="badge hs-yes">✓ Grades 9–12</span>
-      <span class="badge fit-medium">Good fit</span>
-    </div>
-    <div class="card-desc">
-      DoD-sponsored national research competition for high school students (grades 9–12, US citizens). Students present original research and compete regionally, with top students advancing to the national symposium. Has CS, math, and engineering categories. Note: the national JSHS program is currently suspended; regional programs are continuing independently in many states. Check your state's regional host for 2027 participation.
-    </div>
-    <div class="card-meta">
-      <span class="meta-label">Eligibility</span><span class="meta-value">Grades 9–12, US citizens or permanent residents</span>
-      <span class="meta-label">Sponsor</span><span class="meta-value">US Department of Defense</span>
-      <span class="meta-label">Format</span><span class="meta-value">Oral presentation + research paper</span>
-      <span class="meta-label">Status</span><span class="meta-value">National program suspended; regional programs active — check jshs.org</span>
-      <span class="meta-label">Prizes</span><span class="meta-value">Scholarships + invitation to national (when active)</span>
-    </div>
-    <div class="card-action">→ Check your regional JSHS host — many states still running independently</div>
-  </div>
-
-  <!-- Regeneron ISEF -->
-  <div class="card moderate" data-fit="moderate" data-hs="true">
-    <div class="card-header">
-      <div class="card-name"><a href="https://www.societyforscience.org/isef/" target="_blank">Regeneron ISEF</a></div>
-      <div class="priority p3">Different format</div>
-    </div>
-    <div class="badges">
-      <span class="badge type-competition">Science Fair</span>
-      <span class="badge hs-yes">✓ High school</span>
-      <span class="badge fit-medium">Possible — different format</span>
-    </div>
-    <div class="card-desc">
-      The world's largest international pre-college science competition. Unlike STS (paper-based), ISEF is project/poster-based — judges visit your display booth. Your research fits the Computer Science & Systems Software or Mathematics categories. ISEF is more hands-on/demo oriented, so having running experiment code to show would strengthen your entry. Must qualify through a local/regional affiliated fair first.
-    </div>
-    <div class="card-meta">
-      <span class="meta-label">Format</span><span class="meta-value">Project display + oral judging, not a submitted paper</span>
-      <span class="meta-label">Path</span><span class="meta-value">Must qualify through local affiliated science fair first</span>
-      <span class="meta-label">2026 event</span><span class="meta-value">May 9–15, 2026, Phoenix Convention Center</span>
-      <span class="meta-label">Categories</span><span class="meta-value">Computer Science & Systems Software; Mathematics</span>
-      <span class="meta-label">Note</span><span class="meta-value">Parallel track to STS — same research, different format</span>
-    </div>
-    <div class="card-action">→ Find your local affiliated fair — can run in parallel with STS</div>
-  </div>
-
+<div class="eq-note">
+  <div class="eq-label">Derive ε — Path 2 (strongest version, needed for Involve and STS top-40)</div>
+  Show that \(\varepsilon \leq f(\varepsilon_{\text{aux}},\ L_b,\ \dim(z))\) where ε<sub>aux</sub> is C<sub>a</sub>'s training loss, L<sub>b</sub> is the Lipschitz constant of M<sub>b</sub>, and dim(z) is the cut-layer activation size. This tells a practitioner exactly how expressive C<sub>a</sub> needs to be to guarantee ε-accuracy. It is the result the DSL paper gestures toward informally ("the client's loss is aligned with the final task") but never formalizes. Ask Dr. Huang whether this is derivable given C<sub>a</sub>'s architecture — a 30-minute conversation is the highest-value use of time right now.
 </div>
 
-<!-- ════════════════════════════════════════════════ -->
-<div class="section-label">High School Eligible — With Dr. Huang as Co-Author</div>
-<div class="grid">
 
-  <!-- Involve -->
-  <div class="card strong" data-fit="strong" data-hs="true">
-    <div class="card-header">
-      <div class="card-name"><a href="https://msp.org/involve/about/journal/about.html" target="_blank">Involve: A Journal of Mathematics</a></div>
-      <div class="priority p2">With Dr. Huang</div>
+<!-- ══════════════════════════════════════════ -->
+<h2>Recommended Submission Order</h2>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <strong>Define ε via Path 1 (this week)</strong>
+      <p>One sentence added to the proof. Benjamin can do this alone — no Dr. Huang involvement required. Immediately makes the paper submittable to JSR, CJSJ, and STS Scholar.</p>
     </div>
-    <div class="badges">
-      <span class="badge type-journal">Math Journal</span>
-      <span class="badge hs-yes">✓ All levels w/ mentor</span>
-      <span class="badge fit-medium">Good fit</span>
-    </div>
-    <div class="card-desc">
-      A legitimate peer-reviewed mathematics journal published by Mathematical Sciences Publishers. Its explicit mission is to involve students at all levels in research. Requires a faculty mentor as co-author (Dr. Huang qualifies perfectly). This would be a rare and impressive achievement — a published math journal paper in high school. The convergence analysis (Lemmas 1–4 + Theorem 1) is exactly the type of content they publish.
-    </div>
-    <div class="card-meta">
-      <span class="meta-label">Publisher</span><span class="meta-value">Mathematical Sciences Publishers (MSP)</span>
-      <span class="meta-label">Indexed</span><span class="meta-value">MathSciNet, zbMATH, Scopus</span>
-      <span class="meta-label">Format</span><span class="meta-value">Standard math paper, LaTeX</span>
-      <span class="meta-label">Timeline</span><span class="meta-value">Rolling, ~3–6 month review</span>
-      <span class="meta-label">Requires</span><span class="meta-value">Dr. Huang as co-author; polished proofs</span>
-    </div>
-    <div class="card-action">→ Ask Dr. Huang if he'd co-author — rare HS math journal publication</div>
   </div>
-
-  <!-- SIAM SIMODS -->
-  <div class="card moderate" data-fit="moderate">
-    <div class="card-header">
-      <div class="card-name"><a href="https://www.siam.org/publications/journals/siam-journal-on-mathematics-of-data-science-simods" target="_blank">SIAM Journal on Mathematics of Data Science (SIMODS)</a></div>
-      <div class="priority p3">Ambitious</div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <strong>Submit to JSR (rolling deadline)</strong>
+      <p>Write a 6–8 page standalone theory paper: two-cut BP-free setting → three-component proof → Theorem 1 → design implication (what ε means for C<sub>a</sub> capacity). Optionally add one MNIST or UCI Heart Disease convergence curve. No co-author required.</p>
     </div>
-    <div class="badges">
-      <span class="badge type-journal">Math Journal</span>
-      <span class="badge hs-likely">No age rule</span>
-      <span class="badge fit-high">Best math fit</span>
-    </div>
-    <div class="card-desc">
-      The most mathematically appropriate journal for this paper. SIMODS publishes exactly this type of work — convergence analysis, optimization theory, and the mathematics of ML. No explicit age restriction, but the bar is very high and typically requires full experiments, complete proofs with no gaps, and polished exposition at a professional level. With Dr. Huang leading, not impossible.
-    </div>
-    <div class="card-meta">
-      <span class="meta-label">Publisher</span><span class="meta-value">Society for Industrial and Applied Mathematics (SIAM)</span>
-      <span class="meta-label">Prestige</span><span class="meta-value">Very high in applied math</span>
-      <span class="meta-label">Timeline</span><span class="meta-value">~6–12 month review</span>
-      <span class="meta-label">Requires</span><span class="meta-value">Full experiments, airtight proofs, Dr. Huang as lead</span>
-    </div>
-    <div class="card-action">→ Long-term goal; realistic after college with Dr. Huang</div>
   </div>
-
-</div>
-
-<!-- ════════════════════════════════════════════════ -->
-<div class="section-label">Possible — No Age Rule, High Bar</div>
-<div class="grid">
-
-  <!-- JMLR -->
-  <div class="card moderate" data-fit="moderate">
-    <div class="card-header">
-      <div class="card-name"><a href="https://jmlr.org" target="_blank">Journal of Machine Learning Research (JMLR)</a></div>
-      <div class="priority p3">Long-term</div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <strong>Submit CJSJ 3-page version (deadline ~September 30)</strong>
+      <p>Condense to: problem (1 paragraph) → Theorem 1 → interpretation of ε, σ², variance terms → one design rule. This is the most theory-friendly venue at 3 pages — don't add experiments here.</p>
     </div>
-    <div class="badges">
-      <span class="badge type-journal">ML Journal</span>
-      <span class="badge hs-likely">No age rule</span>
-      <span class="badge fit-high">Perfect technical fit</span>
-    </div>
-    <div class="card-desc">
-      The gold standard open-access ML journal. No explicit age restriction — the work is judged purely on merit. Your paper's topic (federated learning convergence) appears frequently in JMLR. However, the bar is extremely high: reviewers expect complete, polished experiments, extensive related work, and airtight proofs. Realistic as a college student after expanding the paper.
-    </div>
-    <div class="card-meta">
-      <span class="meta-label">Prestige</span><span class="meta-value">Highest in ML — equivalent to top conferences</span>
-      <span class="meta-label">Cost</span><span class="meta-value">Free to submit and publish (open access)</span>
-      <span class="meta-label">Timeline</span><span class="meta-value">Highly variable, often 6–18 months</span>
-      <span class="meta-label">Requires</span><span class="meta-value">Complete experiments, extensive writing, strong related work</span>
-    </div>
-    <div class="card-action">→ Aim for this in college; post on arXiv first to establish priority</div>
   </div>
-
-  <!-- ICML / ICLR workshops -->
-  <div class="card moderate" data-fit="moderate">
-    <div class="card-header">
-      <div class="card-name"><a href="https://icml.cc" target="_blank">ICML / ICLR Federated Learning Workshops</a></div>
-      <div class="priority p2">After Experiments</div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <strong>Meet with Dr. Huang — attempt Path 2 (before STS deadline)</strong>
+      <p>Ask: can ε be bounded in terms of C<sub>a</sub>'s training loss, L<sub>b</sub>, and dim(z)? His answer determines whether Involve and STS top-40 are realistic. If yes, add the ε bound as a lemma before Theorem 1 and resubmit to JSR with the stronger version.</p>
     </div>
-    <div class="badges">
-      <span class="badge type-conference">Workshop Papers</span>
-      <span class="badge hs-likely">No age restriction</span>
-      <span class="badge fit-high">Strong technical fit</span>
-    </div>
-    <div class="card-desc">
-      ICML (International Conference on Machine Learning) and ICLR (International Conference on Learning Representations) are the two other top ML conferences alongside NeurIPS. Both host annual federated learning workshops. No age rules. The FL community is active and would engage seriously with a convergence result. Requires completed experiments and polished writing.
-    </div>
-    <div class="card-meta">
-      <span class="meta-label">ICML deadline</span><span class="meta-value">Workshop CFPs typically January–February</span>
-      <span class="meta-label">ICLR deadline</span><span class="meta-value">Workshop CFPs typically January–February</span>
-      <span class="meta-label">Format</span><span class="meta-value">4–8 pages, respective style files</span>
-      <span class="meta-label">Competition</span><span class="meta-value">High — but workshop track is more accessible than main</span>
-    </div>
-    <div class="card-action">→ Parallel target with NeurIPS FL workshop once experiments done</div>
   </div>
-
-</div>
-
-<!-- ════════════════════════════════════════════════ -->
-<div class="section-label">Not Eligible Until College — Keep in Mind</div>
-<div class="grid">
-
-  <!-- URTC (if undergrad only) -->
-  <div class="card ineligible" data-fit="ineligible">
-    <div class="card-header">
-      <div class="card-name">SIAM Undergraduate Research Online (SIURO)</div>
-      <div class="priority p3">College</div>
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <strong>Post to arXiv + submit NeurIPS/ICML FL workshop (fall)</strong>
+      <p>Post arXiv as soon as ε is defined to establish priority. Then submit to NeurIPS or ICML FL workshop — run at least one convergence experiment (MNIST is sufficient) to accompany the theorem.</p>
     </div>
-    <div class="badges">
-      <span class="badge type-journal">Journal</span>
-      <span class="badge hs-no">✗ Undergrad only</span>
-      <span class="badge fit-high">Strong fit</span>
-    </div>
-    <div class="card-desc">
-      SIAM's dedicated journal for undergraduate applied math research. Very strong fit for this paper's content. Submit freshman or sophomore year of college — by then you can add more experiments and polish the proof appendix.
-    </div>
-    <div class="card-meta">
-      <span class="meta-label">Eligible</span><span class="meta-value">Undergraduate students only</span>
-      <span class="meta-label">Prestige</span><span class="meta-value">Strong for undergrad level, SIAM-backed</span>
-    </div>
-    <div class="card-action">→ Submit freshman year of college</div>
   </div>
-
-  <!-- Rose-Hulman -->
-  <div class="card ineligible" data-fit="ineligible">
-    <div class="card-header">
-      <div class="card-name">Rose-Hulman Undergraduate Mathematics Journal</div>
-      <div class="priority p3">College</div>
-    </div>
-    <div class="badges">
-      <span class="badge type-journal">Math Journal</span>
-      <span class="badge hs-no">✗ Undergrad only</span>
-      <span class="badge fit-medium">Good fit</span>
-    </div>
-    <div class="card-desc">
-      Well-respected undergraduate math journal. Applied math and proof-based papers are welcome. Good fallback if SIURO is competitive.
-    </div>
-    <div class="card-meta">
-      <span class="meta-label">Eligible</span><span class="meta-value">Undergraduate students only</span>
-    </div>
-    <div class="card-action">→ Backup to SIURO in college</div>
-  </div>
-
-  <!-- Pi Mu Epsilon -->
-  <div class="card ineligible" data-fit="ineligible">
-    <div class="card-header">
-      <div class="card-name">Pi Mu Epsilon Journal</div>
-      <div class="priority p3">College</div>
-    </div>
-    <div class="badges">
-      <span class="badge type-journal">Math Journal</span>
-      <span class="badge hs-no">✗ PME members only</span>
-      <span class="badge fit-medium">Moderate fit</span>
-    </div>
-    <div class="card-desc">
-      Journal of the Pi Mu Epsilon undergraduate math honor society. Requires PME membership (join in college). Smaller audience than SIURO but well-known in math departments.
-    </div>
-    <div class="card-meta">
-      <span class="meta-label">Eligible</span><span class="meta-value">PME members (undergraduate honor society)</span>
-    </div>
-    <div class="card-action">→ Join PME in college, submit alongside SIURO</div>
-  </div>
-
-  <!-- MAA MathFest -->
-  <div class="card ineligible" data-fit="ineligible">
-    <div class="card-header">
-      <div class="card-name"><a href="https://maa.org/event/mathfest/" target="_blank">MAA MathFest — Student Paper Sessions</a></div>
-      <div class="priority p3">College</div>
-    </div>
-    <div class="badges">
-      <span class="badge type-conference">Conference</span>
-      <span class="badge hs-no">✗ Undergrad/grad</span>
-      <span class="badge fit-high">Strong fit</span>
-    </div>
-    <div class="card-desc">
-      MAA's annual summer conference (MathFest 2026 is in Boston, August 5–8). Hosts undergraduate and Pi Mu Epsilon student paper sessions — 15-minute talks judged by mathematicians, with outstanding presentation awards. The applied math / convergence analysis style of your paper fits well. Paper sessions are for undergraduate students; graduate students can participate in other session types.
-    </div>
-    <div class="card-meta">
-      <span class="meta-label">Eligible</span><span class="meta-value">Undergraduate and graduate students</span>
-      <span class="meta-label">2026 location</span><span class="meta-value">Boston, MA — August 5–8, 2026</span>
-      <span class="meta-label">Format</span><span class="meta-value">15-minute oral presentation</span>
-    </div>
-    <div class="card-action">→ Present freshman or sophomore year of college</div>
-  </div>
-
-  <!-- Young Mathematicians Conference -->
-  <div class="card ineligible" data-fit="ineligible">
-    <div class="card-header">
-      <div class="card-name"><a href="https://ymc.osu.edu" target="_blank">Young Mathematicians Conference (YMC) — Ohio State</a></div>
-      <div class="priority p3">College</div>
-    </div>
-    <div class="badges">
-      <span class="badge type-conference">Conference</span>
-      <span class="badge hs-no">✗ Undergrad only</span>
-      <span class="badge fit-high">Strong fit</span>
-    </div>
-    <div class="card-desc">
-      A premier annual undergraduate math research conference at Ohio State. About 65 students are invited each year to present talks and posters. Fully funded travel and accommodation. The convergence analysis content of your paper is exactly the kind of work they feature. Apply in sophomore or junior year with the expanded version of the paper.
-    </div>
-    <div class="card-meta">
-      <span class="meta-label">Eligible</span><span class="meta-value">Undergraduate students only</span>
-      <span class="meta-label">Funding</span><span class="meta-value">Travel + accommodation covered for invited students</span>
-      <span class="meta-label">Timing</span><span class="meta-value">Held annually in late July/early August</span>
-    </div>
-    <div class="card-action">→ Strong target for sophomore/junior year of college</div>
-  </div>
-
-  <!-- Harvard College Mathematics Review -->
-  <div class="card ineligible" data-fit="ineligible">
-    <div class="card-header">
-      <div class="card-name"><a href="https://legacy-www.math.harvard.edu/hcmr/index.html" target="_blank">Harvard College Mathematics Review (HCMR)</a></div>
-      <div class="priority p3">College</div>
-    </div>
-    <div class="badges">
-      <span class="badge type-journal">Math Journal</span>
-      <span class="badge hs-no">✗ Undergrad only</span>
-      <span class="badge fit-medium">Partial fit</span>
-    </div>
-    <div class="card-desc">
-      A semiannual expository math journal written and edited by Harvard undergraduates, targeted at advanced undergraduates nationally. Publishes accessible treatments of advanced mathematics rather than original research per se. Your paper's design implications section (Section 5) could be adapted into an expository article explaining the math of federated learning convergence for a math-undergraduate audience.
-    </div>
-    <div class="card-meta">
-      <span class="meta-label">Eligible</span><span class="meta-value">Undergraduate students</span>
-      <span class="meta-label">Type</span><span class="meta-value">Expository — accessible explanations, not raw research</span>
-      <span class="meta-label">Fit</span><span class="meta-value">Adapt Section 5 into an expository piece</span>
-    </div>
-    <div class="card-action">→ Write an expository version of the convergence result in college</div>
-  </div>
-
-  <!-- AAAI Undergrad -->
-  <div class="card ineligible" data-fit="ineligible">
-    <div class="card-header">
-      <div class="card-name">AAAI Undergraduate Consortium</div>
-      <div class="priority p3">College</div>
-    </div>
-    <div class="badges">
-      <span class="badge type-conference">Workshop</span>
-      <span class="badge hs-no">✗ Undergrad only</span>
-      <span class="badge fit-medium">Good fit</span>
-    </div>
-    <div class="card-desc">
-      AAAI (Association for the Advancement of AI) hosts an undergraduate research consortium. Good visibility in the AI community. Not a full paper venue but a 2-page abstract + poster presentation at a major AI conference.
-    </div>
-    <div class="card-meta">
-      <span class="meta-label">Eligible</span><span class="meta-value">Undergraduate students only</span>
-      <span class="meta-label">Format</span><span class="meta-value">2-page extended abstract</span>
-    </div>
-    <div class="card-action">→ Good for early college networking at AAAI</div>
-  </div>
-
-</div>
-
-<!-- ════════════════════════════════════════════════ -->
-<div class="section-label">Not the Right Fit — Why</div>
-<div class="grid">
-
-  <div class="card ineligible" data-fit="ineligible">
-    <div class="card-header">
-      <div class="card-name">AMS Journals (Proceedings, Transactions)</div>
-      <div class="priority p3">Wrong fit</div>
-    </div>
-    <div class="badges">
-      <span class="badge type-journal">Pure Math</span>
-      <span class="badge hs-no">Wrong field</span>
-    </div>
-    <div class="card-desc">
-      American Mathematical Society journals publish pure mathematics — number theory, topology, algebra, geometry. A convergence proof for a neural network algorithm would be desk-rejected not because of quality but because it's applied math / ML theory, not pure math. The AMS is simply the wrong home for this type of work.
-    </div>
-    <div class="card-action">→ Not applicable — wrong mathematical subfield</div>
-  </div>
-
-  <div class="card ineligible" data-fit="ineligible">
-    <div class="card-header">
-      <div class="card-name">MAA (American Mathematical Monthly, Math Magazine)</div>
-      <div class="priority p3">Wrong fit</div>
-    </div>
-    <div class="badges">
-      <span class="badge type-journal">Expository</span>
-      <span class="badge hs-no">Wrong format</span>
-    </div>
-    <div class="card-desc">
-      MAA journals are expository — they publish elegant explanations and accessible treatments of mathematics for a broad audience, not original research results. The American Mathematical Monthly publishes beautiful proofs and mathematical stories, not convergence theorems for ML algorithms.
-    </div>
-    <div class="card-action">→ Not applicable — expository journal, not research</div>
-  </div>
-
-</div>
-
-<!-- ════════════════════════════════════════════════ -->
-<div class="section-label">Recommended Timeline</div>
-<div class="grid" style="grid-template-columns: 1fr;">
-  <div class="card strong" data-fit="strong" style="border-top-color:#1a1a2e">
-    <div class="card-name" style="font-size:0.95rem;margin-bottom:12px;">Your Action Plan</div>
-    <div class="card-meta" style="gap: 8px 16px; font-size:0.88rem; line-height:1.8;">
-      <span class="meta-label">Now</span>
-      <span class="meta-value">Post to <strong>arXiv</strong> — establishes priority, strengthens STS application</span>
-
-      <span class="meta-label">May–June</span>
-      <span class="meta-value">Run <strong>Experiment 1</strong> (~20 min) and <strong>Experiment 4</strong> (~5 min) — get real figures into the paper</span>
-
-      <span class="meta-label">Summer</span>
-      <span class="meta-value">Run Experiments 2 & 3, finalize paper, ask Dr. Huang for mentor letter</span>
-
-      <span class="meta-label">August</span>
-      <span class="meta-value">Submit to <strong>MIT URTC</strong> (verify HS eligibility) and <strong>JSR</strong></span>
-
-      <span class="meta-label">October</span>
-      <span class="meta-value">Submit to <strong>Regeneron STS</strong></span>
-
-      <span class="meta-label">Nov–Dec</span>
-      <span class="meta-value">Submit to <strong>NeurIPS / ICML FL workshop</strong> (if experiments complete)</span>
-
-      <span class="meta-label">College yr 1</span>
-      <span class="meta-value">Submit to <strong>SIURO</strong>, <strong>Involve</strong> (with Dr. Huang), expand toward <strong>JMLR</strong></span>
+  <div class="step">
+    <div class="step-num">6</div>
+    <div class="step-body">
+      <strong>STS submission (fall of senior year)</strong>
+      <p>Lead with Theorem 1 as the primary contribution. If Path 2 was achieved, highlight the ε derivation — it is the non-obvious result not in any prior paper. Emphasize that the proof fills an explicitly open theoretical gap in the DSL paper. Add experiments connecting the β² + σ_h² floor to observed accuracy if available.</p>
     </div>
   </div>
 </div>
 
-</main>
-
-<footer>
-</footer>
-
-<script>
-function filter(type) {
-  document.querySelectorAll('.card').forEach(c => {
-    let show;
-    if (type === 'all') {
-      show = true;
-    } else if (type === 'hs-only') {
-      show = c.dataset.hs === 'true';
-    } else {
-      show = c.dataset.fit === type;
-    }
-    if (show) {
-      c.classList.remove('hidden');
-    } else {
-      c.classList.add('hidden');
-    }
-  });
-  // Hide empty section labels
-  document.querySelectorAll('.section-label').forEach(label => {
-    let next = label.nextElementSibling;
-    if (!next) return;
-    const cards = next.querySelectorAll('.card:not(.hidden)');
-    label.style.display = cards.length === 0 ? 'none' : '';
-  });
-}
-</script>
+</div>
 </body>
 </html>

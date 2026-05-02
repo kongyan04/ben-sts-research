@@ -25,17 +25,18 @@ body {
 nav.site-nav {
   background: #1a1a2e;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 0;
   padding: 0 20px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
   border-bottom: 1px solid #374151;
   margin-bottom: 36px;
   border-radius: 8px 8px 0 0;
 }
 nav.site-nav a {
   color: #9ca3af; text-decoration: none; font-size: 0.82rem;
-  font-weight: 600; padding: 11px 18px; border-bottom: 3px solid transparent;
+  font-weight: 600; padding: 11px 11px; border-bottom: 3px solid transparent;
   font-family: sans-serif;
 }
 nav.site-nav a:hover { color: #fff; }
@@ -114,8 +115,6 @@ li { margin-bottom: 6px; }
 </style>
 </head>
 <body>
-<div class="page">
-
 <nav class="site-nav">
   <a href="sts_paper_draft.html">Paper Draft</a>
   <a href="sts_essays.html">STS Essays</a>
@@ -125,8 +124,11 @@ li { margin-bottom: 6px; }
   <a href="proof_review.html">Proof Review</a>
   <a href="proof_fitness.html">Proof Fitness</a>
   <a href="strategy.html" class="active">Strategy</a>
+  <a href="proof_paper.html">Proof Paper</a>
   <a href="BP_Free_Split_Learning.pdf" target="_blank" style="color:#fbbf24;border-bottom-color:transparent;">↗ Paper (PDF)</a>
 </nav>
+
+<div class="page">
 
 <div class="page-header">
   <h1>Research Strategy</h1>

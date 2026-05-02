@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Convergence Analysis for BP-Free with Auxiliary Network — Benjamin Qin</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['\\(','\\)'],['$','$']],
+    displayMath: [['\\[','\\]'],['$$','$$']],
+    tags: 'ams',
+    packages: {'[+]': ['ams']}
+  },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 11.5pt;
+  line-height: 1.7;
+  color: #111;
+  background: #fff;
+  margin: 0; padding: 0;
+}
+.no-print {
+  max-width: 780px;
+  margin: 0 auto;
+}
+.page {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 48px 40px 80px;
+}
+
+/* ── Nav ── */
+nav.site-nav {
+  background: #1a1a2e;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 0 20px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #374151;
+  margin-bottom: 0;
+  border-radius: 8px 8px 0 0;
+}
+nav.site-nav a {
+  color: #9ca3af; text-decoration: none; font-size: 0.82rem;
+  font-weight: 600; padding: 11px 18px; border-bottom: 3px solid transparent;
+  font-family: sans-serif;
+}
+nav.site-nav a:hover { color: #fff; }
+nav.site-nav a.active { color: #fff; border-bottom-color: #7f9cf5; }
+
+.print-tip {
+  background: #fffbea;
+  border: 1px solid #f6c90e;
+  padding: 10px 16px;
+  font-family: sans-serif;
+  font-size: 9.5pt;
+  margin-bottom: 32px;
+  border-radius: 0 0 8px 8px;
+}
+
+@media print {
+  .no-print { display: none; }
+  .page { padding: 0; max-width: 100%; }
+  body { font-size: 10.5pt; }
+}
+
+/* ── Paper layout ── */
+.paper-title {
+  text-align: center;
+  font-size: 16pt;
+  font-weight: bold;
+  margin: 0 0 10px;
+  line-height: 1.3;
+}
+.paper-author {
+  text-align: center;
+  font-size: 11pt;
+  margin-bottom: 4px;
+}
+.paper-advisor {
+  text-align: center;
+  font-size: 10pt;
+  font-style: italic;
+  color: #444;
+  margin-bottom: 4px;
+}
+.paper-date {
+  text-align: center;
+  font-size: 10pt;
+  color: #666;
+  margin-bottom: 28px;
+}
+.paper-rule {
+  border: none;
+  border-top: 1px solid #aaa;
+  margin: 0 0 24px;
+}
+
+/* ── Sections ── */
+h2.sec {
+  font-size: 12pt;
+  font-weight: bold;
+  margin: 28px 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+h3.subsec {
+  font-size: 11.5pt;
+  font-weight: bold;
+  font-style: italic;
+  margin: 20px 0 8px;
+}
+p { margin: 0 0 10px; text-align: justify; }
+
+/* ── Equations ── */
+.eq-block {
+  margin: 14px 0;
+  overflow-x: auto;
+}
+.eq-block .MJX-TeXAtom-ORD { }
+
+/* ── Theorem box ── */
+.theorem {
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  padding: 14px 18px;
+  margin: 18px 0;
+  background: #fafafa;
+}
+.theorem .thm-label {
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+/* ── Inline section numbers ── */
+.sec-num { margin-right: 6px; }
+</style>
+</head>
+<body>
+
+<div class="no-print">
+  <nav class="site-nav">
+    <a href="sts_paper_draft.html">Paper Draft</a>
+    <a href="sts_essays.html">STS Essays</a>
+    <a href="session_log.html">Session Log</a>
+    <a href="prompts.html">Prompts</a>
+    <a href="venues.html">Venues</a>
+    <a href="proof_review.html">Proof Review</a>
+    <a href="proof_fitness.html">Proof Fitness</a>
+    <a href="strategy.html">Strategy</a>
+    <a href="proof_paper.html" class="active">Proof Paper</a>
+    <a href="BP_Free_Split_Learning.pdf" target="_blank" style="color:#fbbf24;border-bottom-color:transparent;">↗ Paper (PDF)</a>
+  </nav>
+  <div class="print-tip">
+    <strong>To save as PDF:</strong> Press <kbd>Cmd + P</kbd> → destination: <strong>"Save as PDF"</strong> → margins: <em>None</em>.
+  </div>
+</div>
+
+<div class="page">
+
+<!-- ── Title block ── -->
+<div class="paper-title">Convergence Analysis for BP-Free with Auxiliary Network</div>
+<div class="paper-author">Benjamin Qin</div>
+<div class="paper-advisor">Advised by Dr. Chao Huang</div>
+<div class="paper-date">April 2026</div>
+<hr class="paper-rule">
+
+<!-- ══════════════════════════════════════════════════ -->
+<h2 class="sec"><span class="sec-num">1</span>Assumptions</h2>
+
+<p>
+For our new algorithm, we can somewhat base it in the original Split Learning framework; using the standard \(L\)-Smoothness assumption for the Client, Auxiliary, and Server sides with three different smoothness constants; that is,
+</p>
+
+\begin{equation}
+  F_b(\theta_b) \leq F_b(\theta_c) + (\theta_b - \theta_c)^T \nabla F_b(\theta_c) + \frac{L_1}{2}\|\theta_b - \theta_c\|^2
+\end{equation}
+
+\begin{equation}
+  F_a(\theta_a) \leq F_a(\theta_d) + (\theta_a - \theta_d)^T \nabla F_a(\theta_d) + \frac{L_2}{2}\|\theta_a - \theta_d\|^2
+\end{equation}
+
+<p>and</p>
+
+\begin{equation}
+  F_t(\theta_t) \leq F_t(\theta_s) + (\theta_t - \theta_s)^T \nabla F_t(\theta_s) + \frac{L_3}{2}\|\theta_t - \theta_s\|^2
+\end{equation}
+
+<p>
+We define \(F\) as the overall objective function for the entire model. For these assumptions, \(\theta_t, \theta_b,\) and \(\theta_a\) are parameters of the three sections of the model, \(L_1, L_2,\) and \(L_3\) are the respective smoothness constants, and \(F_b, F_a,\) and \(F_t\) are the respective objective functions of each component. In addition, we need to assume that the variance of the stochastic gradients of each client with data for the three components of the model are bounded by
+</p>
+
+\begin{equation}
+  \mathbb{E}\!\left[\|\nabla F_b(\theta_b^{K_1};\xi_b^{K_1}) - \nabla F_b(\theta_b^{K_1})\|^2\right] \leq \sigma_b^2
+\end{equation}
+
+\begin{equation}
+  \mathbb{E}\!\left[\|\nabla F_a(\theta_a^{K_2};\xi_a^{K_2}) - \nabla F_a(\theta_a^{K_2})\|^2\right] \leq \sigma_a^2
+\end{equation}
+
+\begin{equation}
+  \mathbb{E}\!\left[\|\nabla F_t(\theta_t^{K_3};\xi_t^{K_3}) - \nabla F_t(\theta_t^{K_3})\|^2\right] \leq \sigma_t^2
+\end{equation}
+
+<p>
+where \(K_1, K_2,\) and \(K_3\) are the respective numbers of machines in each component of the model. Importantly, we set
+\[
+  \eta = \min\!\left(\frac{1}{L_1},\, \frac{1}{L_2},\, \frac{1}{L_3}\right).
+\]
+One last thing we need to assume before we start the convergence proof is that the auxiliary network backpropagation mirrors the backpropagation of a traditional split learning model with only one cut between the client and server sides within a bounded bias. To do this, we assume
+</p>
+
+\begin{equation}
+  \|\mathbb{E}[\nabla F_a(\theta_a;\xi_a)] - \nabla_{\theta_b} F(\theta_b,\theta_a,\theta_t)\| \leq \varepsilon
+\end{equation}
+
+<p>
+to bound the auxiliary bias for an \(\varepsilon \geq 0\) that is very small with respect to the equivalent backpropagation if there was only one cut between the client and server sides instead of the two cuts; between the auxiliary and remaining client side, and the remaining client side and the server side.
+</p>
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<h2 class="sec"><span class="sec-num">2</span>Proof</h2>
+
+<p>
+To begin the proof, we will attempt to prove a collective convergence bound using the assumptions mentioned above.
+</p>
+
+<!-- ── 2.1 ── -->
+<h3 class="subsec">2.1 &nbsp; \(F_b\) convergence</h3>
+
+<p>For \(F_b\), we use the \(L\)-smoothness assumption from above:</p>
+
+\begin{equation}
+  F_b(\theta_b) \leq F_b(\theta_c) + (\theta_b - \theta_c)^T \nabla F_b(\theta_c) + \frac{L_1}{2}\|\theta_b - \theta_c\|^2
+\end{equation}
+
+<p>Then using the fact that</p>
+
+\begin{equation}
+  \theta_b^{K+1} = \theta_b^K - \eta\nabla F_b(\theta_b^K;\xi_b^K)
+\end{equation}
+
+<p>we get</p>
+
+\begin{equation}
+  F_b(\theta_b^{K+1}) \leq F_b(\theta_b^K) - \eta\nabla F_b(\theta_b^K;\xi_b^K)^T \nabla F_b(\theta_b^K)
+    + \frac{L_1}{2}\|-\eta\nabla F_b(\theta_b^K;\xi_b^K)\|^2
+\end{equation}
+
+<p>We can simplify this to</p>
+
+\begin{equation}
+  F_b(\theta_b^{K+1}) \leq F_b(\theta_b^K) - \eta\nabla F_b(\theta_b^K;\xi_b^K)^T \nabla F_b(\theta_b^K)
+    + \frac{L_1\eta^2}{2}\|\nabla F_b(\theta_b^K;\xi_b^K)\|^2
+\end{equation}
+
+<p>From here, we take the expectation of both sides, using the linearity of expectation and the definition of matrix transposes to get:</p>
+
+\begin{equation}
+  \mathbb{E}[F_b^{K+1}] \leq \mathbb{E}\!\left[F_b(\theta_b^K) - \eta\|\nabla F_b(\theta_b^K)\|^2 + \frac{L_1\eta^2}{2}\|\nabla F_b(\theta_b^K;\xi_b^K)\|^2\right]
+\end{equation}
+
+<p>Next, we use Bias-Variance Decomposition,</p>
+
+\begin{equation}
+  \mathbb{E}[\|X\|^2] = \|\mathbb{E}[X]\|^2 + \mathbb{E}[\|X - \mathbb{E}[X]\|^2]
+\end{equation}
+
+<p>where \(X\) is a stochastic sample, to simplify</p>
+
+\begin{align*}
+  &\mathbb{E}\!\left[\frac{L_1\eta^2}{2}\|\nabla F_b(\theta_b^K;\xi_b^K)\|^2 - \eta\|\nabla F_b(\theta_b^K)\|^2\right] \\
+  &= \mathbb{E}\!\left[\frac{L_1\eta^2}{2}\!\left(\|\nabla F_b(\theta_b^K)\|^2 + \sigma_b^2\right) - \eta\|\nabla F_b(\theta_b^K)\|^2\right] \\
+  &= \mathbb{E}\!\left[\left(\frac{L_1\eta^2}{2} - \eta\right)\|\nabla F_b(\theta_b^K)\|^2 + \frac{L_1\eta^2\sigma_b^2}{2}\right]
+\end{align*}
+
+<p>To finish out the \(F_b\) convergence, we sum:</p>
+
+\begin{equation}
+  \mathbb{E}[F_b^{K+1}] \leq \mathbb{E}\!\left[F_b(\theta_b^K) + \left(\frac{L_1\eta^2}{2} - \eta\right)\|\nabla F_b(\theta_b^K)\|^2 + \frac{L_1\eta^2\sigma_b^2}{2}\right]
+\end{equation}
+
+<p>over \(T\) rounds:</p>
+
+\begin{equation}
+  \sum_{K=0}^{T-1}\mathbb{E}[F_b^{K+1} - F_b(\theta_b^K)]
+  \leq \left(\frac{L_1\eta^2}{2} - \eta\right)\sum_{K=0}^{T-1}\|\nabla F_b(\theta_b^K)\|^2 + \frac{TL_1\eta^2\sigma_b^2}{2}
+\end{equation}
+
+<p>
+The left-hand side telescopes because all but the first and last terms cancel:
+\(\mathbb{E}[F_b^T] - F_b(\theta_b^0).\)
+We remove the expectation around \(F_b(\theta_b^0)\) because \(\mathbb{E}[F_b(\theta_b^0)] = F_b(\theta_b^0)\); the initial weights are a constant. Rearranging:
+</p>
+
+\begin{equation}
+  \frac{1}{T}\sum_{K=0}^{T-1}\mathbb{E}\!\left[\|\nabla F_b(\theta_b^K)\|^2\right]
+  \leq \frac{L_1\eta^2\sigma_b^2}{2\!\left(\eta - \frac{L_1\eta^2}{2}\right)} + \frac{F_b(\theta_b^0) - F_b^*}{T\!\left(\eta - \frac{L_1\eta^2}{2}\right)}
+\end{equation}
+
+<p>
+where \(F_b^* \leq \mathbb{E}[F_b^T]\) is the global minimum of \(F_b\). We require \(\eta < 2/L_1\) so the denominators are positive. Setting \(\eta \leq 1/L_1\) simplifies the right side to:
+</p>
+
+\begin{equation}
+  \frac{1}{T}\sum_{K=0}^{T-1}\mathbb{E}\!\left[\|\nabla F_b(\theta_b^K)\|^2\right]
+  \leq \sigma_b^2 + \frac{2L_1(F_b(\theta_b^0) - F_b^*)}{T}
+\end{equation}
+
+
+<!-- ── 2.2 ── -->
+<h3 class="subsec">2.2 &nbsp; \(F_a\) convergence</h3>
+
+<p>Similar to above, we use the \(L\)-smoothness assumption:</p>
+
+\begin{equation}
+  F_a(\theta_a) \leq F_a(\theta_d) + (\theta_a - \theta_d)^T \nabla F_a(\theta_d) + \frac{L_2}{2}\|\theta_a - \theta_d\|^2
+\end{equation}
+
+<p>Then using</p>
+
+\begin{equation}
+  \theta_a^{K+1} = \theta_a^K - \eta\nabla F_a(\theta_a^K;\xi_a^K)
+\end{equation}
+
+<p>we get</p>
+
+\begin{equation}
+  F_a(\theta_a^{K+1}) \leq F_a(\theta_a^K) - \eta\nabla F_a(\theta_a^K;\xi_a^K)^T \nabla F_a(\theta_a^K)
+    + \frac{L_2\eta^2}{2}\|\nabla F_a(\theta_a^K;\xi_a^K)\|^2
+\end{equation}
+
+<p>Taking the expectation and applying the bias-variance decomposition as in Section 2.1:</p>
+
+\begin{equation}
+  \mathbb{E}[F_a^{K+1}] \leq \mathbb{E}\!\left[F_a(\theta_a^K) + \left(\frac{L_2\eta^2}{2} - \eta\right)\|\nabla F_a(\theta_a^K)\|^2 + \frac{L_2\eta^2\sigma_a^2}{2}\right]
+\end{equation}
+
+<p>Summing over \(T\) rounds and telescoping the left-hand side:</p>
+
+\begin{equation}
+  \sum_{K=0}^{T-1}\mathbb{E}[F_a^{K+1} - F_a(\theta_a^K)]
+  \leq \left(\frac{L_2\eta^2}{2} - \eta\right)\sum_{K=0}^{T-1}\|\nabla F_a(\theta_a^K)\|^2 + \frac{TL_2\eta^2\sigma_a^2}{2}
+\end{equation}
+
+<p>Rearranging with \(\eta \leq 1/L_2\):</p>
+
+\begin{equation}
+  \frac{1}{T}\sum_{K=0}^{T-1}\mathbb{E}\!\left[\|\nabla F_a(\theta_a^K)\|^2\right]
+  \leq \sigma_a^2 + \frac{2L_2(F_a(\theta_a^0) - F_a^*)}{T}
+\end{equation}
+
+<p>
+where \(F_a^* \leq \mathbb{E}[F_a^T]\) is the global minimum of \(F_a\). Note that this convergence affects \(F_b\)'s update: the auxiliary network's gradient signal drives the update of the client-side model \(F_b\) in the global analysis.
+</p>
+
+
+<!-- ── 2.3 ── -->
+<h3 class="subsec">2.3 &nbsp; \(F_t\) convergence</h3>
+
+<p>Similar to above, we use the \(L\)-smoothness assumption:</p>
+
+\begin{equation}
+  F_t(\theta_t) \leq F_t(\theta_s) + (\theta_t - \theta_s)^T \nabla F_t(\theta_s) + \frac{L_3}{2}\|\theta_t - \theta_s\|^2
+\end{equation}
+
+<p>Then using</p>
+
+\begin{equation}
+  \theta_t^{K+1} = \theta_t^K - \eta\nabla F_t(\theta_t^K;\xi_t^K)
+\end{equation}
+
+<p>we get</p>
+
+\begin{equation}
+  F_t(\theta_t^{K+1}) \leq F_t(\theta_t^K) - \eta\nabla F_t(\theta_t^K;\xi_t^K)^T \nabla F_t(\theta_t^K)
+    + \frac{L_3\eta^2}{2}\|\nabla F_t(\theta_t^K;\xi_t^K)\|^2
+\end{equation}
+
+<p>Taking the expectation and applying the bias-variance decomposition:</p>
+
+\begin{equation}
+  \mathbb{E}[F_t^{K+1}] \leq \mathbb{E}\!\left[F_t(\theta_t^K) + \left(\frac{L_3\eta^2}{2} - \eta\right)\|\nabla F_t(\theta_t^K)\|^2 + \frac{L_3\eta^2\sigma_t^2}{2}\right]
+\end{equation}
+
+<p>Summing over \(T\) rounds and telescoping:</p>
+
+\begin{equation}
+  \sum_{K=0}^{T-1}\mathbb{E}[F_t^{K+1} - F_t(\theta_t^K)]
+  \leq \left(\frac{L_3\eta^2}{2} - \eta\right)\sum_{K=0}^{T-1}\|\nabla F_t(\theta_t^K)\|^2 + \frac{TL_3\eta^2\sigma_t^2}{2}
+\end{equation}
+
+<p>Rearranging with \(\eta \leq 1/L_3\):</p>
+
+\begin{equation}
+  \frac{1}{T}\sum_{K=0}^{T-1}\mathbb{E}\!\left[\|\nabla F_t(\theta_t^K)\|^2\right]
+  \leq \sigma_t^2 + \frac{2L_3(F_t(\theta_t^0) - F_t^*)}{T}
+\end{equation}
+
+<p>where \(F_t^* \leq \mathbb{E}[F_t^T]\) is the global minimum of \(F_t\).</p>
+
+
+<!-- ── 2.4 ── -->
+<h3 class="subsec">2.4 &nbsp; Putting it all together</h3>
+
+<p>We derive the global convergence from the overall \(L\)-smoothness assumption:</p>
+
+\begin{equation}
+  F^{K+1} \leq F^K - \eta(\nabla F_a(\theta_a))^T\nabla F^K + \frac{L_\text{overall}}{2}\|-\eta\nabla F_a\|^2
+\end{equation}
+
+<p>where</p>
+
+\begin{equation}
+  L_\text{overall} = \max(L_1, L_2, L_3)
+\end{equation}
+
+<p>Taking the expectation of both sides and applying the auxiliary bias assumption:</p>
+
+\begin{equation}
+  \mathbb{E}[F^{K+1}] \leq \mathbb{E}\!\left[F^K - \eta(\nabla F^K + e)^T\nabla F^K
+    + \frac{L_\text{overall}\eta^2}{2}\|\nabla F^K + e + \xi\|^2\right]
+\end{equation}
+
+<p>where \(e\) is a vector with \(\|e\| = \varepsilon\). Using a similar mathematical logic to Sections 2.1–2.3, we further develop this to:</p>
+
+\begin{equation}
+  \mathbb{E}[F^{K+1} - F^K] \leq \mathbb{E}\!\left[-\eta\|\nabla F^K\|^2 - \eta e^T\nabla F^K
+    + \frac{L_\text{overall}\eta^2\!\left(\|\nabla F^K\|^2 + 2\|\nabla F^K e + e^2 + \xi^2\right)}{2}\right]
+\end{equation}
+
+<p>Using the Cauchy-Schwarz and AM-GM inequality:</p>
+
+\begin{equation}
+  \mathbb{E}[F^{K+1} - F^K] \leq \mathbb{E}\!\left[-\eta\|\nabla F^K\|^2 + \frac{\eta}{2}(e^2 + \|\nabla F^K\|^2)
+    + L_\text{overall}\eta^2\!\left(\|\nabla F^K\|^2 + e^2 + \frac{\sigma_\text{overall}^2}{2}\right)\right]
+\end{equation}
+
+<p>where \(\eta \leq \dfrac{1}{4L_\text{overall}}\) ensures a negative descent coefficient, and</p>
+
+\[
+  \sigma_\text{overall}^2 = \sigma_b^2 + \sigma_a^2 + \sigma_t^2.
+\]
+
+<p>Simplifying:</p>
+
+\begin{equation}
+  \mathbb{E}[F^{K+1} - F^K] \leq \mathbb{E}\!\left[-\frac{\eta}{4}\|\nabla F^K\|^2 + \frac{3\eta}{4}e^2 + \frac{\sigma_\text{overall}^2}{2}\right]
+\end{equation}
+
+<p>Summing over all \(T\) rounds:</p>
+
+\begin{equation}
+  \mathbb{E}[F^T] - F^0 \leq -\frac{\eta}{4}\sum_{K=0}^{T-1}\|\nabla F^K\|^2
+    + \frac{3\eta}{4}(Te^2) + \frac{T\sigma_\text{overall}^2}{2}
+\end{equation}
+
+<p>Averaging to get the mean gradient norm:</p>
+
+\begin{equation}
+  \frac{1}{T}\sum_{K=0}^{T-1}\|\nabla F^K\|^2
+  \leq \frac{4(F^0 - F^*)}{\eta T} + 3e^2 + 2L_\text{overall}\eta\sigma_\text{overall}^2
+\end{equation}
+
+<p>This result provides the convergence bound for the two-cut split learning model as a "BP-Free" model. Stated formally:</p>
+
+<div class="theorem">
+  <div class="thm-label">Theorem 1.</div>
+  \[
+    \frac{1}{T}\sum_{K=0}^{T-1}\|\nabla F^K\|^2
+    \leq \frac{4(F^0 - F^*)}{\eta T} + 3e^2 + 2L_\text{overall}\eta\sigma_\text{overall}^2
+  \]
+  where
+  \[
+    \eta \leq \frac{1}{4L_\text{overall}},\quad
+    L_\text{overall} = \max(L_1,L_2,L_3),\quad
+    \sigma_\text{overall}^2 = \sigma_b^2 + \sigma_a^2 + \sigma_t^2,\quad
+    \|e\| = \varepsilon.
+  \]
+</div>
+
+<p>
+Our convergence analysis proves that the two-cut "BP-Free" model has an \(O(1/T)\) convergence rate with bounded variance and bias which do not cause the model to diverge. Overall, we have proven that the two-cut "BP-Free" model is as efficient as the standard Split Learning model and its variance and bias are not a significant hindrance.
+</p>
+
+</div><!-- end .page -->
+</body>
+</html>

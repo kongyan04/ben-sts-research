@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Research Strategy — Proof Path & Venue Plan</title>
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)'],['$','$']], displayMath: [['\\[','\\]'],['$$','$$']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  font-family: "Georgia", serif;
+  font-size: 11.5pt;
+  line-height: 1.75;
+  color: #111;
+  background: #fff;
+  margin: 0; padding: 0;
+}
+.page { max-width: 720px; margin: 0 auto; padding: 48px 40px 80px; }
+
+nav.site-nav {
+  background: #1a1a2e;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 0 20px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #374151;
+  margin-bottom: 36px;
+  border-radius: 8px 8px 0 0;
+}
+nav.site-nav a {
+  color: #9ca3af; text-decoration: none; font-size: 0.82rem;
+  font-weight: 600; padding: 11px 18px; border-bottom: 3px solid transparent;
+  font-family: sans-serif;
+}
+nav.site-nav a:hover { color: #fff; }
+nav.site-nav a.active { color: #fff; border-bottom-color: #7f9cf5; }
+@media print { nav.site-nav { display: none; } }
+
+.page-header { margin-bottom: 32px; border-bottom: 2px solid #1a1a2e; padding-bottom: 16px; }
+.page-header h1 { font-size: 18pt; font-weight: bold; margin: 0 0 4px; }
+.page-header .subtitle { font-size: 10.5pt; color: #555; font-style: italic; }
+.page-header .meta { font-size: 9.5pt; color: #888; font-family: sans-serif; margin-top: 6px; }
+
+h2 { font-size: 13pt; font-weight: bold; margin: 38px 0 10px; color: #1a1a2e; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; }
+h3 { font-size: 11.5pt; font-weight: bold; margin: 22px 0 6px; }
+p { margin: 0 0 12px; }
+ul, ol { margin: 0 0 14px; padding-left: 24px; }
+li { margin-bottom: 6px; }
+
+/* option cards */
+.options { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0 28px; }
+.opt-card { border-radius: 10px; padding: 18px 20px; }
+.opt-card .opt-label { font-family: sans-serif; font-size: 8pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+.opt-card.a { background: #ebf8ff; border: 1px solid #90cdf4; }
+.opt-card.b { background: #f0fff4; border: 1px solid #68d391; }
+.opt-card.a .opt-label { color: #2c5282; }
+.opt-card.b .opt-label { color: #276749; }
+.opt-card ul { margin: 8px 0 0; padding-left: 18px; font-size: 10pt; }
+
+/* venue table */
+.vtable { width: 100%; border-collapse: collapse; font-family: sans-serif; font-size: 9.5pt; margin: 18px 0 28px; }
+.vtable th { background: #1a1a2e; color: #fff; padding: 9px 12px; text-align: left; font-weight: 600; }
+.vtable td { padding: 9px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+.vtable tr:nth-child(even) td { background: #f7fafc; }
+.tag { border-radius: 4px; padding: 2px 8px; font-weight: 600; white-space: nowrap; font-size: 8.5pt; }
+.tag-yes   { background: #c6f6d5; color: #276749; }
+.tag-strong{ background: #1a1a2e; color: #fff; }
+.tag-border{ background: #fefcbf; color: #744210; }
+.tag-no    { background: #fed7d7; color: #c53030; }
+
+/* proof version cards */
+.versions { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0 28px; }
+.ver-card { border-radius: 10px; padding: 18px 20px; }
+.ver-card .ver-label { font-family: sans-serif; font-size: 8pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+.ver-card.va { background: #fffff0; border: 2px solid #f6e05e; }
+.ver-card.vb { background: #faf5ff; border: 2px solid #d6bcfa; }
+.ver-card.va .ver-label { color: #744210; }
+.ver-card.vb .ver-label { color: #553c9a; }
+.ver-card p { font-size: 10pt; margin: 0 0 8px; }
+.ver-card .venues-tag { font-family: sans-serif; font-size: 8.5pt; color: #555; margin-top: 8px; }
+
+/* callouts */
+.callout { border-radius: 8px; padding: 14px 18px; margin: 18px 0; font-size: 10pt; font-family: sans-serif; }
+.callout.warn  { background: #fffbea; border: 1px solid #f6e05e; }
+.callout.info  { background: #ebf8ff; border: 1px solid #90cdf4; }
+.callout.good  { background: #f0fff4; border: 1px solid #68d391; }
+.callout.purple{ background: #faf5ff; border: 1px solid #d6bcfa; }
+
+/* eq note */
+.eq-note { background: #f7fafc; border-left: 4px solid #4a5568; padding: 12px 16px; margin: 14px 0; font-size: 10.5pt; border-radius: 0 6px 6px 0; }
+.eq-note .eq-label { font-family: sans-serif; font-size: 8.5pt; font-weight: 700; color: #4a5568; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+
+/* action steps */
+.steps { counter-reset: step; margin: 20px 0 28px; }
+.step { display: flex; gap: 16px; margin-bottom: 18px; align-items: flex-start; }
+.step-num {
+  counter-increment: step;
+  content: counter(step);
+  background: #1a1a2e; color: #fff;
+  font-family: sans-serif; font-weight: 700; font-size: 10pt;
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 2px;
+}
+.step-body { flex: 1; }
+.step-body strong { display: block; margin-bottom: 3px; }
+.step-body p { margin: 0; font-size: 10.5pt; color: #333; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<nav class="site-nav">
+  <a href="sts_paper_draft.html">Paper Draft</a>
+  <a href="sts_essays.html">STS Essays</a>
+  <a href="session_log.html">Session Log</a>
+  <a href="prompts.html">Prompts</a>
+  <a href="venues.html">Venues</a>
+  <a href="proof_review.html">Proof Review</a>
+  <a href="proof_fitness.html">Proof Fitness</a>
+  <a href="strategy.html" class="active">Strategy</a>
+  <a href="BP_Free_Split_Learning.pdf" target="_blank" style="color:#fbbf24;border-bottom-color:transparent;">↗ Paper (PDF)</a>
+</nav>
+
+<div class="page-header">
+  <h1>Research Strategy</h1>
+  <div class="subtitle">Proof path, contribution framing, and venue plan — based on proof review and the DSL paper</div>
+  <div class="meta">May 2, 2026</div>
+</div>
+
+<div class="callout info">
+  <strong>The key fact:</strong> Dr. Huang's paper already has the algorithm and experiments (CIFAR-10, CIFAR-100, ResNet-110). The convergence analysis is explicitly open — the paper appeals informally to [3] and proves nothing. Your contribution is the missing theory for a validated, published algorithm. That is a legitimate and recognized research role.
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<h2>Option A vs. Option B</h2>
+
+<div class="options">
+  <div class="opt-card a">
+    <div class="opt-label">Option A — Theory only</div>
+    <ul>
+      <li>Fix the proof (all structural issues)</li>
+      <li>Cite Zihad et al. for algorithm + experiments</li>
+      <li>Claim: first rigorous convergence guarantee for DSL</li>
+      <li>No new code or experiments required</li>
+    </ul>
+  </div>
+  <div class="opt-card b">
+    <div class="opt-label">Option B — Theory + experiments</div>
+    <ul>
+      <li>Fix the proof</li>
+      <li>Run at least one CIFAR-10 configuration yourself</li>
+      <li>Connect theorem predictions to empirical results</li>
+      <li>Requires code — ask Dr. Huang for the DSL codebase</li>
+    </ul>
+  </div>
+</div>
+
+<p>For the four target venues <strong>(Involve, JSR, CJSJ, STS)</strong>, Option A is the right choice for three and sufficient for all four at the Scholar level. Here is the full breakdown:</p>
+
+<table class="vtable">
+  <tr><th>Venue</th><th>Best option</th><th>Why</th></tr>
+  <tr>
+    <td><strong>Involve</strong></td>
+    <td><span class="tag tag-strong">A — strongly</span></td>
+    <td>Math journal. Experiments are irrelevant and would dilute the focus. A rigorous theorem with Dr. Huang as co-author is exactly what Involve publishes.</td>
+  </tr>
+  <tr>
+    <td><strong>CJSJ</strong></td>
+    <td><span class="tag tag-strong">A — strongly</span></td>
+    <td>2–3 page format. You physically cannot fit a rigorous theorem AND meaningful experiments in 3 pages. Option A uses the space correctly.</td>
+  </tr>
+  <tr>
+    <td><strong>JSR</strong></td>
+    <td><span class="tag tag-yes">A — sufficient</span></td>
+    <td>Broad student journal, modest bar. A correct convergence analysis that fills a gap in a published paper is well above the threshold. Option B adds nothing meaningful for JSR specifically.</td>
+  </tr>
+  <tr>
+    <td><strong>STS — Scholar (top-300)</strong></td>
+    <td><span class="tag tag-yes">A — sufficient</span></td>
+    <td>Original, rigorous, fills a documented gap. Stronger than most STS submissions which are applied projects, not theoretical results.</td>
+  </tr>
+  <tr>
+    <td><strong>STS — Finalist (top-40)</strong></td>
+    <td><span class="tag tag-border">B — preferred</span></td>
+    <td>Top-40 judges ask hard in-person questions. Having results you ran yourself and connecting them to what the theorem predicts is what separates Finalist from Scholar.</td>
+  </tr>
+  <tr>
+    <td><strong>MIT URTC</strong></td>
+    <td><span class="tag tag-border">B — needed</span></td>
+    <td>IEEE conference audience expects empirical results. Theory-only is a harder sell.</td>
+  </tr>
+  <tr>
+    <td><strong>NeurIPS FL Workshop</strong></td>
+    <td><span class="tag tag-no">B — required</span></td>
+    <td>Will not accept theory-only without your own empirical validation.</td>
+  </tr>
+</table>
+
+
+<!-- ══════════════════════════════════════════ -->
+<h2>Two Versions of the Corrected Proof</h2>
+
+<p>Even within Option A, there are two meaningfully different versions of what the corrected proof could be. This distinction matters most for STS and Involve.</p>
+
+<div class="versions">
+  <div class="ver-card va">
+    <div class="ver-label">Version A — Assumption-based</div>
+    <p><em>Assume</em> the auxiliary gradient is close to the true gradient:</p>
+    \[\|\mathbb{E}[\nabla_{\theta_b}\mathcal{L}_\text{aux}] - \nabla_{\theta_b}\mathcal{L}\| \leq \beta\]
+    <p>Then prove: DSL converges at \(O(1/T) + O(\beta^2)\).</p>
+    <p><strong>The "if":</strong> Valid, mathematically correct, but somewhat hollow — the interesting question (when is β actually small?) is left as an assumption.</p>
+    <div class="venues-tag">→ Sufficient for JSR, CJSJ, STS Scholar, Involve</div>
+  </div>
+  <div class="ver-card vb">
+    <div class="ver-label">Version B — Derived bound</div>
+    <p><em>Derive</em> β from the auxiliary network's properties:</p>
+    \[\beta \leq f(\varepsilon_\text{aux},\ \text{architecture of } C_a)\]
+    <p>where \(\varepsilon_\text{aux}\) is Ca's training loss. Show when and why the auxiliary gradient aligns with the global gradient.</p>
+    <p><strong>The payoff:</strong> Tells practitioners how powerful Ca needs to be. Reveals something non-obvious. This is what the DSL paper is actually missing.</p>
+    <div class="venues-tag">→ Needed for STS top-40; strengthens Involve significantly</div>
+  </div>
+</div>
+
+<div class="callout warn">
+  <strong>The honest assessment:</strong> The proof technique itself — nonconvex SGD descent, telescope, rearrange — is a standard template used in FedAvg, SCAFFOLD, and dozens of other papers. Applying it correctly to DSL is non-trivial work, but not a new technique. What makes the proof <em>meaningful</em> rather than just <em>correct</em> is whether it reveals something non-obvious. Version A proof of concept is valid for the lower-tier venues. Version B — deriving β — is what elevates this to a genuinely interesting result.
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<h2>The One Thing That Changes Everything</h2>
+
+<p>The most impactful addition to the proof — more than experiments, more than extra lemmas — is a <strong>concrete characterization of β</strong>. Something like:</p>
+
+<div class="eq-note">
+  <div class="eq-label">Target result</div>
+  If \(C_a\) is a single linear layer trained to auxiliary cross-entropy loss \(\varepsilon_\text{aux}\), then:
+  \[\beta \leq f(\varepsilon_\text{aux},\ L_b,\ \text{dim}(z))\]
+  where \(L_b\) is the Lipschitz constant of \(M_b\) and \(\text{dim}(z)\) is the cut-layer activation size.
+</div>
+
+<p>This connects the abstract assumption to something a practitioner can measure and control. It explains why the paper's choice of a single fully-connected layer for \(C_a\) is appropriate, and gives a condition for when the auxiliary gradient provides a useful signal. The DSL paper gestures toward this informally in Section III.C ("the client's loss is aligned with the final task") but never formalizes it.</p>
+
+<div class="callout purple">
+  <strong>Whether this is derivable</strong> depends on what's knowable about Ca's gradient structure given its architecture. Dr. Huang is the right person to ask — a 30-minute conversation with him about whether Assumption 3 can be turned into a lemma is the highest-value use of time right now. If it's derivable, this proof becomes a strong Involve submission and a genuine STS top-40 candidate. If it can't be derived and must stay as an assumption, you still have a publishable result — just a less surprising one.
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<h2>Action Plan</h2>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <strong>Meet with Dr. Huang (most urgent)</strong>
+      <p>Ask two questions: (1) Can Assumption 3 be derived, or does it need to stay as an assumption? (2) Can he share the DSL experiment code if you decide to run experiments? His answers determine whether you pursue Version A or Version B of the proof, and Option A or Option B overall.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <strong>Fix the proof structure</strong>
+      <p>Required regardless of anything else. Correct Eq. 7 (wrong gradient), fix Fb/Fa coupling (joint backward pass), fix Eq. 40 (wrong update direction), expand Eq. 43→44 explicitly, reconcile η constraints. This produces a valid Version A proof.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <strong>Submit to Involve and JSR (this fall)</strong>
+      <p>Once the proof is correct, Involve and JSR are ready to submit. Both accept theory-only papers and both have fall deadlines. JSR is rolling. Involve requires a faculty co-author — Dr. Huang.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <strong>Write the CJSJ 3-page version (September)</strong>
+      <p>After the full paper is in shape, condense to 3 pages: theorem statement, key assumptions, one design implication (e.g., what β bound implies about Ca's required capacity). CJSJ opens July, deadline ~September 30.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <strong>STS submission (fall of senior year)</strong>
+      <p>Use the full corrected proof. If you achieved Version B (derived β), emphasize that as the main contribution. If Option B is feasible (Dr. Huang shares code), add an experimental section connecting the theorem's β bound to observed convergence gaps between DSL and CSL in the paper's Figure 4.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<h2>Summary Table</h2>
+
+<table class="vtable">
+  <tr><th>Question</th><th>Answer</th></tr>
+  <tr><td>Do you need to write the algorithm?</td><td>No — Algorithm 1 exists in Dr. Huang's paper.</td></tr>
+  <tr><td>Do you need to run experiments?</td><td>Not for Involve, JSR, CJSJ, STS Scholar. Helpful for STS top-40 and required for NeurIPS/URTC.</td></tr>
+  <tr><td>Is a corrected proof meaningful enough?</td><td>Yes for all four venues. The level of meaning scales with whether β is assumed or derived.</td></tr>
+  <tr><td>What is the most important proof fix?</td><td>Eq. 7 — bounds the wrong gradient entirely. Everything else follows from fixing this.</td></tr>
+  <tr><td>What is the most important next action?</td><td>Meet with Dr. Huang about Assumption 3 derivability and experiment code access.</td></tr>
+  <tr><td>Best venue for a theory-only paper?</td><td>Involve — math journal, designed exactly for this type of student contribution with faculty mentor.</td></tr>
+</table>
+
+</div>
+</body>
+</html>

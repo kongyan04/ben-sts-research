@@ -131,6 +131,11 @@ li { margin-bottom: 6px; }
 .vtable th { background: #1a1a2e; color: #fff; padding: 9px 12px; text-align: left; font-weight: 600; }
 .vtable td { padding: 9px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
 .vtable tr:nth-child(even) td { background: #f7fafc; }
+.tag { border-radius: 4px; padding: 2px 8px; font-weight: 600; white-space: nowrap; font-size: 8.5pt; font-family: sans-serif; }
+.tag-yes   { background: #c6f6d5; color: #276749; }
+.tag-strong{ background: #1a1a2e; color: #fff; }
+.tag-border{ background: #fefcbf; color: #744210; }
+.tag-no    { background: #fed7d7; color: #c53030; }
 
 /* req box */
 .req-box { background: #faf5ff; border: 1px solid #d6bcfa; border-radius: 8px; padding: 16px 20px; margin: 20px 0; font-family: "Courier New", monospace; font-size: 9.5pt; line-height: 1.8; white-space: pre-wrap; }
@@ -180,96 +185,178 @@ header .paper-title {
 
 <div class="page-header">
   <h1>KD Paper — Venue Plan</h1>
-  <div class="subtitle">Submission strategy for "Mitigating Forgetting in Split Learning via Knowledge Distillation"</div>
-  <div class="meta">Voore, Supannopaj, Niradi, Qin, Taggart, Huang &nbsp;·&nbsp; May 2, 2026</div>
+  <div class="subtitle">Theory-first submission strategy based on the completed convergence proof (Appendix A)</div>
+  <div class="meta">Benjamin Qin &nbsp;·&nbsp; May 2, 2026</div>
 </div>
 
-<h2>Venue Plan</h2>
+<!-- ══════════════════════════════════════════ -->
+<h2>Proof Quality Assessment</h2>
 
-<p>This paper has two distinct submission tracks: the <strong>full multi-author paper</strong> (Dr. Huang's group + Benjamin) targeting ML conferences, and <strong>Benjamin's individual contribution</strong> targeting high-school research venues. The strategy differs significantly between the two.</p>
+<p>Benjamin completed a full convergence proof for the KD paper (Eq. 14–58). This changes the venue picture significantly. Here is an honest assessment of what the proof achieves and what still needs attention.</p>
 
-<h3>Track 1 — Full Paper (Multi-Author)</h3>
+<div class="callout good">
+  <strong>What the proof does well.</strong> The structure is complete and mathematically valid: L-smoothness descent → 4-component client drift split → E<sub>r</sub> bound → learning rate constraint → telescoping → final convergence bound. The dominant rate O(1/√KLR) is correct for non-convex federated optimization. The 5-term bound (Eq. 57–58) is detailed and captures both variance (σ²) and data heterogeneity (ζ²) explicitly. This is above the bar for JSR, CJSJ, STS Scholar, and JSHS — as a standalone theory paper.
+</div>
+
+<div class="callout warn">
+  <strong>The one remaining gap: β<sub>K</sub> is undefined.</strong> The term β<sub>K</sub> appears in the learning rate constraint (Eq. 40: η ≤ 1/(6LKL(1+β²<sub>K</sub>))) and in the final bound (Eq. 57: LA(1+β²<sub>K</sub>)/R), but is never defined. A reviewer will immediately ask what β<sub>K</sub> is. Two valid paths:
+  <ul>
+    <li><strong>Path 1 (easier):</strong> Define β<sub>K</sub> explicitly as a data heterogeneity / gradient drift parameter capturing the additional misalignment induced by the KD distillation loss relative to standard supervised gradients. This makes the proof self-contained and gives Theorem 1 a clear interpretation.</li>
+    <li><strong>Path 2 (stronger):</strong> Derive a bound β<sub>K</sub> ≤ f(temperature T, KL divergence between teacher and student logits). This directly connects the proof to the EMA-KD mechanism and is what Involve and top-40 STS judges will want.</li>
+  </ul>
+  Defining β<sub>K</sub> is a single focused addition that unlocks multiple venues.
+</div>
 
 <table class="vtable">
-  <tr><th>Venue</th><th>Fit</th><th>Proof requirement</th><th>Notes</th></tr>
-  <tr>
-    <td><strong>FL/CL Workshops<br><small>(NeurIPS, ICML, ICLR)</small></strong></td>
-    <td><span class="tag tag-strong">Strong</span></td>
-    <td>Option B sufficient — reframe appendix as "parallel baseline bound, full sequential analysis is future work"</td>
-    <td>Best near-term target. Empirical gains (+13.7pp CIFAR-10, +19.0pp CIFAR-100) are the story. Proof is supplementary.</td>
-  </tr>
-  <tr>
-    <td><strong>arXiv preprint</strong></td>
-    <td><span class="tag tag-strong">Strong</span></td>
-    <td>None — post as-is</td>
-    <td>Establishes priority, enables citation. Should be posted regardless of conference submission timeline.</td>
-  </tr>
-  <tr>
-    <td><strong>IEEE TNNLS / TPAMI</strong></td>
-    <td><span class="tag tag-border">Possible</span></td>
-    <td>Option A required — full correct proof needed for journal-level rigor</td>
-    <td>Strong empirical results, but journal review will flag the proof gap in Appendix A. Fix proof first.</td>
-  </tr>
-  <tr>
-    <td><strong>ICML / NeurIPS main track</strong></td>
-    <td><span class="tag tag-border">Possible</span></td>
-    <td>Option A preferred — reviewers will check Appendix A</td>
-    <td>The empirical setting (sequential heterogeneous SL) is novel and the results are strong. Proof needs to match the algorithm before top-venue submission.</td>
-  </tr>
+  <tr><th>Proof component</th><th>Status</th><th>Notes</th></tr>
+  <tr><td>L-smoothness descent (Eq. 14–17)</td><td><span class="tag tag-yes">Valid</span></td><td>Standard and correct</td></tr>
+  <tr><td>4-component drift bound (Eq. 18–27)</td><td><span class="tag tag-yes">Valid</span></td><td>Clean decomposition of client update error</td></tr>
+  <tr><td>One-step descent (Eq. 28)</td><td><span class="tag tag-yes">Valid</span></td><td>Correctly combines all four components</td></tr>
+  <tr><td>E<sub>r</sub> = E‖x<sub>m,l</sub> − x‖² bound (Eq. 29–41)</td><td><span class="tag tag-yes">Valid</span></td><td>Standard client drift lemma, correct use of η constraint</td></tr>
+  <tr><td>Telescoping and final bound (Eq. 42–58)</td><td><span class="tag tag-yes">Valid</span></td><td>Correctly applies the convergence lemma (Eq. 48–51)</td></tr>
+  <tr><td>β<sub>K</sub> definition</td><td><span class="tag tag-no">Missing</span></td><td>Appears in Eq. 39, 40, 57 without definition — must be added before submission</td></tr>
+  <tr><td>EMA teacher dynamics (θ<sub>t</sub> = βθ<sub>t</sub> + (1−β)θ<sub>s</sub>)</td><td><span class="tag tag-border">Absent</span></td><td>Can be incorporated via β<sub>K</sub> definition (Path 2), or explicitly noted as future work</td></tr>
+  <tr><td>KD loss (L<sub>KD</sub> = T²·KL(q<sup>T</sup>‖p<sup>T</sup>))</td><td><span class="tag tag-border">Absent</span></td><td>Same — Path 2 would connect this; Path 1 treats it as a heterogeneity source</td></tr>
 </table>
 
-<h3>Track 2 — Benjamin's Individual Submission</h3>
 
-<p>Benjamin is listed as independent contributor (not affiliated with Montclair State). For high-school venues, the framing should emphasize: (1) Benjamin's specific contribution to the convergence analysis, and (2) the practical significance of the forgetting problem in split learning.</p>
+<!-- ══════════════════════════════════════════ -->
+<h2>Venue Assessment — Theory-First Paper</h2>
+
+<p>Benjamin's standalone paper will lead with the proof (Theorem 1, Eq. 58) with potential experiments connecting the convergence bound to observed accuracy. The tables below reflect this framing.</p>
+
+<h3>Benjamin's Individual Submissions</h3>
 
 <table class="vtable">
-  <tr><th>Venue</th><th>Fit</th><th>Best option</th><th>Notes</th></tr>
+  <tr><th>Venue</th><th>Fit</th><th>What's needed</th><th>Notes</th></tr>
+  <tr>
+    <td><strong>JSR</strong></td>
+    <td><span class="tag tag-yes">Strong</span></td>
+    <td>Define β<sub>K</sub> (Path 1 sufficient)</td>
+    <td>A complete 5-term convergence bound with defined assumptions is well above JSR's bar. Write a 6–8 page paper: problem motivation → assumptions → Theorem 1 → design implications (what the β<sub>K</sub> term tells a practitioner) → optional experiments. Rolling deadline — submit as soon as β<sub>K</sub> is defined.</td>
+  </tr>
+  <tr>
+    <td><strong>CJSJ</strong></td>
+    <td><span class="tag tag-yes">Strong</span></td>
+    <td>Define β<sub>K</sub> (Path 1 sufficient)</td>
+    <td>3-page limit: state Theorem 1, explain what each term captures (σ² = local variance, ζ² = client heterogeneity, β<sub>K</sub> = distillation drift), give one design implication. Theory-only fits perfectly at this length. Deadline ~September 30.</td>
+  </tr>
+  <tr>
+    <td><strong>JSHS</strong></td>
+    <td><span class="tag tag-yes">Strong</span></td>
+    <td>Define β<sub>K</sub> (Path 1 sufficient)</td>
+    <td>Oral format. Lead with the forgetting problem (before/after accuracy), then show Theorem 1 as the theoretical guarantee. Judges respond well to a concrete problem + formal result. Better than pure experiments at JSHS because the theory gives you something interesting to say.</td>
+  </tr>
   <tr>
     <td><strong>STS — Scholar (top-300)</strong></td>
-    <td><span class="tag tag-strong">Strong</span></td>
-    <td>Option B — empirical contribution framed as primary, appendix proof as supporting analysis</td>
-    <td>The forgetting problem is concrete and impactful. +13.7pp improvement is a clear, communicable result. Advisorship under Dr. Huang strengthens the submission. The incomplete proof should be acknowledged.</td>
+    <td><span class="tag tag-yes">Strong</span></td>
+    <td>Define β<sub>K</sub> (Path 1 sufficient) + experiments optional</td>
+    <td>An original convergence proof for a published algorithm, written independently by a high-school student with a faculty advisor, is strong for Scholar. Theory-only submissions are uncommon and distinctive. The forgetting problem + Theorem 1 is a complete story.</td>
   </tr>
   <tr>
     <td><strong>STS — Finalist (top-40)</strong></td>
     <td><span class="tag tag-border">Possible</span></td>
-    <td>Option A — fixed proof would differentiate from other ML submissions</td>
-    <td>Most STS finalists are applied projects. A paper with both strong empirics AND a fixed convergence proof would be competitive. Option B alone is unlikely to reach top-40.</td>
+    <td>β<sub>K</sub> via Path 2 + experiments validating the bound</td>
+    <td>Top-40 judges ask hard in-person questions. You need to be able to explain what β<sub>K</sub> is physically, why it appears where it does, and what happens to accuracy as it grows. Path 2 (derive β<sub>K</sub> from T and the KL divergence) gives you defensible answers. Experiments that show the bound tracking real convergence curves are the strongest complement.</td>
   </tr>
   <tr>
-    <td><strong>JSR</strong></td>
-    <td><span class="tag tag-strong">Strong</span></td>
-    <td>Option B sufficient</td>
-    <td>Empirical results are strong enough on their own for JSR. The clearest path: write a 6–8 page JSR version focused on the forgetting problem, experimental setup, and results. Proof in appendix, disclaimed as preliminary.</td>
-  </tr>
-  <tr>
-    <td><strong>CJSJ</strong></td>
-    <td><span class="tag tag-strong">Strong</span></td>
-    <td>Option B — 3-page limit means experiments only</td>
-    <td>Focus on the setting (sequential non-IID clients), the method (warm-start EMA distillation), and Table I. Drop the proof entirely at this length. Strongest CJSJ submission of the two papers.</td>
-  </tr>
-  <tr>
-    <td><strong>JSHS</strong></td>
-    <td><span class="tag tag-strong">Strong</span></td>
-    <td>Option B</td>
-    <td>Oral presentation format. The forgetting problem with before/after accuracy comparisons is highly visual and accessible. Judges will respond well to the concrete improvement numbers.</td>
-  </tr>
-  <tr>
-    <td><strong>Involve / PUMP</strong></td>
-    <td><span class="tag tag-no">Weak</span></td>
-    <td>Option A only — and requires full proof rewrite</td>
-    <td>Math journals need the proof to be the contribution. With the current appendix, not submittable to Involve. If Option A is completed, could be reframed as a theoretical paper — but the BP-Free paper is a better fit for Involve.</td>
+    <td><strong>Involve</strong></td>
+    <td><span class="tag tag-border">Possible</span></td>
+    <td>β<sub>K</sub> via Path 2 — math journal requires full rigor</td>
+    <td>Previously rated weak because the proof was broken. Now that the proof structure is complete, Involve is genuinely possible — but only with β<sub>K</sub> properly derived (Path 2). Involve reviewers will ask: "What is β<sub>K</sub> and why does it appear in the learning rate constraint?" Path 1 (assert it as a parameter) will not satisfy them. Dr. Huang as co-author is required.</td>
   </tr>
   <tr>
     <td><strong>Davidson Fellows</strong></td>
     <td><span class="tag tag-border">Possible</span></td>
-    <td>Option A preferred</td>
-    <td>Davidson requires a substantial individual contribution. Benjamin's role as independent contributor on a multi-author paper needs careful framing. A fixed proof that Benjamin derives would strengthen the individual contribution claim significantly.</td>
+    <td>β<sub>K</sub> via Path 2 + clear individual contribution statement</td>
+    <td>Davidson requires substantial individual work. Framing: "I derived the convergence analysis for the EMA-KD split learning algorithm that the research group developed." The proof is Benjamin's independent contribution. Path 2 makes this claim maximally credible since the β<sub>K</sub> derivation connects directly to the KD mechanism.</td>
   </tr>
 </table>
 
-<div class="callout info">
-  <strong>Recommended submission order for Benjamin:</strong> (1) arXiv + CJSJ immediately — no proof work needed. (2) JSR within 4–6 weeks — write empirical-focused paper with proof disclaimed. (3) STS with Option B proof cleanup. (4) If time permits, Option A proof fixes for Davidson / STS finalist push.
+<h3>Full Paper (Multi-Author) Track</h3>
+
+<table class="vtable">
+  <tr><th>Venue</th><th>Fit</th><th>What's needed</th><th>Notes</th></tr>
+  <tr>
+    <td><strong>arXiv preprint</strong></td>
+    <td><span class="tag tag-yes">Strong</span></td>
+    <td>Define β<sub>K</sub>, then post</td>
+    <td>Establishes priority for both the empirical results and the proof. Post as soon as β<sub>K</sub> is defined. Does not block other submissions.</td>
+  </tr>
+  <tr>
+    <td><strong>FL/CL Workshops (NeurIPS, ICML, ICLR)</strong></td>
+    <td><span class="tag tag-yes">Strong</span></td>
+    <td>Define β<sub>K</sub> (Path 1 sufficient); reframe appendix as "convergence analysis for a parallel baseline; sequential EMA-KD analysis is ongoing"</td>
+    <td>Workshop reviewers care most about the empirical contribution (+13.7pp CIFAR-10, +19.0pp CIFAR-100). A complete proof with an honest scope statement is well-received. The forgetting problem in sequential SL is the novel empirical setting.</td>
+  </tr>
+  <tr>
+    <td><strong>IEEE TNNLS</strong></td>
+    <td><span class="tag tag-border">Possible</span></td>
+    <td>β<sub>K</sub> via Path 2 — journal reviewers will scrutinize the appendix</td>
+    <td>Strong empirical results. Journal review will ask whether the proof covers the actual algorithm. Path 2 is the answer. Fix β<sub>K</sub>, then submit. Long review cycle (~6 months) so timing matters.</td>
+  </tr>
+  <tr>
+    <td><strong>ICML / NeurIPS main track</strong></td>
+    <td><span class="tag tag-border">Possible</span></td>
+    <td>β<sub>K</sub> via Path 2 + experiments connecting the bound to Figure 4</td>
+    <td>Top venues will notice the sequential/EMA gap even with Path 1. Path 2 is required. Results are strong enough to compete — the bottleneck is the proof rigor.</td>
+  </tr>
+</table>
+
+
+<!-- ══════════════════════════════════════════ -->
+<h2>The One Action That Unlocks Everything</h2>
+
+<div class="eq-note">
+  <div class="eq-label">Define β<sub>K</sub> (Path 1 — minimum viable)</div>
+  Add one sentence before Eq. 39: <em>"Let β<sub>K</sub> denote the gradient drift coefficient induced by the distillation loss relative to standard supervised gradients, satisfying E‖∇f<sub>KD</sub>(x) − ∇f(x)‖² ≤ β²<sub>K</sub>‖∇f(x)‖²."</em> This makes Theorem 1 self-contained and unlocks JSR, CJSJ, STS Scholar, and JSHS immediately.
+</div>
+
+<div class="eq-note">
+  <div class="eq-label">Derive β<sub>K</sub> (Path 2 — strongest version)</div>
+  Show that β<sub>K</sub> ≤ f(T, KL(q<sup>T</sup>‖p<sup>T</sup>), α) where T is the distillation temperature and α is the EMA decay rate. This connects the abstract parameter to the algorithm's actual hyperparameters — a practitioner can compute it before training. Unlocks Involve, Davidson, and STS top-40.
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<h2>Recommended Submission Order</h2>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <strong>Define β<sub>K</sub> via Path 1 (this week)</strong>
+      <p>One sentence added to the proof. Immediately makes the paper submittable to JSR, CJSJ, and STS Scholar. Does not require Dr. Huang's involvement — this is a notation fix Benjamin can do alone.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <strong>Submit to JSR (rolling deadline)</strong>
+      <p>Write a 6–8 page standalone theory paper: motivation (forgetting in sequential SL) → assumptions → Theorem 1 → what β<sub>K</sub> means for practitioners → optional: one experiment. No co-author required for JSR.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <strong>Submit CJSJ 3-page version (deadline ~September 30)</strong>
+      <p>Condense to: problem (1 paragraph) → Theorem 1 statement → 3-term interpretation (σ², ζ², β<sub>K</sub>) → one design rule. Theory-only is the right call at 3 pages.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <strong>Meet with Dr. Huang — attempt Path 2 (before STS deadline)</strong>
+      <p>Ask: can β<sub>K</sub> be bounded in terms of the distillation temperature T and EMA decay α? His answer determines whether STS Finalist and Involve are realistic targets. If yes, derive the β<sub>K</sub> bound and add it as a lemma before Theorem 1.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <strong>STS submission (fall of senior year)</strong>
+      <p>Lead with the proof as the primary contribution. If Path 2 was achieved, highlight the β<sub>K</sub> derivation explicitly — it is the result that is non-obvious and not in any prior paper. Add experiments if available (convergence curves matching the O(1/√KLR) rate). This is the strongest STS submission if Path 2 is done.</p>
+    </div>
+  </div>
 </div>
 
 </div>

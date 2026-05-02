@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Proof Review — BP-Free Convergence Analysis</title>
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)'],['$','$']], displayMath: [['\\[','\\]'],['$$','$$']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  font-family: "Georgia", serif;
+  font-size: 11.5pt;
+  line-height: 1.75;
+  color: #111;
+  background: #fff;
+  margin: 0;
+  padding: 0;
+}
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 40px 80px;
+}
+
+/* ── Nav ── */
+nav.site-nav {
+  background: #1a1a2e;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 0 20px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #374151;
+  margin-bottom: 36px;
+  border-radius: 8px 8px 0 0;
+}
+nav.site-nav a {
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 11px 18px;
+  border-bottom: 3px solid transparent;
+  font-family: sans-serif;
+}
+nav.site-nav a:hover { color: #fff; }
+nav.site-nav a.active { color: #fff; border-bottom-color: #7f9cf5; }
+
+@media print { nav.site-nav { display: none; } }
+
+/* ── Page header ── */
+.page-header {
+  margin-bottom: 36px;
+  border-bottom: 2px solid #1a1a2e;
+  padding-bottom: 16px;
+}
+.page-header h1 {
+  font-size: 18pt;
+  font-weight: bold;
+  margin: 0 0 4px 0;
+}
+.page-header .subtitle {
+  font-size: 10.5pt;
+  color: #555;
+  font-style: italic;
+}
+.page-header .meta {
+  font-size: 9.5pt;
+  color: #888;
+  font-family: sans-serif;
+  margin-top: 6px;
+}
+
+/* ── Verdict banner ── */
+.verdict {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+.verdict-card {
+  flex: 1;
+  min-width: 160px;
+  border-radius: 8px;
+  padding: 14px 18px;
+  font-family: sans-serif;
+  font-size: 9.5pt;
+}
+.verdict-card .label {
+  font-weight: 700;
+  font-size: 8pt;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+.verdict-card.green  { background: #f0fff4; border: 1px solid #68d391; color: #276749; }
+.verdict-card.yellow { background: #fffff0; border: 1px solid #f6e05e; color: #744210; }
+.verdict-card.red    { background: #fff5f5; border: 1px solid #fc8181; color: #c53030; }
+
+/* ── Section headings ── */
+h2 {
+  font-size: 13pt;
+  font-weight: bold;
+  margin: 36px 0 10px;
+  color: #1a1a2e;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 5px;
+}
+h3 {
+  font-size: 11.5pt;
+  font-weight: bold;
+  margin: 22px 0 6px;
+}
+
+p { margin: 0 0 12px; }
+ul, ol { margin: 0 0 14px; padding-left: 24px; }
+li { margin-bottom: 5px; }
+
+/* ── Status table ── */
+.status-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: sans-serif;
+  font-size: 9.5pt;
+  margin: 20px 0 28px;
+}
+.status-table th {
+  background: #1a1a2e;
+  color: #fff;
+  padding: 8px 12px;
+  text-align: left;
+  font-weight: 600;
+}
+.status-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: top;
+}
+.status-table tr:nth-child(even) td { background: #f7fafc; }
+.badge-ok   { background: #c6f6d5; color: #276749; border-radius: 4px; padding: 2px 8px; font-weight: 600; }
+.badge-warn { background: #fefcbf; color: #744210; border-radius: 4px; padding: 2px 8px; font-weight: 600; }
+.badge-gap  { background: #fed7d7; color: #c53030; border-radius: 4px; padding: 2px 8px; font-weight: 600; }
+
+/* ── Code / equation callout ── */
+.eq-note {
+  background: #f7fafc;
+  border-left: 4px solid #4a5568;
+  padding: 12px 16px;
+  margin: 14px 0;
+  font-size: 10.5pt;
+  border-radius: 0 6px 6px 0;
+}
+.eq-note .eq-label {
+  font-family: sans-serif;
+  font-size: 8.5pt;
+  font-weight: 700;
+  color: #4a5568;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+/* ── Recommended structure box ── */
+.structure-box {
+  background: #ebf8ff;
+  border: 1px solid #90cdf4;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 24px 0;
+  font-family: "Courier New", monospace;
+  font-size: 9.5pt;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+/* ── Callout ── */
+.callout {
+  background: #fffbea;
+  border: 1px solid #f6e05e;
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin: 20px 0;
+  font-size: 10pt;
+  font-family: sans-serif;
+}
+.callout strong { color: #744210; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<nav class="site-nav">
+  <a href="sts_paper_draft.html">Paper Draft</a>
+  <a href="sts_essays.html">STS Essays</a>
+  <a href="session_log.html">Session Log</a>
+  <a href="prompts.html">Prompts</a>
+  <a href="venues.html">Venues</a>
+  <a href="proof_review.html" class="active">Proof Review</a>
+</nav>
+
+<div class="page-header">
+  <h1>Proof Rigor Review</h1>
+  <div class="subtitle">Convergence Analysis for BP-Free with Auxiliary Network — Benjamin Qin, April 2026</div>
+  <div class="meta">Reviewed May 2, 2026 &nbsp;·&nbsp; Full LaTeX source reviewed</div>
+</div>
+
+<!-- Verdict cards -->
+<div class="verdict">
+  <div class="verdict-card green">
+    <div class="label">Sections 2.1–2.3</div>
+    Mathematically correct. Standard SGD convergence template, steps all valid.
+  </div>
+  <div class="verdict-card yellow">
+    <div class="label">Section 2.4 (Global)</div>
+    Key steps glossed over or unjustified. Needs rewrite before submission.
+  </div>
+  <div class="verdict-card red">
+    <div class="label">Federated Learning Model</div>
+    Not in the proof. Multiple clients, client drift, and data heterogeneity are entirely absent.
+  </div>
+</div>
+
+<!-- Summary table -->
+<table class="status-table">
+  <tr><th>Component</th><th>Status</th><th>Notes</th></tr>
+  <tr><td>Sections 2.1–2.3 (per-component SGD)</td><td><span class="badge-ok">Correct</span></td><td>Keep as-is. Standard nonconvex SGD, done right.</td></tr>
+  <tr><td>Section 2.4 global analysis</td><td><span class="badge-warn">Incomplete</span></td><td>Steps skipped; key substitution unjustified.</td></tr>
+  <tr><td>Formal lemma / theorem structure</td><td><span class="badge-gap">Missing</span></td><td>Component results are orphaned — never used in Section 2.4.</td></tr>
+  <tr><td>Algorithm pseudocode</td><td><span class="badge-gap">Missing</span></td><td>No formal definition of what update rule is being analyzed.</td></tr>
+  <tr><td>Federated learning model (clients, rounds)</td><td><span class="badge-gap">Missing</span></td><td>Proof is single-machine SGD, not federated.</td></tr>
+  <tr><td>Client drift / data heterogeneity (\(\sigma_h^2\))</td><td><span class="badge-gap">Missing</span></td><td>Required for the convergence floor claimed in the essays.</td></tr>
+  <tr><td>\(\eta\) constraint reconciliation</td><td><span class="badge-warn">Inconsistent</span></td><td>Assumptions say \(\eta \leq 1/L\); Section 2.4 requires \(\eta \leq 1/(4L)\). Not reconciled.</td></tr>
+</table>
+
+
+<h2>What Is Rigorous: Sections 2.1–2.3</h2>
+
+<p>The three per-component convergence proofs follow the standard nonconvex SGD template
+(cf. Ghadimi &amp; Lan 2013) correctly. Each section:</p>
+<ol>
+  <li>Applies the L-smoothness descent lemma</li>
+  <li>Substitutes the gradient update rule \(\theta^{K+1} = \theta^K - \eta \nabla F(\theta^K; \xi^K)\)</li>
+  <li>Takes expectation over the stochastic gradient</li>
+  <li>Applies bias-variance decomposition: \(\mathbb{E}[\|X\|^2] = \|\mathbb{E}[X]\|^2 + \mathbb{E}[\|X - \mathbb{E}[X]\|^2]\)</li>
+  <li>Telescopes the sum and rearranges to get \(\frac{1}{T}\sum_{K=0}^{T-1}\mathbb{E}[\|\nabla F^K\|^2] \leq \sigma^2 + \frac{2L(F^0 - F^*)}{T}\)</li>
+</ol>
+<p>A reviewer would accept these steps.</p>
+
+
+<h2>The Problems: Section 2.4</h2>
+
+<h3>1. Component convergences are orphaned</h3>
+<p>Sections 2.1–2.3 prove \(F_b\), \(F_a\), and \(F_t\) each converge individually. Then Section 2.4 completely ignores those results and starts over with a new global descent inequality. Equations (19), (29), and (39) are never cited or used in Section 2.4. A reviewer will immediately ask: <em>what do those three subsections contribute?</em></p>
+
+<h3>2. Equation (40) — the key substitution is unjustified</h3>
+
+<div class="eq-note">
+  <div class="eq-label">Eq. (40) — problematic</div>
+  \[F^{K+1} \leq F^K - \eta(\nabla F_a(\theta_a))^T \nabla F^K + \frac{L_\text{overall}}{2}\| {-\eta \nabla F_a}\|^2\]
+</div>
+
+<p>This substitutes \(\nabla F_a\) (the auxiliary network gradient) for the true gradient \(\nabla F\) in the
+L-smoothness descent lemma. The justification for this is the auxiliary bias assumption (eq. 7), which
+says \(\|\mathbb{E}[\nabla F_a] - \nabla_{\theta_b} F\| \leq \varepsilon\). But eq. 7 only bounds the error
+against \(\nabla_{\theta_b} F\) — the <em>client-side</em> component of the gradient — not the full model
+gradient \(\nabla F\). The jump from eq. 7 to using \(\nabla F_a\) as a proxy for the global update in
+eq. (40) is the single most important unjustified step in the proof. This is the load-bearing step the
+rest of Section 2.4 depends on.</p>
+
+<h3>3. Eq. (43) → (44) is glossed over</h3>
+
+<div class="eq-note">
+  <div class="eq-label">Eq. (43) — as written</div>
+  \[\mathbb{E}[F^{K+1}-F^K] \leq \mathbb{E}\!\left[-\eta\|\nabla F^K\|^2 - \eta e^T \nabla F^K
+    + \frac{L\eta^2(\|\nabla F^K\|^2 + 2\|\nabla F^K e + e^2 + \xi^2)}{2}\right]\]
+</div>
+
+<p>The phrase "using a similar mathematical logic to Sections 2.1–2.3" skips the actual algebra.
+Additionally, the term \(\|\nabla F^K e + e^2 + \xi^2\|\) has a dimensional problem: \(e\) is a vector,
+so \(e^2\) is undefined without a norm. The expression needs to be written as
+\(\|\nabla F^K + e\|^2 = \|\nabla F^K\|^2 + 2\nabla F^K \cdot e + \|e\|^2\) and expanded explicitly.</p>
+
+<h3>4. Contradictory \(\eta\) constraints</h3>
+<p>The Assumptions section sets \(\eta = \min(1/L_1, 1/L_2, 1/L_3)\). Section 2.4 later requires
+\(\eta \leq 1/(4L_\text{overall})\) to get a negative descent coefficient. These are compatible
+numerically (the second is tighter), but the proof never reconciles them. The correct statement is:
+the global analysis requires a smaller learning rate than the per-component analyses — this should
+be stated explicitly in the assumptions, not discovered mid-proof.</p>
+
+<h3>5. The final bound has an extra \(L_\text{overall}\eta\) factor</h3>
+
+<div class="eq-note">
+  <div class="eq-label">Eq. (47) — the variance term</div>
+  \[\frac{1}{T}\sum_{K=0}^{T-1}\|\nabla F^K\|^2 \leq \frac{4(F^0 - F^*)}{\eta T} + 3e^2 + 2L_\text{overall}\,\eta\,\sigma^2_\text{overall}\]
+</div>
+
+<p>In Sections 2.1–2.3, after the simplification \(\eta \leq 1/L\), the variance terms reduce to just
+\(\sigma^2\) (no \(L\) or \(\eta\) factor). The global bound retains a \(2L_\text{overall}\eta\) factor
+in the variance term. This inconsistency suggests an algebra error in the simplification step of
+Section 2.4.</p>
+
+
+<h2>What Is Entirely Missing: The Federated Learning Model</h2>
+
+<p>The essays and abstract describe a <em>federated</em> convergence theorem — multiple hospitals, data that never leaves clients, and a provably bounded cost to accuracy. But the proof is a single-machine SGD analysis applied to a three-component network. The following are absent:</p>
+
+<ul>
+  <li><strong>Multiple clients:</strong> No \(n\) clients, no local datasets \(\mathcal{D}_i\), no local vs. global objective.</li>
+  <li><strong>Communication rounds vs. local steps:</strong> No distinction between local gradient steps and global aggregation rounds.</li>
+  <li><strong>Client drift:</strong> When clients take \(H\) local steps before aggregation, their models drift from the global model. Bounding this drift is a standard and required lemma in federated convergence proofs (cf. Li et al. 2020, FedProx).</li>
+  <li><strong>Data heterogeneity \(\sigma_h^2\):</strong> The floor of the convergence bound in the essays is \(O(\beta^2 + \sigma_h^2)\). There is no \(\sigma_h\) in this proof at all.</li>
+</ul>
+
+<div class="callout">
+  <strong>Key mismatch:</strong> The research summary essay says "the algorithm converges at rate O(1/√T) to a neighborhood with irreducible floor O(β² + σ_h²)." The current proof gives a floor of \(3e^2 + 2L\eta\sigma^2\) with no \(\sigma_h^2\) term and no \(1/\sqrt{T}\) — it gives \(O(1/T)\). The essays and the proof are describing different theorems.
+</div>
+
+
+<h2>Recommended Proof Structure</h2>
+
+<div class="structure-box">Algorithm 1  (pseudocode box)
+  BP-Free Federated Learning with Auxiliary Networks
+  Input: n clients, T rounds, H local steps, η
+
+Assumption 1  L-smoothness (client, auxiliary, server components)
+Assumption 2  Bounded stochastic gradient variance (σ_b², σ_a², σ_t²)
+Assumption 3  Bounded auxiliary approximation error β
+Assumption 4  Bounded data heterogeneity σ_h²
+
+Lemma 1  (One-step descent)
+  For one round of the BP-free auxiliary update, show:
+  E[F^{K+1}] ≤ E[F^K] - (η/2)‖∇F^K‖² + C·β² + ...
+
+Lemma 2  (Auxiliary bias)
+  Justify that ∇F_a is a valid surrogate for the global gradient
+  up to error β. This is the key lemma — eq. (40) needs to live here
+  with a full proof.
+
+Lemma 3  (Client drift)
+  After H local steps, the average client model deviates from the
+  global model by at most O(η²H²σ_h²).
+
+Lemma 4  (Aggregation error)
+  FedAvg aggregation introduces heterogeneity error bounded by σ_h².
+
+Theorem 1
+  (1/T) Σ‖∇F^K‖² ≤ O(1/√T) + O(β²) + O(σ_h²)
+  Proof: Apply Lemmas 1–4, telescope over T rounds, rearrange. □
+</div>
+
+<p>The three per-component convergences (current Sections 2.1–2.3) can feed into Lemma 1 as
+sub-results, making them useful rather than orphaned.</p>
+
+
+<h2>Priority Action Items</h2>
+<ol>
+  <li><strong>Most urgent — discuss with Dr. Huang:</strong> Is eq. (7) strong enough to justify eq. (40)? If \(\nabla F_a\) is only a proxy for \(\nabla_{\theta_b} F\) and not the full \(\nabla F\), the global descent step needs a different argument or a stronger assumption.</li>
+  <li>Add a formal algorithm box defining what update rule is being analyzed (clients, local steps, aggregation).</li>
+  <li>Add a client drift lemma (Lemma 3 above) to make the proof actually federated.</li>
+  <li>Reconcile the \(\eta\) constraints in the assumptions section before the proof begins.</li>
+  <li>Expand eq. (43) → (44) with explicit algebra instead of "using a similar logic."</li>
+  <li>Confirm whether the correct convergence rate is \(O(1/T)\) or \(O(1/\sqrt{T})\) — the proof and the essays currently disagree.</li>
+</ol>
+
+</div>
+</body>
+</html>

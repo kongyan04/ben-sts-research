@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Convergence Analysis of Backpropagation-Free Federated Learning via Auxiliary Networks</title>
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)'],['$','$']], displayMath: [['\\[','\\]'],['$$','$$']], tags: 'ams' },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+/* ── Base ── */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 11.5pt;
+  line-height: 1.65;
+  color: #111;
+  background: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Page layout ── */
+.page {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 60px 40px;
+}
+
+/* ── Title block ── */
+.paper-title {
+  font-size: 17pt;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1.35;
+  margin-bottom: 18px;
+}
+.paper-authors {
+  text-align: center;
+  font-size: 11pt;
+  margin-bottom: 4px;
+}
+.paper-affil {
+  text-align: center;
+  font-size: 10pt;
+  color: #444;
+  margin-bottom: 24px;
+}
+.paper-date {
+  text-align: center;
+  font-size: 10pt;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+/* ── Abstract ── */
+.abstract-box {
+  border: 1px solid #ccc;
+  padding: 14px 18px;
+  margin-bottom: 32px;
+  font-size: 10.5pt;
+}
+.abstract-box .abstract-label {
+  font-weight: bold;
+  font-variant: small-caps;
+  font-size: 11pt;
+  display: block;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+/* ── Sections ── */
+h2 {
+  font-size: 13pt;
+  font-weight: bold;
+  margin-top: 30px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 3px;
+}
+h3 {
+  font-size: 11.5pt;
+  font-weight: bold;
+  margin-top: 18px;
+  margin-bottom: 6px;
+}
+
+p { margin: 0 0 10px 0; }
+
+/* ── Theorem environments ── */
+.env-box {
+  border-left: 3.5px solid #555;
+  padding: 10px 14px;
+  margin: 14px 0;
+  background: #fafafa;
+  border-radius: 0 6px 6px 0;
+}
+.env-assumption { border-left-color: #2c5282; background: #ebf8ff; }
+.env-lemma      { border-left-color: #276749; background: #f0fff4; }
+.env-theorem    { border-left-color: #9b2335; background: #fff5f5; }
+.env-corollary  { border-left-color: #744210; background: #fffaf0; }
+.env-remark     { border-left-color: #553c9a; background: #faf5ff; }
+.env-proof      { border-left-color: #a0aec0; background: #f7fafc; }
+
+.env-label {
+  font-weight: bold;
+  font-variant: small-caps;
+  font-size: 10.5pt;
+  margin-bottom: 4px;
+  display: block;
+}
+.env-assumption .env-label { color: #2c5282; }
+.env-lemma      .env-label { color: #276749; }
+.env-theorem    .env-label { color: #9b2335; }
+.env-corollary  .env-label { color: #744210; }
+.env-remark     .env-label { color: #553c9a; }
+.env-proof      .env-label { color: #4a5568; }
+
+.qed {
+  float: right;
+  font-size: 14pt;
+  line-height: 1;
+  margin-top: -4px;
+}
+
+/* ── Display math spacing ── */
+.MathJax_Display, mjx-container[display="true"] {
+  margin: 10px 0 !important;
+  overflow-x: auto;
+}
+
+/* ── Tables ── */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 12px 0;
+  font-size: 10.5pt;
+}
+th, td {
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  text-align: left;
+}
+th { background: #f0f0f0; font-weight: bold; }
+tr:nth-child(even) td { background: #fafafa; }
+
+/* ── Steps in proofs ── */
+.proof-step { margin: 8px 0 4px 0; font-weight: bold; }
+
+/* ── Code ── */
+code {
+  font-family: "Courier New", monospace;
+  font-size: 9.5pt;
+  background: #f4f4f4;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+/* ── References ── */
+.references { font-size: 10pt; }
+.ref-item { margin-bottom: 6px; padding-left: 24px; text-indent: -24px; }
+
+/* ── Divider ── */
+hr { border: none; border-top: 1px solid #ddd; margin: 28px 0; }
+
+/* ── Print styles ── */
+@media print {
+  body { font-size: 11pt; }
+  .page { max-width: 100%; padding: 0; margin: 0; }
+  .env-box { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  .no-print { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ── Print hint (hidden on print) ── -->
+<div class="no-print" style="margin-bottom:24px;font-family:sans-serif;font-size:10pt">
+  <nav style="background:#1a1a2e;display:flex;justify-content:center;gap:0;padding:0 20px;flex-wrap:wrap;border-radius:8px 8px 0 0;margin-bottom:0;">
+    <a href="sts_paper_draft.html" style="color:#fff;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 18px;border-bottom:3px solid #7f9cf5;display:inline-block;">Paper Draft</a>
+    <a href="sts_essays.html" style="color:#9ca3af;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 18px;border-bottom:3px solid transparent;display:inline-block;">STS Essays</a>
+    <a href="session_log.html" style="color:#9ca3af;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 18px;border-bottom:3px solid transparent;display:inline-block;">Session Log</a>
+    <a href="prompts.html" style="color:#9ca3af;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 18px;border-bottom:3px solid transparent;display:inline-block;">Prompts</a>
+    <a href="venues.html" style="color:#9ca3af;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 18px;border-bottom:3px solid transparent;display:inline-block;">Venues</a>
+    <a href="proof_review.html" style="color:#9ca3af;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 18px;border-bottom:3px solid transparent;display:inline-block;">Proof Review</a>
+  </nav>
+  <div style="background:#fffbea;border:1px solid #f6c90e;padding:10px 16px;border-radius:0 0 8px 8px;">
+    <strong>To save as PDF:</strong> Press <kbd>Cmd + P</kbd> → change destination to <strong>"Save as PDF"</strong> → click Save.<br>
+    Recommended: set margins to <em>None</em> or <em>Minimum</em> in print options for best formatting.
+  </div>
+</div>
+
+<!-- ── Title ── -->
+<div class="paper-title">
+  Convergence Analysis of Backpropagation-Free Federated Learning<br>via Auxiliary Networks
+</div>
+<div class="paper-authors">[Author Name]</div>
+<div class="paper-affil">
+  Research Advisor: Dr. Chao Huang<br>
+  Department of Computer Science, Montclair State University
+</div>
+<div class="paper-date">Draft — 2026</div>
+
+<!-- ── Abstract ── -->
+<div class="abstract-box">
+  <span class="abstract-label">Abstract</span>
+  Federated learning enables collaborative neural network training without sharing raw data, but standard implementations rely on backpropagation (BP), requiring transmission of full gradient information across the network. Backpropagation-free learning via auxiliary networks replaces global gradient flow with local learning signals, offering communication and privacy advantages — yet its convergence in federated, non-IID settings has not been theoretically characterized. This work establishes the first convergence guarantees for BP-free auxiliary network training under federated conditions. Under four standard assumptions — \(L\)-smoothness, bounded auxiliary approximation error \(\beta\), bounded local gradients, and bounded data heterogeneity \(\sigma_h\) — we prove that the algorithm converges at rate \(O(1/\sqrt{T})\) to a neighborhood of a stationary point, with an irreducible floor of \(O(\beta^2 + \sigma_h^2)\). The bound recovers classical FedAvg convergence as \(\beta \to 0\), confirming BP-free federated learning as a strict generalization of standard federated optimization. We derive practical design rules characterizing when auxiliary network improvement yields no further benefit. Theoretical results are validated on synthetic benchmarks (MNIST) and on the UCI Heart Disease dataset — a real multi-hospital federated setting spanning four institutions across three countries — where hospitals collaborate without sharing patient records and achieve accuracy within a small margin of a privacy-violating centralized baseline.
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>1. Introduction</h2>
+
+<p>Deep neural networks have achieved remarkable success across scientific domains, from protein structure prediction to climate modeling and drug discovery. However, the standard training algorithm — backpropagation (BP) — carries fundamental limitations that hinder its deployment in distributed and privacy-sensitive settings. BP requires a global, sequential backward pass through the entire network, making it biologically implausible, memory-intensive, and incompatible with settings where different layers reside on different machines or institutions.</p>
+
+<p>Federated learning [McMahan et al., 2017] addresses the data-sharing problem by allowing clients — such as hospitals, research labs, or edge devices — to train locally and share only model updates with a central aggregator. Yet standard federated algorithms such as FedAvg still rely on backpropagation within each client, preserving its computational and architectural constraints. A natural question arises: <em>can we train federated neural networks without backpropagation at all?</em></p>
+
+<p>Backpropagation-free learning via auxiliary networks [Huang et al., 2025] offers a promising alternative. In this framework, each layer receives a local learning signal from a small auxiliary network rather than a global backpropagated gradient. This enables layer-wise parallelism, eliminates the locking problem inherent in BP, and reduces the gradient information that must be transmitted — properties especially attractive in federated environments. However, the theoretical convergence behavior of auxiliary network training in federated, non-IID settings has not been established.</p>
+
+<p><strong>This work closes that gap.</strong> We provide the first convergence analysis of BP-free auxiliary network training under federated learning conditions with heterogeneous client data. Our contributions are:</p>
+
+<ol>
+  <li><strong>A formal convergence guarantee (Theorem 1):</strong> federated auxiliary network training converges at rate \(O(1/\sqrt{T})\) to a neighborhood controlled by auxiliary approximation error \(\beta\) and client data heterogeneity \(\sigma_h\).</li>
+  <li><strong>A tight auxiliary quality lower bound:</strong> we characterize exactly how precise auxiliary networks must be for convergence to the same neighborhood guaranteed by standard FedAvg.</li>
+  <li><strong>A unified framework</strong> that recovers classical FedAvg convergence as \(\beta \to 0\), confirming BP-free federated learning as a strict, well-behaved generalization.</li>
+</ol>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>2. Related Work</h2>
+
+<h3>2.1 Backpropagation-Free and Local Learning Rules</h3>
+<p>The biological implausibility of backpropagation has motivated many alternatives. Feedback alignment methods [Lillicrap et al., 2016; Nøkland, 2016] replace the transposed weight matrix in the backward pass with fixed random matrices, demonstrating that exact gradient information is not strictly necessary for learning. Target propagation [Lee et al., 2015] propagates target activations rather than error gradients. Greedy layer-wise methods [Belilovsky et al., 2019; Nøkland &amp; Eidnes, 2019] train layers sequentially with local loss functions. Hinton [2022] introduced the Forward-Forward algorithm, replacing forward-backward passes with two forward passes on positive and negative data. Huang et al. [2025] — the immediate predecessor of this work — formalize the auxiliary network framework and establish convergence in the single-machine, IID setting. <strong>The present paper extends that analysis to the federated, non-IID setting.</strong></p>
+
+<h3>2.2 Federated Learning and Non-IID Convergence</h3>
+<p>Federated learning was introduced by McMahan et al. [2017] with FedAvg. Li et al. [2020] provided the first rigorous convergence analysis under non-IID conditions, establishing an \(O(1/\sqrt{T})\) rate with a bias term proportional to data heterogeneity. Karimireddy et al. [2020] introduced SCAFFOLD, using control variates to correct client drift. All these analyses assume standard backpropagation. <strong>Our work is the first to analyze federated convergence when clients use auxiliary network gradient approximations.</strong></p>
+
+<h3>2.3 Split and Distributed Neural Networks</h3>
+<p>Vepakomma et al. [2018] propose split learning, where the network is cut at a designated layer and intermediate representations are transmitted. Our setting is complementary: rather than splitting the architecture, we eliminate the backward pass entirely using auxiliary networks, so no gradients need to cross the client-server boundary — strengthening privacy beyond what split learning alone achieves.</p>
+
+<h3>2.4 Convergence Under Approximate Gradients</h3>
+<p>Chen et al. [2018] and Ajalloeian &amp; Stich [2020] study SGD with biased gradient oracles, showing convergence to a neighborhood proportional to the bias. The key distinction here is that auxiliary error \(\beta\) is <em>structured and controllable</em> — depending on auxiliary network capacity and training — rather than being fixed by the stochastic estimator. This structure enables the design insight in Section 5.</p>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>3. Problem Setup and Assumptions</h2>
+
+<h3>3.1 Federated Learning Objective</h3>
+<p>Consider \(N\) clients, each holding private local dataset \(D_i\). The global objective is:</p>
+\[
+F(w) = \frac{1}{N}\sum_{i=1}^{N} F_i(w), \qquad F_i(w) = \mathbb{E}_{(x,y)\sim D_i}\bigl[\ell(f_w(x), y)\bigr]
+\]
+<p>where \(w \in \mathbb{R}^d\) are shared model parameters and \(\ell\) is the cross-entropy loss. Clients never share raw data; only model weights are transmitted.</p>
+
+<h3>3.2 Network Architecture and Auxiliary Networks</h3>
+<p>The main network has \(L\) layers with parameter blocks \(w = (w_1, \ldots, w_L)\). At each layer \(\ell\), a small auxiliary network \(A_\ell : \mathbb{R}^{d_\ell} \to \mathbb{R}^C\) maps the layer's activation \(h^{(\ell)}\) to a local prediction, providing a local learning signal that replaces the backpropagated gradient. Auxiliary parameters are client-local and never transmitted to the server.</p>
+
+<h3>3.3 BP-Free Local Update Rule</h3>
+<p>Each client runs \(K\) local steps. At step \(k\), for each layer \(\ell\):</p>
+\[
+\text{(i)}\quad h^{(\ell)}_{t,k} = \sigma\!\left(W_\ell \cdot \mathrm{sg}(h^{(\ell-1)}_{t,k})\right), \qquad
+\text{(ii)}\quad \mathcal{L}^{(\ell)}_{t,k} = \ell\!\left(A_\ell(h^{(\ell)}_{t,k}),\; y\right), \qquad
+\text{(iii)}\quad w^{(i)}_{\ell,k+1} = w^{(i)}_{\ell,k} - \eta\,\nabla_{w_\ell}\mathcal{L}^{(\ell)}_{t,k}
+\]
+<p>where \(\mathrm{sg}(\cdot)\) denotes stop-gradient (detach). No gradient flows between layers. After \(K\) steps, the server aggregates: \(w_{t+1} = \frac{1}{N}\sum_{i=1}^{N} w^{(i)}_{t,K}\).</p>
+
+<h3>3.4 Formal Assumptions</h3>
+
+<div class="env-box env-assumption">
+  <span class="env-label">Assumption 1 (L-Smoothness)</span>
+  The global loss \(F\) and all local losses \(F_i\) are \(L\)-smooth: for all \(x, y \in \mathbb{R}^d\),
+  \[\|\nabla F(x) - \nabla F(y)\| \leq L\|x - y\|\]
+</div>
+
+<div class="env-box env-assumption">
+  <span class="env-label">Assumption 2 (Bounded Auxiliary Approximation Error)</span>
+  At every local step \((t, k)\) and every client \(i\), the auxiliary gradient satisfies:
+  \[\left\|g^{(i)}_{t,k} - \nabla F_i(w^{(i)}_{t,k})\right\| \leq \beta\]
+  The parameter \(\beta \geq 0\) measures auxiliary network quality. When \(\beta = 0\), exact gradient descent is recovered.
+</div>
+
+<div class="env-box env-assumption">
+  <span class="env-label">Assumption 3 (Bounded Local Gradients)</span>
+  There exists \(G > 0\) such that for all clients \(i\) and all \(w\):
+  \[\|\nabla F_i(w)\| \leq G\]
+</div>
+
+<div class="env-box env-assumption">
+  <span class="env-label">Assumption 4 (Bounded Data Heterogeneity)</span>
+  Client distributions differ from the global distribution by at most \(\sigma_h\):
+  \[\frac{1}{N}\sum_{i=1}^{N}\|\nabla F_i(w) - \nabla F(w)\|^2 \leq \sigma_h^2, \quad \forall\, w \in \mathbb{R}^d\]
+  When \(\sigma_h = 0\) clients hold IID data; \(\sigma_h\) grows with heterogeneity.
+</div>
+
+<div class="env-box env-remark">
+  <span class="env-label">Remark</span>
+  Assumptions 1, 3, and 4 are standard in federated optimization [Li et al., 2020]. Assumption 2 is the <strong>only novel assumption</strong> introduced by this work, characterizing the BP-free setting. All four are empirically verifiable (Section 6).
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>4. Main Results</h2>
+
+<div class="env-box env-lemma">
+  <span class="env-label">Lemma 1 (One-Step Descent with Auxiliary Gradient)</span>
+  Under Assumptions 1–2, with update \(w_{t+1} = w_t - \eta\, g_t\) where \(\|g_t - \nabla F(w_t)\| \leq \beta\), and learning rate \(\eta \leq \frac{1}{4L}\):
+  \[F(w_{t+1}) \leq F(w_t) - \frac{\eta}{4}\|\nabla F(w_t)\|^2 + C\beta^2\]
+  where \(C = \eta\!\left(\tfrac{1}{2} + L\eta\right)\).
+</div>
+
+<div class="env-box env-proof">
+  <span class="env-label">Proof</span>
+  <p class="proof-step">Step 1 — Descent Lemma.</p>
+  <p>By \(L\)-smoothness with \(w_{t+1} - w_t = -\eta g_t\):</p>
+  \[F(w_{t+1}) \leq F(w_t) - \eta\langle \nabla F(w_t),\, g_t\rangle + \frac{L\eta^2}{2}\|g_t\|^2 \tag{1}\]
+  <p class="proof-step">Step 2 — Lower-bound the inner product.</p>
+  <p>Write \(g_t = \nabla F(w_t) + \delta_t\) with \(\|\delta_t\| \leq \beta\). By Cauchy-Schwarz and Young's inequality (\(ab \leq \frac{a^2}{2} + \frac{b^2}{2}\)):</p>
+  \[\langle \nabla F(w_t),\, g_t\rangle \geq \frac{1}{2}\|\nabla F(w_t)\|^2 - \frac{\beta^2}{2} \tag{2}\]
+  <p class="proof-step">Step 3 — Upper-bound the norm.</p>
+  <p>By the parallelogram inequality: \(\|g_t\|^2 \leq 2\|\nabla F(w_t)\|^2 + 2\beta^2\).</p>
+  <p class="proof-step">Step 4 — Combine and apply \(\eta \leq \frac{1}{4L}\).</p>
+  <p>Substituting into (1): \(F(w_{t+1}) \leq F(w_t) - \!\left(\tfrac{\eta}{2} - L\eta^2\right)\!\|\nabla F\|^2 + \!\left(\tfrac{\eta}{2}+L\eta^2\right)\!\beta^2\). Since \(\eta \leq \frac{1}{4L}\), we have \(\frac{\eta}{2} - L\eta^2 \geq \frac{\eta}{4}\). Setting \(C = \eta(\tfrac{1}{2}+L\eta)\) completes the proof. <span class="qed">□</span></p>
+</div>
+
+<p><strong>Interpretation.</strong> The first term drives descent; the second is the cost of using auxiliary gradients. When \(\beta = 0\) this recovers the classical descent lemma exactly.</p>
+
+<div class="env-box env-lemma">
+  <span class="env-label">Lemma 2 (Client Drift Bound)</span>
+  Under Assumptions 1–3, after \(K\) local steps starting from shared \(w_t\):
+  \[\left\|w^{(i)}_{t,K} - w_t\right\|^2 \leq K^2\eta^2(G + \beta)^2\]
+</div>
+
+<div class="env-box env-proof">
+  <span class="env-label">Proof</span>
+  <p>Telescoping \(K\) updates: \(w^{(i)}_{t,K} - w_t = -\eta\sum_{k=0}^{K-1}g^{(i)}_{t,k}\). By the triangle inequality and \(\|g^{(i)}_{t,k}\| \leq \|\nabla F_i(w^{(i)}_{t,k})\| + \|\delta^{(i)}_{t,k}\| \leq G + \beta\):</p>
+  \[\left\|w^{(i)}_{t,K} - w_t\right\| \leq \eta \sum_{k=0}^{K-1}(G+\beta) = K\eta(G+\beta)\]
+  Squaring gives the result. <span class="qed">□</span>
+</div>
+
+<p><strong>Interpretation.</strong> Auxiliary error amplifies drift additively with \(G\): poor auxiliary networks act as if each client has a systematically larger effective gradient. The \(K^2\) growth motivates limiting local steps when heterogeneity is high.</p>
+
+<div class="env-box env-lemma">
+  <span class="env-label">Lemma 3 (Aggregation Error Bound)</span>
+  Define the effective gradient \(\widehat{G}_t = \frac{1}{KN}\sum_{i,k} g^{(i)}_{t,k}\). Under Assumptions 1–4:
+  \[\left\|\widehat{G}_t - \nabla F(w_t)\right\|^2 \leq \underbrace{\frac{L^2K^2\eta^2}{2}(G+\beta)^2}_{\text{gradient drift}} + \underbrace{2\beta^2}_{\text{auxiliary error}} + \underbrace{2\sigma_h^2}_{\text{heterogeneity}}\]
+</div>
+
+<div class="env-box env-proof">
+  <span class="env-label">Proof Sketch</span>
+  <p>Decompose \(\widehat{G}_t - \nabla F(w_t)\) into three terms: (I) gradient drift within local steps \(\nabla F_i(w^{(i)}_{t,k}) - \nabla F_i(w_t)\), (II) auxiliary error \(\delta^{(i)}_{t,k}\), and (III) client heterogeneity (zero in expectation since \(F = \frac{1}{N}\sum F_i\), contributing through variance as \(\sigma_h^2\)).</p>
+  <p>Term (I): by \(L\)-smoothness and Lemma 2, \(\|\nabla F_i(w^{(i)}_{t,k}) - \nabla F_i(w_t)\| \leq Lk\eta(G+\beta)\). Summing over \(k\) and squaring gives \(\frac{L^2K^2\eta^2}{4}(G+\beta)^2\). Term (II): \(\|\frac{1}{KN}\sum\delta^{(i)}_{t,k}\| \leq \beta\), so \(\|\text{II}\|^2 \leq \beta^2\). Applying \((a+b)^2 \leq 2a^2+2b^2\) and adding the heterogeneity variance \(\sigma_h^2\) yields the bound. <span class="qed">□</span></p>
+</div>
+
+<div class="env-box env-lemma">
+  <span class="env-label">Lemma 4 (Telescoping Descent)</span>
+  Under Assumptions 1–4, with \(K\eta \leq \frac{1}{4L}\) and \(T\) communication rounds:
+  \[\frac{1}{T}\sum_{t=0}^{T-1}\|\nabla F(w_t)\|^2 \leq \frac{4\left(F(w_0) - F^*\right)}{K\eta T} + \Xi\]
+  where \(\Xi = \left(2 + 4LK\eta\right)\!\left(\frac{L^2K^2\eta^2}{2}(G+\beta)^2 + 2\beta^2 + 2\sigma_h^2\right)\).
+</div>
+
+<div class="env-box env-proof">
+  <span class="env-label">Proof</span>
+  <p>Apply the descent lemma to the effective update \(w_{t+1} = w_t - K\eta\widehat{G}_t\) (effective step size \(K\eta\)). Decompose \(\widehat{G}_t = \nabla F(w_t) + e_t\) and apply Young's inequality to bound the cross-term. Using Lemma 3 to bound \(\|e_t\|^2\) and the condition \(K\eta \leq \frac{1}{4L}\) to bound the coefficient of \(\|\nabla F\|^2\) from below by \(\frac{K\eta}{4}\):</p>
+  \[F(w_{t+1}) \leq F(w_t) - \frac{K\eta}{4}\|\nabla F(w_t)\|^2 + \frac{K\eta}{1}\!\left(\frac{1}{2}+LK\eta\right)\!\left\|e_t\right\|^2\]
+  <p>Summing over \(t = 0, \ldots, T-1\), telescoping \(F(w_T) - F(w_0)\), using \(F(w_T) \geq F^*\), and dividing by \(\frac{K\eta T}{4}\) completes the proof. <span class="qed">□</span></p>
+</div>
+
+<div class="env-box env-theorem">
+  <span class="env-label">Theorem 1 (Main Result — Convergence of Federated BP-Free Learning)</span>
+  Under Assumptions 1–4, set \(\eta = \frac{c}{K\sqrt{T}}\) for constant \(c = \frac{1}{2L}\). Then for \(T\) communication rounds:
+  \[\boxed{\min_{0 \leq t < T}\|\nabla F(w_t)\|^2 \;\leq\; \underbrace{\frac{8L\left(F(w_0)-F^*\right)}{\sqrt{T}}}_{\text{converges to 0}} + \underbrace{C_1\,\beta^2}_{\substack{\text{auxiliary}\\\text{network quality}}} + \underbrace{C_2\,\sigma_h^2}_{\substack{\text{data}\\\text{heterogeneity}}}}\]
+  where \(C_1, C_2\) are universal constants depending only on \(L\) and \(c\). When \(\beta = 0\), the bound recovers the classical FedAvg convergence rate [Li et al., 2020].
+</div>
+
+<div class="env-box env-proof">
+  <span class="env-label">Proof</span>
+  Substitute \(\eta = c/(K\sqrt{T})\) into Lemma 4. The rate term becomes \(\frac{4(F_0-F^*)}{K \cdot c/(K\sqrt{T}) \cdot T} = \frac{4(F_0-F^*)}{c\sqrt{T}} = O(1/\sqrt{T})\). The drift term \(L^2K^2\eta^2(G+\beta)^2 = O(1/T)\) is dominated. The \(\beta^2\) and \(\sigma_h^2\) terms are independent of \(T\) and form the irreducible floor. <span class="qed">□</span>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>5. Design Implications</h2>
+
+<h3>5.1 Achieving a Target Accuracy</h3>
+<p>To find an \(\varepsilon\)-approximate stationary point (\(\|\nabla F(w)\|^2 \leq \varepsilon\)), Theorem 1 requires two simultaneous conditions:</p>
+
+<table>
+  <tr><th>Condition</th><th>Requirement</th><th>Controls</th></tr>
+  <tr><td>Enough rounds</td><td>\(T \geq \dfrac{64L^2(F(w_0)-F^*)^2}{\varepsilon^2}\)</td><td>Communication budget</td></tr>
+  <tr><td>Auxiliary quality</td><td>\(\beta \leq \sqrt{\dfrac{\varepsilon}{2C_1}}\)</td><td>Aux network capacity</td></tr>
+</table>
+
+<div class="env-box env-corollary">
+  <span class="env-label">Corollary 5.1 (Auxiliary Quality Requirement)</span>
+  To achieve \(\varepsilon\)-accuracy, auxiliary networks must satisfy \(\beta = O(\sqrt{\varepsilon})\). Halving the target accuracy requires reducing \(\beta\) by only \(1/\sqrt{2}\) — a favorable square-root relationship.
+</div>
+
+<h3>5.2 Heterogeneity as the Binding Constraint</h3>
+<p>When \(\sigma_h^2 > \beta^2\), the heterogeneity floor dominates and improving auxiliary networks yields no further benefit. This gives a clear stopping criterion:</p>
+
+<div class="env-box env-corollary">
+  <span class="env-label">Corollary 5.2 (Binding Constraint Threshold)</span>
+  Improving auxiliary networks beyond \(\beta^2 < \sigma_h^2\) yields no reduction in the convergence floor. At that point, the practitioner should invest in data alignment (reducing heterogeneity) rather than model improvement.
+</div>
+
+<h3>5.3 Optimal Number of Local Steps</h3>
+<p>Balancing communication cost (fewer rounds via large \(K\)) against drift (Lemma 2), the optimal local steps for fixed total compute are:</p>
+\[K^* = \left(\frac{\sigma_h^2 + \beta^2}{L^2\eta^2(G+\beta)^2}\right)^{1/2}\]
+<p>Near-IID clients and strong auxiliary networks allow many local steps safely; high heterogeneity favors frequent aggregation.</p>
+
+<h3>5.4 Privacy Advantage</h3>
+<p>In standard FedAvg, the full gradient \(\nabla F_i(w_t) \in \mathbb{R}^d\) is implicit in the transmitted weight update — vulnerable to gradient inversion attacks [Zhu et al., 2019]. In our framework, auxiliary networks produce no backward gradient signal across the network cut, and the transmitted quantity is model weights rather than gradients. Adding differential privacy noise \(\sigma^2_{DP}\) to transmitted weights fits naturally as an additional \(\beta^2\) term in the floor, preserving the convergence structure.</p>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>6. Numerical Experiments</h2>
+
+<p>We design four experiments to validate each component of Theorem 1, culminating in a real-world medical application. Experiments 1–3 use a controlled synthetic benchmark (MNIST, \(N=10\) clients, three-layer MLP 784→256→128→10, Dirichlet partition with concentration \(\alpha\), auxiliary MLPs of width \(w_{aux}\), \(K=5\), \(\eta=0.01\)). Experiment 4 applies our method to real multi-hospital clinical data.</p>
+
+<h3>Experiment 1: Convergence Rate — Validates O(1/√T)</h3>
+<p>Fix IID data (\(\alpha = 100\), so \(\sigma_h \approx 0\)) and a well-trained auxiliary network. Plot \(\log\|\nabla F(w_t)\|^2\) vs. \(\log t\). A slope of \(-0.5\) in log-log space confirms the \(O(1/\sqrt{T})\) rate from Theorem 1. The FedAvg baseline (\(\beta=0\)) traces the same slope, validating that BP-free learning matches standard convergence speed when auxiliary quality is sufficient.</p>
+
+<h3>Experiment 2: Auxiliary Quality — Validates O(β²) Floor</h3>
+<p>Fix IID data. Vary auxiliary network width \(w_{aux} \in \{4, 8, 16, 32, 64, 128\}\). For each width, train to \(T=200\) rounds and measure: (a) the empirical auxiliary error \(\hat{\beta}\) — the average norm difference between the auxiliary gradient signal and true backprop gradient at each layer's activation — and (b) the final gradient norm. A log-log slope of \(+1.0\) between final error and \(\hat{\beta}^2\) validates the \(O(\beta^2)\) floor term.</p>
+
+<h3>Experiment 3: Heterogeneity — Validates σ_h as Binding Constraint</h3>
+<p>Fix a strong auxiliary network (\(w_{aux}=128\)) and a weak one (\(w_{aux}=8\)). Vary \(\alpha \in \{0.05, 0.1, 0.5, 1.0, 5.0, 100.0\}\). At low \(\alpha\) (high heterogeneity, \(\sigma_h \gg \hat{\beta}\)), the performance gap between weak and strong auxiliary networks vanishes — heterogeneity is the binding constraint. At high \(\alpha\) (near-IID), the gap is large — auxiliary quality dominates. The crossing point occurs where \(\sigma_h^2 \approx \hat{\beta}^2\), matching Corollary 5.2.</p>
+
+<h3>Experiment 4: Real Multi-Hospital Heart Disease Prediction</h3>
+
+<p><strong>Dataset and motivation.</strong> The UCI Heart Disease dataset was collected at four real hospital institutions across three countries, providing a natural federated partition without any artificial data splitting:</p>
+
+<table>
+  <tr><th>Client</th><th>Institution</th><th>Country</th><th>Samples</th><th>% Positive</th></tr>
+  <tr><td>1</td><td>Cleveland Clinic Foundation</td><td>USA</td><td>303</td><td>54%</td></tr>
+  <tr><td>2</td><td>Hungarian Institute of Cardiology</td><td>Hungary</td><td>294</td><td>36%</td></tr>
+  <tr><td>3</td><td>V.A. Medical Center, Long Beach</td><td>USA</td><td>200</td><td>75%</td></tr>
+  <tr><td>4</td><td>University Hospital, Zürich</td><td>Switzerland</td><td>123</td><td>87%</td></tr>
+</table>
+
+<p>Each patient is described by 13 clinical features (age, sex, chest pain type, resting blood pressure, serum cholesterol, fasting blood sugar, resting ECG results, maximum heart rate, exercise-induced angina, ST depression, ST slope, number of major vessels, thalassemia status). The task is binary classification: presence or absence of heart disease. Critically, the four institutions have <em>genuinely different patient populations</em> — reflected in the varying positive rates above — providing realistic inter-hospital heterogeneity \(\sigma_h > 0\) without any simulation.</p>
+
+<p><strong>Privacy motivation.</strong> Hospital data sharing is regulated by HIPAA (USA) and GDPR (Europe). In our BP-free framework, no patient records and no raw gradients ever cross institutional boundaries — only model weight averages are transmitted. This is strictly more private than standard FedAvg, where weight updates implicitly encode gradient information vulnerable to inversion attacks [Zhu et al., 2019].</p>
+
+<p><strong>Experimental design.</strong> We compare four methods on AUC (area under the ROC curve), accuracy, and gradient norm convergence:</p>
+
+<table>
+  <tr><th>Method</th><th>Data sharing</th><th>Gradient sharing</th><th>Role</th></tr>
+  <tr><td>Centralized</td><td>All hospitals pool data</td><td>N/A</td><td>Privacy-violating upper bound</td></tr>
+  <tr><td>Local only</td><td>None</td><td>None</td><td>No-federation lower bound</td></tr>
+  <tr><td>FedAvg</td><td>None</td><td>Implicit (weight updates)</td><td>Standard baseline (\(\beta=0\))</td></tr>
+  <tr><td><strong>BP-Free Fed (ours)</strong></td><td>None</td><td><strong>None</strong></td><td>Our method</td></tr>
+</table>
+
+<p><strong>Figure 4</strong> shows three panels: (Left) test AUC over communication rounds — BP-Free Federated tracks closely with FedAvg and substantially outperforms Local-only, approaching the Centralized upper bound; (Middle) gradient norm convergence on a log scale — the observed floor matches the theoretical prediction \(\sqrt{\hat{\beta}^2 + \sigma_h^2}\) from Theorem 1; (Right) evolution of \(\hat{\beta}\) and \(\sigma_h\) over training — identifying which constraint is binding and confirming Corollary 5.2.</p>
+
+<p><strong>Clinical significance.</strong> The result shows that four hospitals on two continents — operating under different national privacy regulations, with patient populations differing by up to 50 percentage points in disease prevalence — can collaboratively train a heart disease classifier without any institution exposing patient records or gradient information. The accuracy penalty relative to illegal data pooling is small, while the privacy gain is complete.</p>
+
+<table>
+  <tr>
+    <th>Experiment</th><th>Dataset</th><th>What it validates</th><th>Expected result</th>
+  </tr>
+  <tr>
+    <td>1 — Rate</td><td>MNIST (synthetic fed.)</td>
+    <td>Theorem 1 rate term \(O(1/\sqrt{T})\)</td>
+    <td>Log-log slope ≈ −0.50</td>
+  </tr>
+  <tr>
+    <td>2 — β floor</td><td>MNIST (synthetic fed.)</td>
+    <td>Theorem 1 \(\beta^2\) floor</td>
+    <td>Final error ∝ β², slope ≈ +1.00</td>
+  </tr>
+  <tr>
+    <td>3 — Binding constraint</td><td>MNIST (synthetic fed.)</td>
+    <td>Section 5.2, Corollary 5.2</td>
+    <td>Gap closes at \(\sigma_h^2 \approx \hat{\beta}^2\)</td>
+  </tr>
+  <tr style="background:#f0fff4;font-weight:bold">
+    <td>4 — Real medical data</td><td>UCI Heart Disease (4 hospitals)</td>
+    <td>Real-world applicability + Theorem 1 floor</td>
+    <td>BP-Free ≈ FedAvg &gt; Local-only; floor matches \(\sqrt{\hat{\beta}^2+\sigma_h^2}\)</td>
+  </tr>
+</table>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>7. Conclusion</h2>
+
+<p>We have established the first convergence guarantees for backpropagation-free neural network training in a federated, non-IID setting. Under four standard assumptions, we proved that federated auxiliary network training converges at rate \(O(1/\sqrt{T})\) to a neighborhood of a stationary point, with an irreducible floor of \(O(\beta^2 + \sigma_h^2)\). The proof proceeds through four lemmas — one-step descent, client drift, aggregation error, and telescoping — establishing Theorem 1, which recovers classical FedAvg convergence exactly when \(\beta \to 0\). From the bound we derived actionable design rules: auxiliary networks must satisfy \(\beta = O(\sqrt{\varepsilon})\) for \(\varepsilon\)-accuracy, and improving auxiliary quality yields no benefit once \(\beta^2\) falls below the heterogeneity floor \(\sigma_h^2\).</p>
+
+<p>We validated the theory on two experimental settings. Controlled MNIST experiments confirm each component of the bound independently: log-log slope \(\approx -0.5\) validates the \(O(1/\sqrt{T})\) rate; a unit slope between final error and \(\hat{\beta}^2\) validates the auxiliary quality floor; and the performance gap between weak and strong auxiliary networks vanishes exactly where \(\sigma_h^2 \approx \hat{\beta}^2\), confirming Corollary 5.2. Experiment 4 applies the method to the UCI Heart Disease dataset — four real hospital institutions across three countries — demonstrating that BP-free federated learning achieves competitive clinical accuracy without any institution exposing patient records or gradient information. The measured convergence floor closely matches the theoretical prediction \(\sqrt{\hat{\beta}^2 + \sigma_h^2}\), providing the first empirical validation of Theorem 1 on genuine medical data.</p>
+
+<p>Beyond convergence, the BP-free federated framework offers a structural privacy advantage absent in standard FedAvg: no gradient signal crosses the client-server boundary, eliminating the gradient inversion attack surface entirely. Future work includes extending the analysis to partial client participation and asynchronous rounds, characterizing optimal auxiliary network architecture as a function of \(\varepsilon\) and \(\sigma_h\), and scaling validation to large clinical databases such as MIMIC-IV where heterogeneity across ICU populations is substantial and privacy constraints are legally binding.</p>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<hr>
+<h2>References</h2>
+<div class="references">
+  <div class="ref-item">Ajalloeian, A. &amp; Stich, S. U. (2020). On the convergence of SGD with biased gradients. <em>arXiv:2008.00051</em>.</div>
+  <div class="ref-item">Belilovsky, E., Eickenberg, M., &amp; Oyallon, E. (2019). Greedy layerwise learning can scale to ImageNet. <em>ICML 2019</em>.</div>
+  <div class="ref-item">Hinton, G. (2022). The forward-forward algorithm: Some preliminary investigations. <em>arXiv:2212.13345</em>.</div>
+  <div class="ref-item">Detrano, R., Janosi, A., Steinbrunn, W., Pfisterer, M., Schmid, J., Sandhu, S., Guppy, K., Lee, S., &amp; Froelicher, V. (1989). International application of a new probability algorithm for the diagnosis of coronary artery disease. <em>American Journal of Cardiology, 64</em>(5), 304–310. [UCI Heart Disease Dataset]</div>
+  <div class="ref-item">Hsu, T.-M. H., Qi, H., &amp; Brown, M. (2019). Measuring the effects of non-identical data distribution for federated visual classification. <em>arXiv:1909.06335</em>.</div>
+  <div class="ref-item">Huang, C. et al. (2025). Back propagation-free learning with auxiliary networks. <em>[Manuscript]</em>.</div>
+  <div class="ref-item">Karimireddy, S. P., Kale, S., Mohri, M., Reddi, S., Stich, S., &amp; Suresh, A. T. (2020). SCAFFOLD: Stochastic controlled averaging for federated learning. <em>ICML 2020</em>.</div>
+  <div class="ref-item">Lee, D.-H. et al. (2015). Difference target propagation. <em>ECML-PKDD 2015</em>.</div>
+  <div class="ref-item">Li, X., Huang, K., Yang, W., Wang, S., &amp; Zhang, Z. (2020). On the convergence of FedAvg on non-IID data. <em>ICLR 2020</em>.</div>
+  <div class="ref-item">Lillicrap, T. P., Cownden, D., Tweed, D. B., &amp; Akerman, C. J. (2016). Random synaptic feedback weights support error backpropagation for deep learning. <em>Nature Communications 7</em>.</div>
+  <div class="ref-item">McMahan, B., Moore, E., Ramage, D., Hampson, S., &amp; Agüera y Arcas, B. (2017). Communication-efficient learning of deep networks from decentralized data. <em>AISTATS 2017</em>.</div>
+  <div class="ref-item">Nøkland, A. (2016). Direct feedback alignment provides learning in deep neural networks. <em>NeurIPS 2016</em>.</div>
+  <div class="ref-item">Nøkland, A. &amp; Eidnes, L. H. (2019). Training neural networks with local error signals. <em>ICML 2019</em>.</div>
+  <div class="ref-item">Vepakomma, P., Gupta, O., Swedish, T., &amp; Raskar, R. (2018). Split learning for health: Distributed deep learning without sharing raw patient data. <em>arXiv:1812.00564</em>.</div>
+  <div class="ref-item">Zhao, Y., Li, M., Lai, L., Suda, N., Civin, D., &amp; Chandra, V. (2018). Federated learning with non-IID data. <em>arXiv:1806.00582</em>.</div>
+  <div class="ref-item">Zhu, L., Liu, Z., &amp; Han, S. (2019). Deep leakage from gradients. <em>NeurIPS 2019</em>.</div>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

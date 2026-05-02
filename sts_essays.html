@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>STS Application Essays</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 12pt;
+  line-height: 1.75;
+  color: #111;
+  background: #fff;
+  margin: 0;
+  padding: 0;
+}
+.page {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 60px 40px;
+}
+.no-print {
+  background: #fffbea;
+  border: 1px solid #f6c90e;
+  padding: 10px 16px;
+  border-radius: 8px;
+  margin-bottom: 28px;
+  font-family: sans-serif;
+  font-size: 10pt;
+}
+h1 {
+  font-size: 15pt;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+.essay-label {
+  font-size: 10.5pt;
+  color: #555;
+  font-style: italic;
+  margin-bottom: 6px;
+}
+.word-count {
+  font-size: 9.5pt;
+  color: #888;
+  margin-bottom: 20px;
+  font-family: sans-serif;
+}
+p { margin: 0 0 12px 0; }
+hr { border: none; border-top: 1px solid #ddd; margin: 40px 0; }
+@media print {
+  .no-print { display: none; }
+  .page { padding: 0; max-width: 100%; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="no-print">
+  <nav class="site-nav" style="background:#1a1a2e;display:flex;justify-content:center;gap:0;padding:0 20px;flex-wrap:wrap;border-bottom:1px solid #374151;margin-bottom:16px;border-radius:8px 8px 0 0;">
+    <a href="sts_paper_draft.html" style="color:#9ca3af;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 18px;border-bottom:3px solid transparent;font-family:sans-serif;">Paper Draft</a>
+    <a href="sts_essays.html" style="color:#fff;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 18px;border-bottom:3px solid #7f9cf5;font-family:sans-serif;">STS Essays</a>
+    <a href="session_log.html" style="color:#9ca3af;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 18px;border-bottom:3px solid transparent;font-family:sans-serif;">Session Log</a>
+    <a href="prompts.html" style="color:#9ca3af;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 18px;border-bottom:3px solid transparent;font-family:sans-serif;">Prompts</a>
+    <a href="venues.html" style="color:#9ca3af;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 18px;border-bottom:3px solid transparent;font-family:sans-serif;">Venues</a>
+    <a href="proof_review.html" style="color:#9ca3af;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 18px;border-bottom:3px solid transparent;font-family:sans-serif;">Proof Review</a>
+  </nav>
+  <strong>To save as PDF:</strong> Press <kbd>Cmd + P</kbd> → destination: <strong>"Save as PDF"</strong> → margins: <em>None</em>.
+</div>
+
+<!-- ── Essay 1 ── -->
+<h1>Research Summary</h1>
+<div class="essay-label">Regeneron Science Talent Search — Research Summary (250 words)</div>
+<div class="word-count">Word count: 249</div>
+
+<p>Modern machine learning depends on backpropagation (BP), an algorithm that trains neural networks by computing how much each layer's parameters contributed to an error and adjusting them accordingly. While effective, BP requires a global backward pass through the entire network — a design that creates serious problems for distributed settings where data must stay private, such as hospital systems that cannot legally share patient records.</p>
+
+<p>My research addresses a fundamental question: can neural networks be trained in federated environments — where data never leaves individual clients — without backpropagation at all? I establish the first theoretical convergence guarantees for backpropagation-free federated learning using auxiliary networks, small local networks that provide each layer with a learning signal without requiring global gradient flow.</p>
+
+<p>The core result, Theorem 1, proves that under four standard assumptions — gradient smoothness, bounded auxiliary approximation error β, bounded local gradients, and bounded data heterogeneity σ<sub>h</sub> — the algorithm converges at rate O(1/√T) to a neighborhood with irreducible floor O(β² + σ<sub>h</sub>²). This bound recovers the classical FedAvg convergence rate exactly when β → 0, confirming BP-free federated learning as a mathematically sound generalization of standard federated optimization. The proof proceeds through four lemmas characterizing one-step descent, client drift, aggregation error, and telescoping.</p>
+
+<p>From the bound I derived actionable design rules: auxiliary networks must satisfy β = O(√ε) for ε-accuracy, and improving auxiliary quality yields no benefit once β² falls below the data heterogeneity floor σ<sub>h</sub>². I validated the theory computationally on MNIST under controlled federated conditions and on the UCI Heart Disease dataset — four real hospital institutions across three countries — where BP-free federated learning achieves competitive clinical accuracy while eliminating gradient leakage entirely.</p>
+
+<hr>
+
+<!-- ── Essay 2 ── -->
+<h1>Significance Essay</h1>
+<div class="essay-label">Regeneron Science Talent Search — Significance Essay (250 words)</div>
+<div class="word-count">Word count: 248</div>
+
+<p>Every year, thousands of patients with heart disease go undiagnosed or misdiagnosed because the machine learning models that could help are trained on too little data. The data exists — spread across hospitals in Cleveland, Budapest, Long Beach, and Zürich — but it cannot be shared. HIPAA in the United States and GDPR in Europe prohibit transmitting identifiable patient records across institutional and national boundaries. The result is a paradox: the patients most in need of better diagnostic AI are the very ones whose privacy prevents the data from being pooled.</p>
+
+<p>Federated learning partially solves this problem. Hospitals train local models and share only weight updates, never raw records. But even this approach leaks information: researchers have demonstrated that model updates can be mathematically inverted to reconstruct private training data. A hospital sharing a gradient update may be sharing more than it intends.</p>
+
+<p>My research eliminates this residual risk entirely. By replacing backpropagation with local auxiliary networks, no gradient signal ever crosses a client-server boundary. The only information transmitted is averaged model weights — far harder to invert into individual patient data. I proved mathematically that this privacy gain comes at a provably bounded cost to accuracy, characterized by a simple formula that practitioners can evaluate before deploying a system.</p>
+
+<p>The broader significance extends beyond cardiology. Any field where sensitive distributed data exists — genomics, mental health, financial fraud — faces the same structural tension between privacy and learning. My work provides the theoretical foundation for a new class of algorithms that respect legal and ethical boundaries without sacrificing scientific progress. Proving that privacy and accuracy are simultaneously achievable, not just aspired to, is the contribution I believe matters most.</p>
+
+</div>
+</body>
+</html>

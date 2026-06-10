@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Medical DSL — STS Project Plan</title>
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)'],['$','$']], displayMath: [['\\[','\\]'],['$$','$$']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  font-family: "Georgia", serif;
+  font-size: 11.5pt;
+  line-height: 1.75;
+  color: #111;
+  background: #fff;
+  margin: 0; padding: 0;
+}
+.page { max-width: 760px; margin: 0 auto; padding: 48px 40px 80px; }
+
+nav.site-nav {
+  background: #1a1a2e;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 0 20px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  border-bottom: 1px solid #374151;
+}
+nav.site-nav a {
+  color: #9ca3af; text-decoration: none; font-size: 0.82rem;
+  font-weight: 600; padding: 11px 11px; border-bottom: 3px solid transparent;
+  font-family: sans-serif;
+}
+nav.site-nav a:hover { color: #fff; }
+nav.site-nav a.active { color: #fff; border-bottom-color: #7f9cf5; }
+@media print { nav.site-nav { display: none; } }
+
+.page-header { margin-bottom: 32px; border-bottom: 2px solid #1a1a2e; padding-bottom: 16px; }
+.page-header h1 { font-size: 18pt; font-weight: bold; margin: 0 0 4px; }
+.page-header .subtitle { font-size: 10.5pt; color: #555; font-style: italic; }
+.page-header .meta { font-size: 9.5pt; color: #888; font-family: sans-serif; margin-top: 6px; }
+
+h2 { font-size: 13pt; font-weight: bold; margin: 38px 0 10px; color: #1a1a2e; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; }
+h3 { font-size: 11.5pt; font-weight: bold; margin: 22px 0 6px; }
+p { margin: 0 0 12px; }
+ul, ol { margin: 0 0 14px; padding-left: 24px; }
+li { margin-bottom: 6px; }
+
+.vtable { width: 100%; border-collapse: collapse; font-family: sans-serif; font-size: 9.5pt; margin: 18px 0 28px; }
+.vtable th { background: #1a1a2e; color: #fff; padding: 9px 12px; text-align: left; font-weight: 600; }
+.vtable td { padding: 9px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+.vtable tr:nth-child(even) td { background: #f7fafc; }
+.tag { border-radius: 4px; padding: 2px 8px; font-weight: 600; white-space: nowrap; font-size: 8.5pt; font-family: sans-serif; }
+.tag-yes   { background: #c6f6d5; color: #276749; }
+.tag-strong{ background: #1a1a2e; color: #fff; }
+.tag-border{ background: #fefcbf; color: #744210; }
+.tag-no    { background: #fed7d7; color: #c53030; }
+.tag-new   { background: #ddd6fe; color: #5b21b6; }
+
+.callout { border-radius: 8px; padding: 14px 18px; margin: 18px 0; font-size: 10pt; font-family: sans-serif; }
+.callout.warn  { background: #fffbea; border: 1px solid #f6e05e; }
+.callout.info  { background: #ebf8ff; border: 1px solid #90cdf4; }
+.callout.good  { background: #f0fff4; border: 1px solid #68d391; }
+.callout.purple{ background: #faf5ff; border: 1px solid #d6bcfa; }
+
+.eq-note { background: #f7fafc; border-left: 4px solid #4a5568; padding: 12px 16px; margin: 14px 0; font-size: 10.5pt; border-radius: 0 6px 6px 0; }
+.eq-note .eq-label { font-family: sans-serif; font-size: 8.5pt; font-weight: 700; color: #4a5568; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+
+.draft-block { background: #fffff0; border: 1px solid #f6e05e; border-radius: 8px; padding: 18px 22px; margin: 16px 0 24px; font-size: 10.5pt; }
+.draft-block .draft-label { font-family: sans-serif; font-size: 8.5pt; font-weight: 700; color: #744210; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+.draft-block p { margin: 0 0 10px; }
+
+.steps { counter-reset: step; margin: 20px 0 28px; }
+.step { display: flex; gap: 16px; margin-bottom: 18px; align-items: flex-start; }
+.step-num {
+  counter-increment: step;
+  background: #1a1a2e; color: #fff;
+  font-family: sans-serif; font-weight: 700; font-size: 10pt;
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 2px;
+}
+.step-num::before { content: counter(step); }
+.step-body { flex: 1; }
+.step-body strong { display: block; margin-bottom: 3px; }
+.step-body p { margin: 0; font-size: 10.5pt; color: #333; }
+
+header.page-banner {
+  background: #1a1a2e;
+  padding: 32px 40px;
+  text-align: center;
+}
+header.page-banner h1 { color: #fff; font-size: 1.9rem; font-weight: 800; margin: 0; }
+header.page-banner p  { color: #a0aec0; font-size: 0.95rem; margin: 8px 0 0; line-height: 1.6; }
+header.page-banner .paper-title {
+  display: inline-block; margin-top: 10px; font-size: 0.82rem;
+  color: #7f9cf5; font-style: italic;
+}
+@media print { header.page-banner { display: none; } }
+</style>
+</head>
+<body>
+<header class="page-banner">
+  <h1>Medical DSL — STS Project Plan</h1>
+  <p>Applying decoupled split learning to multi-label medical imaging for an STS submission</p>
+  <span class="paper-title">Based on Zihad, Owino, Tang, Huang — "Decoupled Split Learning via Auxiliary Loss"</span>
+</header>
+<nav style="background:#0f172a;display:flex;justify-content:center;gap:0;padding:0 20px;flex-wrap:nowrap;overflow-x:auto;border-bottom:1px solid #4b5563;">
+  <a href="paper_guide.html" style="color:#e2e8f0;text-decoration:none;font-size:0.82rem;font-weight:700;padding:11px 20px;border-bottom:3px solid transparent;display:inline-block;font-family:sans-serif;">Paper Guide</a>
+  <a href="venues.html" style="color:#e2e8f0;text-decoration:none;font-size:0.82rem;font-weight:700;padding:11px 20px;border-bottom:3px solid transparent;display:inline-block;font-family:sans-serif;">Venues</a>
+</nav>
+<nav class="site-nav">
+  <a href="bp_venues.html">BP Venues</a>
+  <a href="proof_review.html">Proof Review</a>
+  <a href="proof_fitness.html">Proof Fitness</a>
+  <a href="strategy.html">Strategy</a>
+  <a href="proof_paper.html">Proof Paper</a>
+  <a href="sts_paper_draft.html">Paper Draft</a>
+  <a href="BP_Free_Split_Learning.pdf" target="_blank" style="color:#fbbf24;border-bottom-color:transparent;">↗ Paper (PDF)</a>
+</nav>
+<nav style="background:#16213e;display:flex;justify-content:center;gap:0;padding:0 20px;flex-wrap:nowrap;overflow-x:auto;border-bottom:1px solid #4b5563;">
+  <a href="kd_venues.html" style="color:#9ca3af;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 11px;border-bottom:3px solid transparent;display:inline-block;font-family:sans-serif;">KD Venues</a>
+  <a href="kd_proof_review.html" style="color:#9ca3af;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 11px;border-bottom:3px solid transparent;display:inline-block;font-family:sans-serif;">KD Proof Review</a>
+  <a href="kd_proof_fitness.html" style="color:#9ca3af;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 11px;border-bottom:3px solid transparent;display:inline-block;font-family:sans-serif;">KD Proof Fitness</a>
+  <a href="kd_strategy.html" style="color:#9ca3af;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 11px;border-bottom:3px solid transparent;display:inline-block;font-family:sans-serif;">KD Strategy</a>
+  <a href="kd_proof_paper.html" style="color:#9ca3af;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 11px;border-bottom:3px solid transparent;display:inline-block;font-family:sans-serif;">KD Proof Paper</a>
+  <a href="KD_Split_Learning.pdf" target="_blank" style="color:#f6ad55;text-decoration:none;font-size:0.82rem;font-weight:600;padding:11px 11px;border-bottom:3px solid transparent;display:inline-block;font-family:sans-serif;">↗ KD Paper (PDF)</a>
+</nav>
+<nav style="background:#312e81;display:flex;justify-content:center;gap:0;padding:0 20px;flex-wrap:nowrap;overflow-x:auto;border-bottom:2px solid #374151;margin-bottom:36px;">
+  <a href="medical_dsl_plan.html" style="color:#fff;text-decoration:none;font-size:0.82rem;font-weight:700;padding:11px 18px;border-bottom:3px solid #c4b5fd;display:inline-block;font-family:sans-serif;">Medical DSL Plan</a>
+</nav>
+
+<div class="page">
+
+<div class="page-header">
+  <h1>Medical DSL — STS Project Plan</h1>
+  <div class="subtitle">Working plan for an STS submission applying decoupled split learning (DSL) to multi-label medical imaging</div>
+  <div class="meta">Created June 10, 2026 · Status: planning only, no experiments started</div>
+</div>
+
+<div class="callout info">
+  <strong>One-line pitch:</strong> DSL halves split-learning communication on standard benchmarks, but is it usable for real clinical data with rare diseases and cross-hospital distribution shift? We evaluate on CheXpert + ISIC, find a rare-class accuracy gap, propose a class-weighted auxiliary loss that closes most of it, and show DSL stays viable at clinically-relevant bandwidth budgets.
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<h2>1. Why this works as an STS project</h2>
+
+<p>The original DSL paper only tested CIFAR-10/100. Three reasons applying DSL to medical data is a credible STS submission rather than a "swap the dataset" exercise:</p>
+
+<ol>
+  <li><strong>Real gap.</strong> No published evaluation of DSL on medical imaging.</li>
+  <li><strong>Coherent motivation.</strong> Split learning was created for healthcare — hospitals can't share raw data, edge devices are bandwidth-limited. The 50% comm reduction maps directly to a clinical pain point.</li>
+  <li><strong>Real research questions emerge</strong> when DSL meets medical data: multi-label heads, severe class imbalance, non-IID cross-hospital distribution. Each is a place the student's contribution can live.</li>
+</ol>
+
+<p>What would make it competitive (vs. a science-fair poster):</p>
+
+<ul>
+  <li>A real dataset, not MedMNIST.</li>
+  <li>Non-IID / cross-institution simulation.</li>
+  <li>Medical-specific failure analysis (rare-disease gap).</li>
+  <li>At least one proposed modification with ablation.</li>
+  <li>Clinical-deployment framing in the discussion.</li>
+</ul>
+
+<!-- ══════════════════════════════════════════ -->
+<h2>2. Datasets</h2>
+
+<table class="vtable">
+  <tr><th>Dataset</th><th>Size</th><th>Task</th><th>Why</th></tr>
+  <tr>
+    <td><strong>CheXpert</strong> <span class="tag tag-strong">primary</span></td>
+    <td>191K frontal X-rays</td>
+    <td>14-class multi-label</td>
+    <td>Recognized benchmark, DUA-only access, multi-label exposes the aux-head design question</td>
+  </tr>
+  <tr>
+    <td><strong>ISIC 2019</strong> <span class="tag tag-yes">secondary</span></td>
+    <td>~25K dermoscopy images</td>
+    <td>8-class multiclass</td>
+    <td>Faster turnaround, real multi-clinic provenance — natural non-IID story</td>
+  </tr>
+  <tr>
+    <td>MedMNIST</td>
+    <td>—</td>
+    <td>—</td>
+    <td><span class="tag tag-no">skip</span> too toy for STS</td>
+  </tr>
+  <tr>
+    <td>MIMIC-CXR</td>
+    <td>—</td>
+    <td>—</td>
+    <td><span class="tag tag-no">skip</span> PhysioNet credentialing eats 2 weeks</td>
+  </tr>
+</table>
+
+<!-- ══════════════════════════════════════════ -->
+<h2>3. Architecture &amp; baselines</h2>
+
+<ul>
+  <li><strong>Backbone:</strong> ResNet-50 (ResNet-110 from the paper is too heavy at 224×224).</li>
+  <li><strong>Split points:</strong> shallow / middle / deep, same as paper.</li>
+  <li><strong>Aux head:</strong> 14 sigmoid heads + BCE for CheXpert (multi-label).</li>
+  <li><strong>Baselines:</strong> Centralized (upper bound) · CSL · DSL · ★ DSL-Weighted · FedAvg.</li>
+  <li>Optional: SplitFed [Thapa 2022] if time permits.</li>
+</ul>
+
+<!-- ══════════════════════════════════════════ -->
+<h2>4. Metrics</h2>
+
+<ul>
+  <li>Mean AUC-ROC + per-class AUC</li>
+  <li><strong>Rare-class AUC gap</strong> (Fracture, Pleural Other, Lung Lesion) — the novelty signal</li>
+  <li>Communication MB / epoch</li>
+  <li>Peak GPU memory MB</li>
+  <li>Bandwidth-budget plot: AUC vs. cumulative MB sent (the clinical-deployment chart)</li>
+</ul>
+
+<!-- ══════════════════════════════════════════ -->
+<h2>5. 8-week timeline</h2>
+
+<div class="steps">
+  <div class="step"><div class="step-num"></div><div class="step-body"><strong>Week 1 — Set up + reproduce</strong><p>PyTorch env. Reproduce paper's CIFAR-10 numbers for CSL + DSL (3 splits × N=1). Numbers must match within ~1% before moving on. Sign CheXpert DUA + ISIC accounts in parallel.</p></div></div>
+  <div class="step"><div class="step-num"></div><div class="step-body"><strong>Week 2 — Scale + download</strong><p>Reproduce N=5, N=10. Confirm comm + memory claims. Download CheXpert (~150 GB), build dataloader (224×224, frontal only, multi-label).</p></div></div>
+  <div class="step"><div class="step-num"></div><div class="step-body"><strong>Week 3 — Port to medical</strong><p>Port CSL + DSL to ResNet-50 + multi-label BCE. Train centralized + CSL on CheXpert → reference AUCs.</p></div></div>
+  <div class="step"><div class="step-num"></div><div class="step-body"><strong>Week 4 — DSL on CheXpert</strong><p>Train DSL (3 splits × N=1). Plot convergence + comm + memory vs. CSL. <strong>Per-class AUC table → identify the rare-class gap.</strong></p></div></div>
+  <div class="step"><div class="step-num"></div><div class="step-body"><strong>Week 5 — Non-IID + modification</strong><p>Dirichlet(α=0.1) partitioning across N=5 simulated hospitals. Run DSL vs. CSL non-IID. Implement class-weighted aux loss. Ablation: vanilla DSL vs. DSL-Weighted.</p></div></div>
+  <div class="step"><div class="step-num"></div><div class="step-body"><strong>Week 6 — ISIC + FedAvg</strong><p>Apply pipeline to ISIC. Confirm findings hold on a second medical domain. Add FedAvg baseline.</p></div></div>
+  <div class="step"><div class="step-num"></div><div class="step-body"><strong>Week 7 — Analysis + figures</strong><p>All figures: convergence curves, comm/mem bars, per-class AUC heatmap, bandwidth-budget plot. Failure-mode analysis.</p></div></div>
+  <div class="step"><div class="step-num"></div><div class="step-body"><strong>Week 8 — Write + iterate</strong><p>Draft 8-page paper. Mentor review. Polish.</p></div></div>
+</div>
+
+<div class="callout good">
+  STS deadline is mid-November. Hitting "draft done" by mid-August leaves September–October for revisions, video, essays, and recommendation letters.
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<h2>6. Risks &amp; mitigations</h2>
+
+<ul>
+  <li><strong>CheXpert is huge</strong> → preprocessed 224×224 PNGs; cache as <code>.pt</code> after epoch 1.</li>
+  <li><strong>ResNet-50 + N=10 + 3 splits may blow memory</strong> → batch 64, gradient accumulation.</li>
+  <li><strong>Multi-label BCE collapses to all-zero on rare classes</strong> → use <code>pos_weight</code> from the start, even before the modification ablation.</li>
+  <li><strong>Non-IID + small N diverges</strong> → keep small λ &gt; 0 on aux loss; becomes a discussion point.</li>
+  <li><strong>STS judges want clear student ownership</strong> → the class-weighted aux loss must be presented as the student's idea with motivation, math, and ablation. Don't bury it.</li>
+</ul>
+
+<!-- ══════════════════════════════════════════ -->
+<h2>7. Deliverables</h2>
+
+<ol>
+  <li>Paper PDF (6–8 pages, IEEE or NeurIPS style)</li>
+  <li>GitHub repo (clean, with README, reproducibility script)</li>
+  <li>2-minute video (STS app requirement)</li>
+  <li>250-word research summary essay</li>
+</ol>
+
+<!-- ══════════════════════════════════════════ -->
+<h2>8. Paper outline</h2>
+
+<h3>Title</h3>
+<div class="eq-note">
+  <div class="eq-label">Working title</div>
+  <em>Decoupled Split Learning for Multi-Label Medical Imaging: Rare-Class Robustness via a Weighted Auxiliary Loss</em>
+</div>
+
+<h3>Abstract</h3>
+<div class="draft-block">
+  <div class="draft-label">Draft — fill bracketed numbers after experiments</div>
+  <p>Split learning (SL) is a distributed training paradigm well suited to healthcare, where regulations prevent hospitals from sharing patient data and edge devices must operate under tight bandwidth budgets. Recent work on decoupled split learning (DSL) [Zihad et al., 2025] introduces a client-side auxiliary classifier that eliminates backward gradient transmission across the cut layer, halving communication and substantially reducing peak memory while preserving accuracy on CIFAR-10/100.</p>
+  <p>However, DSL has not been evaluated on real medical data, which differs from natural-image benchmarks in three ways: it is multi-label (each chest X-ray carries several findings), severely class-imbalanced (rare diseases account for under 5% of labels), and non-IID across institutions (each hospital sees a different disease mix). In this paper, we present the first evaluation of DSL on multi-label medical imaging.</p>
+  <p>On CheXpert (191K chest X-rays, 14 conditions) and ISIC 2019 (25K dermoscopy images, 8 classes), we find that DSL matches conventional SL on mean AUC but suffers a [X.X%] AUC gap on rare classes. We propose a class-weighted auxiliary loss applied only to the client-side objective and show it closes [YY%] of this gap without affecting communication or memory cost, while preserving DSL's [50%] communication and [58%] memory savings. We also characterize DSL's behavior under Dirichlet-partitioned cross-hospital splits and find that the proposed weighting yields [Z.Z%] higher mean AUC at the most non-IID setting (α=0.1). Our results indicate that DSL is a practical option for privacy-preserving medical model training once the auxiliary objective is adapted to label imbalance.</p>
+</div>
+
+<h3>1. Introduction (≈1 page)</h3>
+<ul>
+  <li>Para 1 — clinical motivation (HIPAA, edge devices, real bandwidth limits).</li>
+  <li>Para 2 — SL recap, then DSL: cite [Zihad 2025], explain in 2 sentences.</li>
+  <li>Para 3 — but DSL only on CIFAR. Medical changes three things:
+    <ol>
+      <li><strong>Multi-label</strong> — single-softmax aux head won't work.</li>
+      <li><strong>Class imbalance</strong> — local aux loss may underweight rare classes.</li>
+      <li><strong>Non-IID</strong> — no-BP design may amplify drift across hospitals.</li>
+    </ol>
+  </li>
+  <li>Para 4 — ★ contribution bullets (draft below).</li>
+  <li>Para 5 — paper roadmap.</li>
+</ul>
+
+<div class="draft-block">
+  <div class="draft-label">Contribution paragraph — draft</div>
+  <p>In this paper, we make the following contributions:</p>
+  <ul>
+    <li><strong>First medical-imaging evaluation of decoupled split learning.</strong> We adapt DSL to multi-label classification (replacing the single-softmax auxiliary head with K independent sigmoid heads and per-label binary cross-entropy) and benchmark it on CheXpert and ISIC 2019 against conventional split learning, centralized training, and FedAvg. To our knowledge, this is the first published evaluation of any BP-free split-learning method on real medical data.</li>
+    <li><strong>Identification of a rare-class accuracy gap specific to DSL.</strong> We show that, although DSL matches conventional SL on aggregate AUC, it consistently underperforms by [X.X%] on the rarest CheXpert findings (Fracture, Pleural Other, Lung Lesion). We trace this to the structure of the local auxiliary loss, which is dominated by majority-class gradient signal because the client never sees a server-side reweighting signal.</li>
+    <li><strong>A targeted fix: class-weighted auxiliary loss.</strong> We propose weighting only the client-side auxiliary loss by inverse class frequency, leaving the server's global loss unchanged. The modification adds no communication or memory overhead, requires no changes to the cut-layer architecture, and closes [YY%] of the rare-class gap. We provide an ablation across three weighting schemes (inverse frequency, effective number of samples, log-scaled) and show inverse frequency performs best on both datasets.</li>
+    <li><strong>Characterization of DSL under non-IID cross-hospital splits.</strong> Using Dirichlet partitioning with α ∈ {0.1, 0.5, 1.0, ∞}, we simulate five hospitals with realistically divergent disease distributions and show that DSL's accuracy gap relative to CSL widens as α decreases, but that the weighted auxiliary loss recovers most of this drop. This is the relevant regime for any real federated medical deployment.</li>
+    <li><strong>Bandwidth-budget framing for clinical deployment.</strong> We translate the communication-volume savings into wall-clock training time at clinically realistic uplink speeds (1–50 Mbps) and show that DSL with our modification reaches an AUC of [0.86] on CheXpert in [X hours] over a 10 Mbps clinic uplink, compared to [2X hours] for conventional SL — making on-site training tractable for under-resourced facilities.</li>
+  </ul>
+</div>
+
+<h3>2. Related Work (≈½ page)</h3>
+<ul>
+  <li><strong>Split learning</strong>: Gupta &amp; Raskar [1]; SplitFed [Thapa]; medical SL applications.</li>
+  <li><strong>Beyond-BP training</strong>: greedy layer-wise [Belilovsky]; synthetic gradients [Jaderberg]; DSL [Zihad].</li>
+  <li><strong>FL on medical imaging</strong>: brief — FedAvg, FedProx, the few CheXpert-via-FL papers. Position: <em>"DSL has different tradeoffs than FL — lower client compute, but unknown medical-data robustness."</em></li>
+  <li><strong>The not-yet-done sentence</strong>: <em>"To our knowledge, no prior work evaluates DSL on multi-label medical data or under non-IID cross-hospital splits."</em> — critical for STS, it's the originality claim.</li>
+</ul>
+
+<h3>3. Method (≈1.5 pages)</h3>
+<ul>
+  <li><strong>3.1 DSL recap</strong> — tight version of Zihad's formulation. One figure, the algorithm box. Cite heavily, don't pretend you invented it.</li>
+  <li><strong>3.2 ★ Multi-label auxiliary classifier</strong> — replace softmax with K sigmoid heads + per-label BCE. Write the new $\mathcal{L}_{\text{aux}}$ explicitly.</li>
+  <li><strong>3.3 ★ Class-weighted auxiliary loss</strong> — full prose draft below.</li>
+  <li><strong>3.4 Non-IID partitioning</strong> — Dirichlet(α=0.1) across N=5 simulated clients. Cite. Justify with the "Atelectasis at wildly different rates" argument.</li>
+</ul>
+
+<h3>§3.3 — Class-Weighted Auxiliary Loss (prose draft)</h3>
+
+<p>The vanilla multi-label auxiliary loss defined in Section 3.2,</p>
+
+<p>$$\mathcal{L}_{\text{aux}}(\tilde{\mathbf{y}}, \mathbf{y}) \;=\; -\frac{1}{B} \sum_{i=1}^{B} \sum_{k=1}^{K} \Big[ y_{i,k}\,\log\sigma(\tilde{y}_{i,k}) \;+\; (1 - y_{i,k})\,\log\bigl(1 - \sigma(\tilde{y}_{i,k})\bigr) \Big],$$</p>
+
+<p>treats every class equally and every sample equally. In medical imaging this is a poor inductive bias. On CheXpert, for example, positive prevalence ranges from 51.2% (Lung Opacity) down to 1.5% (Fracture). For a rare class $k$ with prevalence $p_k \ll 0.5$, the negative term $(1 - y_{i,k})\log(1 - \sigma(\tilde{y}_{i,k}))$ dominates the per-class gradient because $1 - y_{i,k} = 1$ for the vast majority of samples in the batch. The client's bottom model $M_b$ thus receives an auxiliary signal that rewards making $\tilde{y}_{i,k}$ small <em>unconditionally</em> — a representation that is locally optimal but discards the discriminative features needed to detect class $k$ when it does appear.</p>
+
+<p>In a centrally trained model, or in a conventional split-learning setup, the server's end-task loss $\mathcal{L}(\hat{\mathbf{y}}, \mathbf{y})$ would correct this drift through backpropagation across the cut layer. DSL eliminates that backward channel by design (Section 3.1), so the rare-class signal must instead be injected into the client-side objective directly.</p>
+
+<h3>Per-class positive weighting</h3>
+
+<p>We modify only the auxiliary loss:</p>
+
+<p>$$\mathcal{L}_{\text{aux}}^{w}(\tilde{\mathbf{y}}, \mathbf{y}) \;=\; -\frac{1}{B} \sum_{i=1}^{B} \sum_{k=1}^{K} \Big[ w_k \cdot y_{i,k}\,\log\sigma(\tilde{y}_{i,k}) \;+\; (1 - y_{i,k})\,\log\bigl(1 - \sigma(\tilde{y}_{i,k})\bigr) \Big],$$</p>
+
+<p>with the per-class weight computed once from training-set statistics:</p>
+
+<p>$$w_k \;=\; \frac{N_{\text{neg}}^{(k)}}{N_{\text{pos}}^{(k)}} \;=\; \frac{1 - p_k}{p_k}.$$</p>
+
+<p>For the rare class Fracture ($p_k \approx 0.015$), this yields $w_k \approx 66$, scaling the positive-term gradient to match the cumulative magnitude of negative-term gradients across the batch.</p>
+
+<div class="eq-note">
+  <div class="eq-label">Why weight only the auxiliary loss</div>
+  The server already minimizes $\mathcal{L}$ using the true labels and converges to a well-calibrated decision boundary; up-weighting rare classes in the server's loss biases predictions toward false positives without addressing the root cause, which is the <em>representation</em> learned by $M_b$. The failure mode is client-side, so the fix is client-side. In the DSL training objective notation of Section 3.1, the modification corresponds to $M_b$ minimizing $\mathcal{L}_{\text{aux}}^{w} + \lambda \mathcal{L}$ and $M_t$ minimizing $\mathcal{L}$, with $\lambda = 0$ as in the original DSL formulation. Communication and memory budgets are therefore unchanged.
+</div>
+
+<p><strong>Cost.</strong> Computing $\{w_k\}_{k=1}^{K}$ is a single pass over training labels (negligible). The per-batch loss adds one elementwise multiplication of cost $O(BK)$ per forward call.</p>
+
+<p><strong>Ablation.</strong> Three weighting schemes compared: (i) inverse-frequency $w_k = N / (K \cdot N_{\text{pos}}^{(k)})$ [Huang 2016]; (ii) effective-number-of-samples $w_k = (1-\beta)/(1-\beta^{N_{\text{pos}}^{(k)}})$ with $\beta=(N-1)/N$ [Cui 2019]; (iii) per-class positive weighting above (PyTorch <code>pos_weight</code>, [CheXNet 2017]). Section 4.4 reports (iii) wins on both datasets.</p>
+
+<h3>4. Experiments (≈2.5 pages)</h3>
+<ul>
+  <li><strong>4.1 Setup</strong> — datasets, architecture, hyperparameters, baselines, metrics.</li>
+  <li><strong>4.2 RQ1 — Does DSL preserve mean AUC?</strong> Table + convergence plot.</li>
+  <li><strong>4.3 ★ RQ2 — Where does DSL lose?</strong> Per-class AUC heatmap. <strong>Central figure of the paper.</strong> Quantify rare-class gap.</li>
+  <li><strong>4.4 ★ RQ3 — Does class-weighted aux close the gap?</strong> Ablation: vanilla DSL vs. DSL-Weighted. Try ≥2 weighting schemes.</li>
+  <li><strong>4.5 RQ4 — Non-IID robustness.</strong> Mean AUC vs. α plot.</li>
+  <li><strong>4.6 Efficiency confirmation.</strong> Comm + memory + training time.</li>
+  <li><strong>4.7 ISIC validation.</strong> Confirm findings hold on a second medical domain.</li>
+</ul>
+
+<h3>5. Discussion (≈½ page)</h3>
+<ul>
+  <li><strong>Bandwidth-budget plot</strong> — AUC vs. cumulative MB sent. Translate to clinical numbers ("a 50 Mbps clinic uplink trains DSL to AUC=0.86 in X hours").</li>
+  <li><strong>Limitations</strong> — simulated non-IID isn't a real multi-hospital deployment; ResNet-50 isn't SOTA on CheXpert; rare-class AUC noisy below 1000 positives.</li>
+  <li><strong>Why DSL still loses on the rarest classes</strong> — hypothesize the cut layer doesn't see enough rare-class signal; future work: sample-balanced micro-batches.</li>
+</ul>
+
+<h3>6. Conclusion (≈¼ page)</h3>
+<ul>
+  <li>Restate contributions in past tense.</li>
+  <li>One sentence broader implication.</li>
+  <li>One sentence future work (real federated deployment with multiple hospitals; medical time series).</li>
+</ul>
+
+<h3>References (≈20)</h3>
+<p>DSL paper, Gupta &amp; Raskar, SplitFed, CheXpert paper, ISIC paper, FedAvg, focal loss, class-balanced loss, Dirichlet non-IID FL papers.</p>
+
+<!-- ══════════════════════════════════════════ -->
+<h2>9. Writing-craft notes</h2>
+
+<ul>
+  <li><strong>The contribution paragraph and §4.3 rare-class finding must be the most polished writing.</strong> Most readers (and STS judges) read abstract + intro + one figure carefully. Rest is skimmed.</li>
+  <li><strong>Cite [Zihad 2025] generously.</strong> Be explicit about what's reused vs. new. STS judges have seen "I downloaded code and changed the dataset" passed off as original work — explicit attribution is a sign of integrity, not weakness.</li>
+  <li><strong>The equations are §3.3's spine.</strong> Reviewers read math more carefully than prose. Every symbol defined once, notation matching §3.1.</li>
+  <li><strong>"To our knowledge, this is the first" needs verification.</strong> Before submission: Google Scholar + arXiv search for "decoupled split learning medical", "split learning chest X-ray", "BP-free federated medical". If something close exists, narrow the scope but keep the claim honest.</li>
+  <li><strong>Bracketed numbers are commitments to your future self.</strong> When experiments come back differently, update the abstract and contributions to match. Don't leave stale claims that contradict the tables.</li>
+</ul>
+
+<!-- ══════════════════════════════════════════ -->
+<h2>10. Open questions / decisions to revisit</h2>
+
+<ul>
+  <li>Which lab GPU is the student using? Confirm with the Montclair mentor.</li>
+  <li>Who signs the CheXpert DUA (student is under 18 → the mentor)?</li>
+  <li>Are there pre-existing CheXpert / ISIC pipelines in the lab? Reuse if so.</li>
+  <li>Final dataset combo: is CheXpert + ISIC enough, or add a tabular EHR or time-series dataset for a third modality?</li>
+  <li>Figure captions + table headers — draft early so experiments stay disciplined.</li>
+</ul>
+
+<div class="callout purple">
+  <strong>Next session pick-up point:</strong> draft figure captions / table headers (forces experiments to stay disciplined), then start week-1 reproduction once compute is available.
+</div>
+
+</div>
+</body>
+</html>
